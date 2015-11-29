@@ -6,37 +6,57 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import org.json.JSONObject;
+
 import lubiezurek.texasholdem.Logger;
+import lubiezurek.texasholdem.server.IResponse;
+import lubiezurek.texasholdem.server.IResponseFactory;
+import lubiezurek.texasholdem.server.json.JSONResponseFactory;
 
 public class Client {
-	Socket socket;
+	private Socket socket;
+	private DataInputStream in;
+	private DataOutputStream out;
+	
+	private IResponseFactory responseFactory;
 	
 	public Client(String[] args) throws UnknownHostException, IOException {
+		responseFactory = new JSONResponseFactory();
+		
 		String address = args[1];
 		int port = Integer.parseInt(args[2]);
 		Logger.status("Connecting to: " + address + ":" + port);
 		socket = new Socket(address, port);
 	}
 	
+	public IResponse getResponse() throws IOException {
+		return responseFactory.CreateResponse().fromString(in.readUTF());
+	}
+	
 	public void run() {
 		try { 
-			DataInputStream in = new DataInputStream(socket.getInputStream());
-			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+			in = new DataInputStream(socket.getInputStream());
+			out = new DataOutputStream(socket.getOutputStream());
 			
-			String response = in.readUTF();
+			IResponse response = getResponse();
 			
-			if(response.equals("Connected")) {
+			if(response.getStatus().equals("Connected")) { 
 				Logger.status("Connected");
 				String command;
 				do {
+					
 					command = System.console().readLine();
 					out.writeUTF(command);
-					response = in.readUTF();
+					
+					
+					response = getResponse();
+					
 					Logger.status("> " + response);
-				} while(!response.equals("Disconnected"));
+				} while (! response.getStatus().equals("Disconnected"));
 			}
 			else {
-				Logger.error(response);
+				Logger.error(response.getStatus());
+				Logger.error(response.getMessage());
 			}
 			
 			Logger.status("Exitting");

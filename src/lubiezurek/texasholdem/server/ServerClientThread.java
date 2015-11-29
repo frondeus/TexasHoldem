@@ -6,13 +6,18 @@ import java.io.IOException;
 import java.net.Socket;
 
 import lubiezurek.texasholdem.Logger;
+import lubiezurek.texasholdem.server.json.JSONResponseFactory;
 
 public class ServerClientThread extends Thread {
-	Socket socket;
-	DataInputStream in; 
-	DataOutputStream out;
+	private Socket socket;
+	private DataInputStream in; 
+	private DataOutputStream out;
+	
+	private IResponseFactory responseFactory;
 	
 	public ServerClientThread(Socket socket) {
+		responseFactory = new JSONResponseFactory();
+		
 		this.socket = socket;
 		Logger.status("New connection: " + socket.getRemoteSocketAddress().toString());
 	}
@@ -21,7 +26,18 @@ public class ServerClientThread extends Thread {
 		in = new DataInputStream(socket.getInputStream());
 		out = new DataOutputStream(socket.getOutputStream());
 		
-		out.writeUTF("Connected");
+		IResponse response = responseFactory.CreateResponse();
+		response.setStatus("Connected")
+				.setMessage("Hello!")
+				.setAvailableCommands(new String[] {
+					"Disconnect"
+				});
+
+		sendResponse(response);
+	}
+	
+	public void sendResponse(IResponse response) throws IOException {
+		out.writeUTF(response.toString());
 	}
 	
 	@Override
@@ -34,12 +50,20 @@ public class ServerClientThread extends Thread {
 				command = in.readUTF();
 				Logger.status("> " + command);
 				
-				if(command.equals("exit")) {
-					out.writeUTF("Disconnected");
+				IResponse response = responseFactory.CreateResponse();
+				if(command.equals("Disconnect")) {
+					response.setStatus("Disconnected")
+						.setMessage("Good Bye!");
+					sendResponse(response);
 					break;
 				}
 				else {
-					out.writeUTF("Response");
+					response.setStatus("Ok")
+						.setMessage("Roger that!")
+						.setAvailableCommands(new String[] {
+							"Disconnect"	
+						});
+					sendResponse(response);
 				}
 			}
 			
