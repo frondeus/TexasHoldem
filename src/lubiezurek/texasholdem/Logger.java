@@ -6,10 +6,10 @@ public class Logger {
 	}
 	
 	public static void error(String str) {
-		System.out.println(str);
+		System.out.println("ERROR!: " + str);
 	}
 	
 	public static void exception(Exception ex) {
-		System.out.println(ex.getLocalizedMessage());
+		System.out.println("EXCEPTION!: " + ex.getLocalizedMessage());
 	}
 }
