@@ -13,6 +13,12 @@ public class JSONResponse implements IResponse {
 	private String message;
 	private String[] availableCommands;
 
+	public JSONResponse() {
+		status = "";
+		message = "";
+		availableCommands = new String[] { };
+	}
+	
 	@Override
 	public IResponse setStatus(String status) {
 		this.status = status;
