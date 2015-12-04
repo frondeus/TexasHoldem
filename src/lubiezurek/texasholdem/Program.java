@@ -6,6 +6,7 @@ import lubiezurek.texasholdem.client.Client;
 import lubiezurek.texasholdem.server.Server;
 
 public class Program {
+	static final String DEFAULT_PORT = "7777";
 
 	public static void main(String[] args) {
 		try {
@@ -17,8 +18,9 @@ public class Program {
 			String typ = args[0];
 			if(typ.equals("-s") || typ.equals("--server")) {
 				if(args.length != 2) {
-					Logger.error("Invalid number of arguments");
-					return;
+					args = new String[2];
+					args[0] = "-s";
+					args[1] = DEFAULT_PORT; 
 				}
 				Server server = new Server(args);
 				server.run();
