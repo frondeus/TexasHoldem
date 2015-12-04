@@ -33,13 +33,22 @@ public class Program {
 					default_args[2] = DEFAULT_PORT;
 					args = default_args;
 				}
+
 			}
 			
 			if(typ.equals("-s") || typ.equals("--server")) {
+				if(args.length != 2) {
+					Logger.error("Invalid number of arguments");
+					return;
+				}
 				Server server = new Server(args);
 				server.run();
 			}
 			else if(typ.equals("-c") || typ.equals("--client")) {
+				if(args.length != 3) {
+					Logger.error("Invalid number of arguments");
+					return;
+				}
 				Client client = new Client(args);
 				client.run();
 			}
