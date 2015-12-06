@@ -2,77 +2,60 @@ package lubiezurek.texasholdem.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 
 import lubiezurek.texasholdem.Logger;
-import lubiezurek.texasholdem.server.json.JSONResponseFactory;
 
 public class ServerClientThread extends Thread {
-	private Socket socket;
+    private final Server server;
+	private final Socket socket;
 	private DataInputStream in; 
 	private DataOutputStream out;
-	
-	private IResponseFactory responseFactory;
-	
-	public ServerClientThread(Socket socket) {
-		responseFactory = new JSONResponseFactory();
-		
-		this.socket = socket;
-		Logger.status("New connection: " + socket.getRemoteSocketAddress().toString());
-	}
-	
-	private void establishConnection() throws IOException {
-		in = new DataInputStream(socket.getInputStream());
-		out = new DataOutputStream(socket.getOutputStream());
-		
-		IResponse response = responseFactory.CreateResponse();
-		response.setStatus("Connected")
-				.setMessage("Hello!")
-				.setAvailableCommands(new String[] {
-					"Disconnect"
-				});
+    private boolean isRunning;
 
-		sendResponse(response);
+	public ServerClientThread(Server server, Socket socket) throws IOException {
+		Logger.status("New connection: " + socket.getRemoteSocketAddress().toString());
+
+        this.server = server;
+		this.socket = socket;
+		this.in = new DataInputStream(socket.getInputStream());
+		this.out = new DataOutputStream(socket.getOutputStream());
+        this.isRunning = true;
+
+        server.getState().onClientConnected(this);
 	}
-	
-	public void sendResponse(IResponse response) throws IOException {
-		out.writeUTF(response.toString());
-	}
-	
+
+    @Override
+    public String toString() {
+        return socket.getRemoteSocketAddress().toString();
+    }
+
+    public void sendMessage(ServerMessage message) throws IOException {
+        out.writeUTF(message.toString());
+    }
+
+    public void disconnect() {
+        isRunning = false;
+    }
+
 	@Override
 	public void run() {
+        try {
+            while(isRunning) {
+                String input = in.readUTF();
+                server.getState().onClientMessage(this, this.server.getClientMessageFactory().createMessage(input));
+            }
+            socket.close();
+        }
+        catch(EOFException exception) {
 
-		try {
-			String command;
-			establishConnection();
-			while(true) {
-				command = in.readUTF();
-				Logger.status("> " + command);
-				
-				IResponse response = responseFactory.CreateResponse();
-				if(command.equals("Disconnect")) {
-					response.setStatus("Disconnected")
-						.setMessage("Good Bye!");
-					sendResponse(response);
-					break;
-				}
-				else {
-					response.setStatus("Ok")
-						.setMessage("Roger that!")
-						.setAvailableCommands(new String[] {
-							"Disconnect"	
-						});
-					sendResponse(response);
-				}
-			}
-			
-			Logger.status("Disconnected");
-			socket.close();
-			
-		} catch (IOException e) {
-			Logger.exception(e);
-			return;
-		}
+        }
+        catch(IOException exception) {
+            Logger.exception(exception);
+        }
+
+        server.getState().onClientDisconnected(this);
 	}
 }
