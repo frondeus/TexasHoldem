@@ -6,9 +6,10 @@ import java.net.Socket;
 import java.util.Arrays;
 
 import lubiezurek.texasholdem.Logger;
-import lubiezurek.texasholdem.json.JSONClientMessageFactory;
-import lubiezurek.texasholdem.json.JSONServerMessageFactory;
-import lubiezurek.texasholdem.server.IServerMessageFactory;
+import lubiezurek.texasholdem.json.JSONClientMessageBuilder;
+import lubiezurek.texasholdem.json.JSONServerMessageBuilder;
+import lubiezurek.texasholdem.server.IServerMessageBuilder;
+import lubiezurek.texasholdem.server.ServerEvent;
 import lubiezurek.texasholdem.server.ServerMessage;
 import lubiezurek.texasholdem.server.ServerResponse;
 
@@ -26,13 +27,13 @@ public class Client {
 
 	private Socket socket;
     private DataOutputStream out;
-    private IClientMessageFactory clientMessageFactory;
-    private IServerMessageFactory serverMessageFactory;
+    private IClientMessageBuilder clientMessageBuilder;
+    private IServerMessageBuilder serverMessageBuilder;
     private ClientThread clientThread;
 
 	private Client() {
-        clientMessageFactory = new JSONClientMessageFactory();
-        serverMessageFactory = new JSONServerMessageFactory();
+        clientMessageBuilder = new JSONClientMessageBuilder();
+        serverMessageBuilder = new JSONServerMessageBuilder();
 	}
 	
 	public void run(String[] args) throws IOException {
@@ -50,38 +51,49 @@ public class Client {
 			String line;
             String[] arguments;
 			do {
+                System.out.print('>');
 				line = System.console().readLine();
                 arguments = line.split("\\s+");
 
-                IClientMessage message = clientMessageFactory
-                        .createMessage()
+                if(arguments[0].equals("exit")) break;
+
+                ClientMessage message = new ClientMessage()
                         .setCommand(arguments[0])
                         .setArguments(Arrays.copyOfRange(arguments, 1, arguments.length));
-                out.writeUTF(message.toString());
+                out.writeUTF(clientMessageBuilder.serializeMessage(message));
 			}
-			while(!arguments[0].equals("exit") && clientThread.isAlive());
+			while(clientThread.isAlive());
 			
 			Logger.status("Exiting");
+            this.clientThread.interrupt();
+            this.clientThread.join();
+
 			socket.close();
 		}
 		catch (IOException e) {
 			Logger.exception(e);
-		}
-        this.clientThread.interrupt();
-	}
+		} catch (InterruptedException e) {
+            Logger.exception(e);
+        }
+    }
 
 	public Socket getSocket() {
 		return socket;
 	}
 
 	public void onMessage(ServerMessage message) {
-        if(message.getType() == ServerMessage.Type.Response) {
+        if(message instanceof ServerResponse) {
             ServerResponse response = (ServerResponse) message;
             Logger.status(response.getStatus() + ": " + response.getMessage());
         }
+        else if (message instanceof ServerEvent) {
+            ServerEvent event = (ServerEvent) message;
+            String args = String.join(" ", event.getArguments());
+            Logger.status(event.getEventType().toString() + ": " + args);
+        }
 	}
 
-    public IServerMessageFactory getServerMessageFactory() {
-        return serverMessageFactory;
+    public IServerMessageBuilder getServerMessageBuilder() {
+        return serverMessageBuilder;
     }
 }

@@ -6,9 +6,9 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 import lubiezurek.texasholdem.Logger;
-import lubiezurek.texasholdem.client.IClientMessageFactory;
-import lubiezurek.texasholdem.json.JSONClientMessageFactory;
-import lubiezurek.texasholdem.json.JSONServerMessageFactory;
+import lubiezurek.texasholdem.client.IClientMessageBuilder;
+import lubiezurek.texasholdem.json.JSONClientMessageBuilder;
+import lubiezurek.texasholdem.json.JSONServerMessageBuilder;
 import lubiezurek.texasholdem.server.states.Lobby;
 
 public class Server {
@@ -24,21 +24,21 @@ public class Server {
 
 	private ServerSocket serverSocket;
     private IGameState state;
-    private IClientMessageFactory clientMessageFactory;
-    private IServerMessageFactory serverMessageFactory;
+    private IClientMessageBuilder clientMessageBuilder;
+    private IServerMessageBuilder serverMessageBuilder;
 
     private Server() {
-        this.clientMessageFactory = new JSONClientMessageFactory();
-        this.serverMessageFactory = new JSONServerMessageFactory();
+        this.clientMessageBuilder = new JSONClientMessageBuilder();
+        this.serverMessageBuilder = new JSONServerMessageBuilder();
         this.state = Lobby.getInstance();
 	}
 
-    public IClientMessageFactory getClientMessageFactory() {
-        return clientMessageFactory;
+    public IClientMessageBuilder getClientMessageBuilder() {
+        return clientMessageBuilder;
     }
 
-    public IServerMessageFactory getServerMessageFactory() {
-        return serverMessageFactory;
+    public IServerMessageBuilder getServerMessageBuilder() {
+        return serverMessageBuilder;
     }
 
 	public void run(String[] args) throws IOException {

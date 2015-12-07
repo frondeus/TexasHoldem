@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import lubiezurek.texasholdem.Logger;
+import lubiezurek.texasholdem.client.ClientMessage;
 
 public class ServerClientThread extends Thread {
     private final Server server;
@@ -33,7 +34,7 @@ public class ServerClientThread extends Thread {
     }
 
     public void sendMessage(ServerMessage message) throws IOException {
-        out.writeUTF(message.toString());
+        out.writeUTF(this.server.getServerMessageBuilder().serializeMessage(message));
     }
 
     public void disconnect() {
@@ -45,7 +46,8 @@ public class ServerClientThread extends Thread {
         try {
             while(isRunning) {
                 String input = in.readUTF();
-                server.getState().onClientMessage(this, this.server.getClientMessageFactory().createMessage(input));
+                ClientMessage message = this.server.getClientMessageBuilder().deserializeMessage(input);
+                server.getState().onClientMessage(this, message);
             }
             socket.close();
         }

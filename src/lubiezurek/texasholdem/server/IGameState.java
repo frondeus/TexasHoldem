@@ -1,6 +1,6 @@
 package lubiezurek.texasholdem.server;
 
-import lubiezurek.texasholdem.client.IClientMessage;
+import lubiezurek.texasholdem.client.ClientMessage;
 
 /**
  * Created by frondeus on 05.12.2015.
@@ -8,6 +8,6 @@ import lubiezurek.texasholdem.client.IClientMessage;
  */
 public interface IGameState {
     void onClientConnected(ServerClientThread client);
-    void onClientMessage(ServerClientThread client, IClientMessage message);
+    void onClientMessage(ServerClientThread client, ClientMessage message);
     void onClientDisconnected(ServerClientThread client);
 }

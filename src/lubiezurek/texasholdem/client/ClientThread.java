@@ -1,6 +1,7 @@
 package lubiezurek.texasholdem.client;
 
 import lubiezurek.texasholdem.Logger;
+import lubiezurek.texasholdem.server.ServerMessage;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -27,7 +28,10 @@ class ClientThread extends Thread {
         try {
             while(true) {
                 String input = this.in.readUTF();
-                this.client.onMessage(this.client.getServerMessageFactory().createMessage(input));
+
+                ServerMessage message = this.client.getServerMessageBuilder()
+                        .deserializeMessage(input);
+                this.client.onMessage(message);
             }
         }
         catch (EOFException e) {

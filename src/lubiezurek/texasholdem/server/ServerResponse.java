@@ -3,20 +3,30 @@ package lubiezurek.texasholdem.server;
 /**
  * Created by frondeus on 06.12.2015.
  */
-public abstract class ServerResponse extends ServerMessage {
+public class ServerResponse extends ServerMessage {
     public enum Status {
         Ok,
         Failure
     }
 
-    @Override
-    public Type getType() {
-        return Type.Response;
+    private Status status;
+    private String message;
+
+    public Status getStatus() {
+        return status;
     }
 
-    public abstract Status getStatus();
-    public abstract String getMessage();
+    public String getMessage() {
+        return message;
+    }
 
-    public abstract ServerResponse setStatus(Status status);
-    public abstract ServerResponse setMessage(String message);
+    public ServerResponse setStatus(Status status) {
+        this.status = status;
+        return this;
+    }
+
+    public ServerResponse setMessage(String message) {
+        this.message = message;
+        return this;
+    }
 }
