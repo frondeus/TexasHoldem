@@ -26,6 +26,8 @@ java -jar target/TexasHoldem-0.0.1-SNAPSHOT-jar-with-dependencies.jar -c
 ### Diagramy i inne
 
 Główne klasy i interfejsy:
+
+![UML](https://github.com/frondeus/TexasHoldem/raw/master/Klasy.png)
 ![Klasy](https://raw.githubusercontent.com/frondeus/TexasHoldem/feature/GameState/klasy.jpg)
 
 Wiadomości i sposób ich przetwarzania:
