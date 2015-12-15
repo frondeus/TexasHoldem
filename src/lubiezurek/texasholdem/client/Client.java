@@ -26,12 +26,10 @@ public class Client {
     }
 
 	private Socket socket;
-    private DataOutputStream out;
-    private IClientMessageBuilder clientMessageBuilder;
-    private IServerMessageBuilder serverMessageBuilder;
-    private ClientThread clientThread;
+    private final IClientMessageBuilder clientMessageBuilder;
+    private final IServerMessageBuilder serverMessageBuilder;
 
-	private Client() {
+    private Client() {
         clientMessageBuilder = new JSONClientMessageBuilder();
         serverMessageBuilder = new JSONServerMessageBuilder();
 	}
@@ -42,9 +40,9 @@ public class Client {
         Logger.status("Connecting to: " + address + ":" + port);
 
         socket = new Socket(address, port);
-        out = new DataOutputStream(socket.getOutputStream());
+        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
-        clientThread = new ClientThread(this);
+        ClientThread clientThread = new ClientThread(this);
         clientThread.start();
 
 		try {
@@ -65,16 +63,14 @@ public class Client {
 			while(clientThread.isAlive());
 			
 			Logger.status("Exiting");
-            this.clientThread.interrupt();
-            this.clientThread.join();
+            clientThread.interrupt();
+            clientThread.join();
 
 			socket.close();
 		}
-		catch (IOException e) {
+		catch (IOException | InterruptedException e) {
 			Logger.exception(e);
-		} catch (InterruptedException e) {
-            Logger.exception(e);
-        }
+		}
     }
 
 	public Socket getSocket() {

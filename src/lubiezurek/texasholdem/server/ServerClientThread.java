@@ -5,16 +5,20 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.UUID;
 
 import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.client.ClientMessage;
 
-public class ServerClientThread extends Thread {
+public class ServerClientThread extends Thread implements IPlayer {
     private final Server server;
 	private final Socket socket;
 	private DataInputStream in; 
 	private DataOutputStream out;
     private boolean isRunning;
+
+    private int money = 100;
+    private UUID uuid;
 
 	public ServerClientThread(Server server, Socket socket) throws IOException {
 		Logger.status("New connection: " + socket.getRemoteSocketAddress().toString());
@@ -24,13 +28,29 @@ public class ServerClientThread extends Thread {
 		this.in = new DataInputStream(socket.getInputStream());
 		this.out = new DataOutputStream(socket.getOutputStream());
         this.isRunning = true;
-
+        this.uuid = UUID.randomUUID();
         server.getState().onClientConnected(this);
 	}
 
     @Override
     public String toString() {
         return socket.getRemoteSocketAddress().toString();
+    }
+
+    @Override
+    public UUID getUUID() {
+        return uuid;
+    }
+
+
+    @Override
+    public int getMoney() {
+        return money;
+    }
+
+    @Override
+    public void setMoney(int money) {
+        this.money = money;
     }
 
     public void sendMessage(ServerMessage message) throws IOException {
@@ -52,7 +72,7 @@ public class ServerClientThread extends Thread {
             socket.close();
         }
         catch(EOFException exception) {
-
+            Logger.status("EOF");
         }
         catch(IOException exception) {
             Logger.exception(exception);
