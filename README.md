@@ -11,3 +11,7 @@ Wojciech Polak i Błażej Michalik.
 ```
 mvn clean compile assembly:single 
 ```
+
+![Klasy](https://raw.githubusercontent.com/frondeus/TexasHoldem/feature/GameState/klasy.jpg)
+
+![Wiadomosci](https://raw.githubusercontent.com/frondeus/TexasHoldem/feature/GameState/wiadomosci.jpg)
