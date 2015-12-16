@@ -1,15 +1,16 @@
 # Teksański klińcz
 
 Technologia Programowania.
-
 Lista 4.
-
 Wojciech Polak i Błażej Michalik.
 
-## Kompilacja
-Master: [![Build Status](https://travis-ci.org/frondeus/TexasHoldem.svg?branch=master)](https://travis-ci.org/frondeus/TexasHoldem)
-Dev: [![Build Status](https://travis-ci.org/frondeus/TexasHoldem.svg?branch=dev)](https://travis-ci.org/frondeus/TexasHoldem)
+### Status
+* Master
+  [![Build Status](https://travis-ci.org/frondeus/TexasHoldem.svg?branch=master)](https://travis-ci.org/frondeus/TexasHoldem)
+* Dev: 
+  [![Build Status](https://travis-ci.org/frondeus/TexasHoldem.svg?branch=dev)](https://travis-ci.org/frondeus/TexasHoldem)
 
+### Kompilacja
 ```
 mvn clean compile assembly:single 
 ```
