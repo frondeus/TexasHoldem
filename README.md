@@ -7,7 +7,8 @@ Lista 4.
 Wojciech Polak i Błażej Michalik.
 
 ## Kompilacja
-[![Build Status](https://travis-ci.org/frondeus/TexasHoldem.svg)](https://travis-ci.org/frondeus/TexasHoldem)
+Master: [![Build Status](https://travis-ci.org/frondeus/TexasHoldem.svg?branch=master)](https://travis-ci.org/frondeus/TexasHoldem)
+Dev: [![Build Status](https://travis-ci.org/frondeus/TexasHoldem.svg?branch=dev)](https://travis-ci.org/frondeus/TexasHoldem)
 
 ```
 mvn clean compile assembly:single 
