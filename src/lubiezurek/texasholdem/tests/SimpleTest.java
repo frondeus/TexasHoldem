@@ -1,7 +1,7 @@
 package lubiezurek.texasholdem.tests;
 
+import static org.junit.Assert.*;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 
 public class SimpleTest {
   @Test
