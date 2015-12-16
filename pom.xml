@@ -33,6 +33,9 @@
             					</goals>
         				</execution>
     				</executions>
+    				<configuration>
+    					<argLine>${argLine}</argLine>
+    				</configuration>
 			</plugin>
 			<plugin>
   				<groupId>org.jacoco</groupId>
