@@ -1,4 +1,4 @@
-package lubiezurek.texasholdem;
+package main.java.lubiezurek.texasholdem;
 
 public class Logger {
 	public static void status(String str) {

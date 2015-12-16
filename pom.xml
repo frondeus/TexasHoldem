@@ -11,14 +11,16 @@
 			<artifactId>json</artifactId>
 			<version>20151123</version>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.10</version>
-		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<plugins>
 			<plugin>
     				<artifactId>maven-surefire-plugin</artifactId>
@@ -60,7 +62,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>lubiezurek.texasholdem.Program</mainClass>
+							<mainClass>Program</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

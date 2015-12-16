@@ -1,7 +1,7 @@
-package lubiezurek.texasholdem.json;
+package main.java.lubiezurek.texasholdem.json;
 
-import lubiezurek.texasholdem.client.ClientMessage;
-import lubiezurek.texasholdem.client.IClientMessageBuilder;
+import main.java.lubiezurek.texasholdem.client.ClientMessage;
+import main.java.lubiezurek.texasholdem.client.IClientMessageBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

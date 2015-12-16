@@ -1,9 +1,8 @@
-package lubiezurek.texasholdem.server.states;
+package main.java.lubiezurek.texasholdem.server.states;
 
-import lubiezurek.texasholdem.Logger;
-import lubiezurek.texasholdem.client.Client;
-import lubiezurek.texasholdem.client.ClientMessage;
-import lubiezurek.texasholdem.server.*;
+import main.java.lubiezurek.texasholdem.Logger;
+import main.java.lubiezurek.texasholdem.client.ClientMessage;
+import main.java.lubiezurek.texasholdem.server.*;
 
 import java.io.IOException;
 import java.util.ArrayList;

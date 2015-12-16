@@ -1,4 +1,4 @@
-package lubiezurek.texasholdem.server;
+package main.java.lubiezurek.texasholdem.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -6,8 +6,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 
-import lubiezurek.texasholdem.Logger;
-import lubiezurek.texasholdem.client.ClientMessage;
+import main.java.lubiezurek.texasholdem.Logger;
+import main.java.lubiezurek.texasholdem.client.ClientMessage;
 
 public class ServerClientThread extends Thread {
     private final Server server;

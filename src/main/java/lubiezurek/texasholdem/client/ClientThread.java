@@ -1,7 +1,7 @@
-package lubiezurek.texasholdem.client;
+package main.java.lubiezurek.texasholdem.client;
 
-import lubiezurek.texasholdem.Logger;
-import lubiezurek.texasholdem.server.ServerMessage;
+import main.java.lubiezurek.texasholdem.Logger;
+import main.java.lubiezurek.texasholdem.server.ServerMessage;
 
 import java.io.DataInputStream;
 import java.io.EOFException;

@@ -1,4 +1,4 @@
-package lubiezurek.texasholdem.client;
+package main.java.lubiezurek.texasholdem.client;
 
 /**
  * Created by frondeus on 06.12.2015.
