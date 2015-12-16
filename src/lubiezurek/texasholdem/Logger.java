@@ -10,6 +10,7 @@ public class Logger {
 	}
 	
 	public static void exception(Exception ex) {
-		System.out.println("EXCEPTION!: " + ex.getLocalizedMessage());
+		System.out.println("EXCEPTION!: " + ex.toString());
+		//System.out.println("EXCEPTION!: " + ex.getLocalizedMessage());
 	}
 }
