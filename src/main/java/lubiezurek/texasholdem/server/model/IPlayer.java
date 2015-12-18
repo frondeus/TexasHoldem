@@ -1,4 +1,4 @@
-package main.java.lubiezurek.texasholdem.server.model.player;
+package main.java.lubiezurek.texasholdem.server.model;
 
 interface IPlayer{
 	

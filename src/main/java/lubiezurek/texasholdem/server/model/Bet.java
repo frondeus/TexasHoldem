@@ -1,9 +1,8 @@
-package main.java.lubiezurek.texasholdem.server.model.bet;
+package main.java.lubiezurek.texasholdem.server.model;
 
 import java.lang.Comparable;
-import player.IPlayer;
 
-public class Bet implements Comparable{
+public class Bet{
 	private IPlayer player;
 	private float amount;
 
