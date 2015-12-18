@@ -8,16 +8,12 @@ public class Card{
 		this.suit = new_suit;
 		this.value = new_value;
 	}
-	
-	public int getCardValue(){
-		return value;
-	}
 
 	public Suit getSuit(){
 		return suit;
 	}
 
-	public CardValue getValue(){
+	public CardValue getCardValue(){
 		return value;
 	}
 }
