@@ -7,8 +7,12 @@ Wojciech Polak i Błażej Michalik.
 ### Status
 * Master
   [![Build Status](https://travis-ci.org/frondeus/TexasHoldem.svg?branch=master)](https://travis-ci.org/frondeus/TexasHoldem)
+  [![codecov.io](https://codecov.io/github/frondeus/TexasHoldem/coverage.svg?branch=master)](https://codecov.io/github/frondeus/TexasHoldem?branch=master)
+  ![codecov.io](https://codecov.io/github/frondeus/TexasHoldem/branch.svg?branch=master)
 * Dev: 
   [![Build Status](https://travis-ci.org/frondeus/TexasHoldem.svg?branch=dev)](https://travis-ci.org/frondeus/TexasHoldem)
+  [![codecov.io](https://codecov.io/github/frondeus/TexasHoldem/coverage.svg?branch=dev)](https://codecov.io/github/frondeus/TexasHoldem?branch=dev)
+  ![codecov.io](https://codecov.io/github/frondeus/TexasHoldem/branch.svg?branch=dev)
 
 ### Kompilacja
 ```
