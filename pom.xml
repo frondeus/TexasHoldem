@@ -4,23 +4,65 @@
 	<groupId>TexasHoldem</groupId>
 	<artifactId>TexasHoldem</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Sockets</name>
+	<name>TexasHoldem</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20151123</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<plugins>
+			<plugin>
+    				<artifactId>maven-surefire-plugin</artifactId>
+    				<version>2.12.4</version>
+    				<executions>
+        				<execution>
+            					<id>default-test</id>
+            					<phase>test</phase>
+        	 				<goals>
+                					<goal>test</goal>
+            					</goals>
+        				</execution>
+    				</executions>
+    				<configuration>
+    					<argLine>${argLine}</argLine>
+    				</configuration>
+			</plugin>
+			<plugin>
+  				<groupId>org.jacoco</groupId>
+  				<artifactId>jacoco-maven-plugin</artifactId>
+  				<version>0.7.5.201505241946</version>
+  				<executions>
+    					<execution>
+      						<goals>
+        						<goal>prepare-agent</goal>
+      						</goals>
+    					</execution>
+    					<execution>
+      						<id>report</id>
+      						<phase>test</phase>
+      						<goals>
+        						<goal>report</goal>
+      						</goals>
+    					</execution>
+  				</executions>
+			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>lubiezurek.texasholdem.Program</mainClass>
+							<mainClass>Program</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
