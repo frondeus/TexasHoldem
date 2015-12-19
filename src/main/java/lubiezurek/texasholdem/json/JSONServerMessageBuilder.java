@@ -12,16 +12,16 @@ import java.util.HashMap;
  * Created by frondeus on 06.12.2015.
  */
 public class JSONServerMessageBuilder implements IServerMessageBuilder {
-    private HashMap<Class, IServerMessageBuilder> classBuilders = new HashMap<>();
-    private HashMap<String, IServerMessageBuilder> stringBuilders = new HashMap<>();
-    public static String messageTypeKey = "messageType";
+    private final HashMap<Class, IServerMessageBuilder> classBuilders = new HashMap<>();
+    private final HashMap<String, IServerMessageBuilder> stringBuilders = new HashMap<>();
+    public final static String messageTypeKey = "messageType";
 
     public JSONServerMessageBuilder() {
         addBuilder(ServerResponse.class, new JSONServerResponseBuilder());
         addBuilder(ServerEvent.class, new JSONServerEventBuilder());
     }
 
-    public void addBuilder(Class type, IServerMessageBuilder builder) {
+    private void addBuilder(Class type, IServerMessageBuilder builder) {
         classBuilders.put(type, builder);
         stringBuilders.put(type.toString(), builder);
     }

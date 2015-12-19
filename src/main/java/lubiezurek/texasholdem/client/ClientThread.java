@@ -35,7 +35,7 @@ class ClientThread extends Thread {
             }
         }
         catch (EOFException e) {
-
+            Logger.status("EOF");
         }
         catch (IOException e) {
             Logger.exception(e);

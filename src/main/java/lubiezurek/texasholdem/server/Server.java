@@ -22,10 +22,9 @@ public class Server {
         return instance;
     }
 
-	private ServerSocket serverSocket;
     private IGameState state;
-    private IClientMessageBuilder clientMessageBuilder;
-    private IServerMessageBuilder serverMessageBuilder;
+    private final IClientMessageBuilder clientMessageBuilder;
+    private final IServerMessageBuilder serverMessageBuilder;
 
     private Server() {
         this.clientMessageBuilder = new JSONClientMessageBuilder();
@@ -45,7 +44,7 @@ public class Server {
 
         int port = Integer.parseInt(args[1]);
         Logger.status("Create server on port: " + args[1]);
-        this.serverSocket = new ServerSocket(port);
+        ServerSocket serverSocket = new ServerSocket(port);
 
         while(true) {
 			try {
@@ -66,5 +65,9 @@ public class Server {
 
     public IGameState getState() {
         return state;
+    }
+
+    public void setState(IGameState state) {
+        this.state = state;
     }
 }

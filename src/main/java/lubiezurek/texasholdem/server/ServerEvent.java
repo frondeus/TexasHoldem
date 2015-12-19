@@ -7,7 +7,8 @@ public class ServerEvent extends ServerMessage {
     public enum Type {
         ClientConnect,
         ClientDisconnect,
-        Chat
+        Chat,
+        ChangeState
     }
 
     private Type type;

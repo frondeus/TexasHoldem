@@ -8,6 +8,6 @@ import main.java.lubiezurek.texasholdem.client.ClientMessage;
  */
 public interface IGameState {
     void onClientConnected(ServerClientThread client);
-    void onClientMessage(ServerClientThread client, ClientMessage message);
+    void onClientMessage(IPlayer client, ClientMessage message);
     void onClientDisconnected(ServerClientThread client);
 }
