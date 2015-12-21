@@ -46,12 +46,7 @@ public class ServerTest {
     }
 
     @Test
-    public void testGetState() throws Exception {
-        assertEquals(Lobby.getInstance(), Server.getInstance().getState());
-    }
-
-    @Test
-    public void testSetState() throws Exception {
+    public void testState() throws Exception {
         Server.getInstance().setState(GamePlay.getInstance());
         assertEquals(GamePlay.getInstance(), Server.getInstance().getState());
     }
