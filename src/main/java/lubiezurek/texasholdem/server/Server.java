@@ -41,6 +41,8 @@ public class Server {
     }
 
 	public void run(String[] args) throws IOException {
+        if(args == null) throw new IllegalArgumentException();
+        if(args.length != 2) throw new IllegalArgumentException();
 
         int port = Integer.parseInt(args[1]);
         Logger.status("Create server on port: " + args[1]);
@@ -49,7 +51,7 @@ public class Server {
         while(true) {
 			try {
 				Socket clientSocket = serverSocket.accept();
-				ServerClientThread thread = new ServerClientThread(this, clientSocket);
+				ServerClientThread thread = new ServerClientThread(clientSocket);
                 thread.start();
 			}
 			catch(SocketTimeoutException e) {
