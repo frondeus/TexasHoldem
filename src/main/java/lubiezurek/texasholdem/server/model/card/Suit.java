@@ -1,4 +1,4 @@
-package main.java.lubiezurek.texasholdem.server.model.card;
+package lubiezurek.texasholdem.server.model.card;
 
 public enum Suit{
 	HEARTS,

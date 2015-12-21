@@ -1,6 +1,6 @@
-package main.java.lubiezurek.texasholdem.server;
+package lubiezurek.texasholdem.server;
 
-import main.java.lubiezurek.texasholdem.client.ClientMessage;
+import lubiezurek.texasholdem.client.ClientMessage;
 
 /**
  * Created by frondeus on 05.12.2015.

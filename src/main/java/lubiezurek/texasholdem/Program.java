@@ -1,9 +1,9 @@
-package main.java.lubiezurek.texasholdem;
+package lubiezurek.texasholdem;
 
 import java.io.IOException;
 
-import main.java.lubiezurek.texasholdem.server.Server;
-import main.java.lubiezurek.texasholdem.client.Client;
+import lubiezurek.texasholdem.server.Server;
+import lubiezurek.texasholdem.client.Client;
 
 class Program {
 	private static final String DEFAULT_PORT = "7777";

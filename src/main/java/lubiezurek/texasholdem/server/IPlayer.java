@@ -1,4 +1,4 @@
-package main.java.lubiezurek.texasholdem.server;
+package lubiezurek.texasholdem.server;
 
 import java.io.IOException;
 import java.util.UUID;

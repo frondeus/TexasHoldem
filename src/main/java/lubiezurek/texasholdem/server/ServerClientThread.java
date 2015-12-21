@@ -1,4 +1,4 @@
-package main.java.lubiezurek.texasholdem.server;
+package lubiezurek.texasholdem.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.UUID;
 
-import main.java.lubiezurek.texasholdem.Logger;
-import main.java.lubiezurek.texasholdem.client.ClientMessage;
+import lubiezurek.texasholdem.Logger;
+import lubiezurek.texasholdem.client.ClientMessage;
 
 public class ServerClientThread extends Thread implements IPlayer {
     private final Server server;

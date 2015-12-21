@@ -1,4 +1,4 @@
-package main.java.lubiezurek.texasholdem;
+package lubiezurek.texasholdem;
 
 public class Logger {
 	public static void status(String str) {
@@ -6,11 +6,10 @@ public class Logger {
 	}
 	
 	public static void error(String str) {
-		System.out.println("ERROR!: " + str);
+		System.err.println("ERROR!: " + str);
 	}
 	
 	public static void exception(Exception ex) {
-		System.out.println("EXCEPTION!: " + ex.toString());
-		//System.out.println("EXCEPTION!: " + ex.getLocalizedMessage());
+		System.err.println("EXCEPTION!: " + ex.toString());
 	}
 }

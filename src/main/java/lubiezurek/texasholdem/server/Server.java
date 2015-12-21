@@ -1,15 +1,15 @@
-package main.java.lubiezurek.texasholdem.server;
+package lubiezurek.texasholdem.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import main.java.lubiezurek.texasholdem.Logger;
-import main.java.lubiezurek.texasholdem.client.IClientMessageBuilder;
-import main.java.lubiezurek.texasholdem.json.JSONClientMessageBuilder;
-import main.java.lubiezurek.texasholdem.json.JSONServerMessageBuilder;
-import main.java.lubiezurek.texasholdem.server.states.Lobby;
+import lubiezurek.texasholdem.Logger;
+import lubiezurek.texasholdem.client.IClientMessageBuilder;
+import lubiezurek.texasholdem.json.JSONClientMessageBuilder;
+import lubiezurek.texasholdem.json.JSONServerMessageBuilder;
+import lubiezurek.texasholdem.server.states.Lobby;
 
 public class Server {
     private volatile static Server instance;
