@@ -21,11 +21,13 @@ public class ServerResponse extends ServerMessage {
     }
 
     public ServerResponse setStatus(Status status) {
+        if(status == null) throw new IllegalArgumentException();
         this.status = status;
         return this;
     }
 
     public ServerResponse setMessage(String message) {
+        if(message == null) throw new IllegalArgumentException();
         this.message = message;
         return this;
     }

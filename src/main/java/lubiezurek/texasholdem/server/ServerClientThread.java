@@ -11,7 +11,6 @@ import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.client.ClientMessage;
 
 public class ServerClientThread extends Thread implements IPlayer {
-    private final Server server;
 	private final Socket socket;
 	private DataInputStream in; 
 	private DataOutputStream out;
@@ -20,16 +19,16 @@ public class ServerClientThread extends Thread implements IPlayer {
     private int money = 100;
     private UUID uuid;
 
-	public ServerClientThread(Server server, Socket socket) throws IOException {
+	public ServerClientThread(Socket socket) throws IOException {
+        if(socket == null) throw new IllegalArgumentException();
 		Logger.status("New connection: " + socket.getRemoteSocketAddress().toString());
 
-        this.server = server;
 		this.socket = socket;
 		this.in = new DataInputStream(socket.getInputStream());
 		this.out = new DataOutputStream(socket.getOutputStream());
         this.isRunning = true;
         this.uuid = UUID.randomUUID();
-        server.getState().onClientConnected(this);
+        Server.getInstance().getState().onClientConnected(this);
 	}
 
     @Override
@@ -50,11 +49,12 @@ public class ServerClientThread extends Thread implements IPlayer {
 
     @Override
     public void setMoney(int money) {
+        if(money < 0) throw new IllegalArgumentException();
         this.money = money;
     }
 
     public void sendMessage(ServerMessage message) throws IOException {
-        out.writeUTF(this.server.getServerMessageBuilder().serializeMessage(message));
+        out.writeUTF(Server.getInstance().getServerMessageBuilder().serializeMessage(message));
     }
 
     public void disconnect() {
@@ -66,8 +66,8 @@ public class ServerClientThread extends Thread implements IPlayer {
         try {
             while(isRunning) {
                 String input = in.readUTF();
-                ClientMessage message = this.server.getClientMessageBuilder().deserializeMessage(input);
-                server.getState().onClientMessage(this, message);
+                ClientMessage message = Server.getInstance().getClientMessageBuilder().deserializeMessage(input);
+                Server.getInstance().getState().onClientMessage(this, message);
             }
             socket.close();
         }
@@ -78,6 +78,6 @@ public class ServerClientThread extends Thread implements IPlayer {
             Logger.exception(exception);
         }
 
-        server.getState().onClientDisconnected(this);
+        Server.getInstance().getState().onClientDisconnected(this);
 	}
 }

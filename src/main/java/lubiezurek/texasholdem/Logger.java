@@ -1,6 +1,6 @@
 package lubiezurek.texasholdem;
 
-public class Logger {
+public final class Logger {
 	public static void status(String str) {
 		System.out.println(str);
 	}
