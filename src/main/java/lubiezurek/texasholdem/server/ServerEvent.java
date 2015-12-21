@@ -23,11 +23,14 @@ public class ServerEvent extends ServerMessage {
     }
 
     public ServerEvent setType(Type type) {
+        if(type == null) throw new IllegalArgumentException();
         this.type = type;
         return this;
     }
 
     public ServerEvent setArguments(String[] arguments) {
+        if(arguments == null) throw new IllegalArgumentException();
+
         this.arguments = arguments;
         return this;
     }
