@@ -7,7 +7,7 @@ import lubiezurek.texasholdem.client.ClientMessage;
  * Game state like lobby, gameplay, after game.
  */
 public interface IGameState {
-    void onClientConnected(ServerClientThread client);
+    void onClientConnected(IPlayer client);
     void onClientMessage(IPlayer client, ClientMessage message);
-    void onClientDisconnected(ServerClientThread client);
+    void onClientDisconnected(IPlayer client);
 }

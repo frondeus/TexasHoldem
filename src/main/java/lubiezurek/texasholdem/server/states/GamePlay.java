@@ -26,6 +26,9 @@ public class GamePlay implements IGameState {
     private GamePlay() {
     }
 
+    public int getPlayersCount() {
+        return players.size();
+    }
     public void setPlayers(ArrayList<IPlayer> players) {
         this.players = players;
     }
@@ -36,13 +39,13 @@ public class GamePlay implements IGameState {
         }
     }
 
-    private void broadcastExcept(ServerClientThread client, ServerMessage message) throws IOException {
+    private void broadcastExcept(IPlayer client, ServerMessage message) throws IOException {
         for(IPlayer all: players) {
             if(all != client)    all.sendMessage(message);
         }
     }
     @Override
-    public void onClientConnected(ServerClientThread client) {
+    public void onClientConnected(IPlayer client) {
         ServerResponse response = new ServerResponse()
                 .setStatus(ServerResponse.Status.Failure)
                 .setMessage("Game is in progress");
@@ -60,7 +63,7 @@ public class GamePlay implements IGameState {
     }
 
     @Override
-    public void onClientDisconnected(ServerClientThread client) {
+    public void onClientDisconnected(IPlayer client) {
         Logger.status(client + ": Disconnected");
         if(players.indexOf(client) >= 0) {
             //TODO: Zastapic botem
