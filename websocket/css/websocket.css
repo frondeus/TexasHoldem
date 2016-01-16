@@ -1,0 +1,232 @@
+@charset "UTF-8";
+*, *::before, *::after {
+  box-sizing: inherit; }
+
+html {
+  box-sizing: border-box; }
+
+* {
+  border: 0;
+  margin: 0;
+  padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%; }
+
+.show, .show-sm, .show-md, .show-lg {
+  display: none; }
+
+.hide-sm {
+  display: none; }
+
+@media all and (min-width: 600px) {
+  .hide-md {
+    display: none; } }
+
+@media all and (min-width: 960px) {
+  .hide-lg {
+    display: none; } }
+
+.show-sm {
+  display: initial; }
+
+@media all and (min-width: 600px) {
+  .show-md {
+    display: initial; } }
+
+@media all and (min-width: 960px) {
+  .show-lg {
+    display: initial; } }
+
+.row, .row-sm, .row-md, .row-lg, .game {
+  display: flex;
+  flex-direction: column; }
+
+.row-sm {
+  flex-direction: row; }
+
+@media all and (min-width: 600px) {
+  .row-md {
+    flex-direction: row; } }
+
+@media all and (min-width: 960px) {
+  .row-lg {
+    flex-direction: row; } }
+
+.row-item-1, .row-item, .game #log, .game form {
+  flex: 1;
+  height: 100%;
+  overflow: auto; }
+
+.row-item-2 {
+  flex: 2;
+  height: 100%;
+  overflow: auto; }
+
+.row-item-3 {
+  flex: 3;
+  height: 100%;
+  overflow: auto; }
+
+.row-item-4 {
+  flex: 4;
+  height: 100%;
+  overflow: auto; }
+
+.row-item-5 {
+  flex: 5;
+  height: 100%;
+  overflow: auto; }
+
+.row-item-6 {
+  flex: 6;
+  height: 100%;
+  overflow: auto; }
+
+.row-item-7 {
+  flex: 7;
+  height: 100%;
+  overflow: auto; }
+
+.row-item-8 {
+  flex: 8;
+  height: 100%;
+  overflow: auto; }
+
+.row-item-9 {
+  flex: 9;
+  height: 100%;
+  overflow: auto; }
+
+.row-item-10 {
+  flex: 10;
+  height: 100%;
+  overflow: auto; }
+
+.row-item-11 {
+  flex: 11;
+  height: 100%;
+  overflow: auto; }
+
+.row-item-12, .game .table {
+  flex: 12;
+  height: 100%;
+  overflow: auto; }
+
+.vertical-align, .center-align, .game, .game .table {
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+
+.center-align, .game, .game .table {
+  text-align: center; }
+
+.icon {
+  vertical-align: 4%; }
+  @media all and (min-width: 600px) {
+    .icon {
+      font-size: 1.3em;
+      line-height: 0.75em;
+      vertical-align: 40%; } }
+
+body {
+  background-color: #355e3b;
+  color: #ffffff; }
+
+.error {
+  color: #ff3333; }
+
+.red {
+  color: #ffaaaa; }
+
+.green {
+  color: #aaffaa; }
+
+.blue {
+  color: #aaaaff; }
+
+.yellow {
+  color: #ffffaa; }
+
+.game {
+  height: 100%;
+  width: 100%;
+  overflow: hidden; }
+  .game #log {
+    list-style: none;
+    width: 100%;
+    text-align: left;
+    padding: 1em;
+    padding-left: 3em;
+    border-top: 2px dashed white;
+    overflow: scroll;
+    overflow-x: hidden; }
+    .game #log::-webkit-scrollbar {
+      width: 0px;
+      /* remove scrollbar space */
+      background: transparent;
+      /* optional: just make scrollbar invisible */ }
+  .game .table {
+    perspective: 1000;
+    width: 100%; }
+    .game .table .card {
+      border-radius: 0.5em;
+      -webkit-border-radius: 0.5em;
+      width: 160px;
+      height: 224px;
+      background: #ffffff;
+      color: black;
+      margin: 5pt;
+      box-shadow: 2px 2px 5px #000000;
+      font-size: xx-large;
+      text-align: center;
+      font-weight: bold;
+      vertical-align: middle; }
+      .game .table .card:before, .game .table .card:after {
+        font-size: xx-large;
+        display: block;
+        margin: 0.1em; }
+      .game .table .card:before {
+        text-align: left;
+        margin-bottom: 30%; }
+      .game .table .card:after {
+        text-align: right;
+        margin-top: 30%; }
+    .game .table .back {
+      background-color: #def;
+      background-image: radial-gradient(closest-side, transparent 98%, rgba(0, 0, 0, 0.3) 99%), radial-gradient(closest-side, transparent 98%, rgba(0, 0, 0, 0.3) 99%);
+      background-size: 80px 80px;
+      background-position: 0 0, 40px 40px;
+      box-shadow: 5px 5px 5px #000000; }
+    .game .table .blank {
+      background: none;
+      box-shadow: none;
+      border: 2px dashed #ffffff; }
+    .game .table .spade, .game .table .club {
+      color: black; }
+    .game .table .diamond, .game .table .heart {
+      color: red; }
+    .game .table .heart:before, .game .table .heart:after {
+      content: "♥"; }
+    .game .table .diamond:before, .game .table .diamond:after {
+      content: "♦"; }
+    .game .table .club:before, .game .table .club:after {
+      content: "♣"; }
+    .game .table .spade:before, .game .table .spade:after {
+      content: "♠"; }
+  .game form {
+    width: 100%;
+    padding: 0;
+    margin: 0; }
+    .game form input {
+      padding: 1em; }
+    .game form input#text-input {
+      width: 80%;
+      margin: 0; }
+    .game form input[type="submit"] {
+      width: 10%;
+      margin: 0;
+      background: #fff; }
+
+/*# sourceMappingURL=websocket.css.map */

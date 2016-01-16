@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html   lang="pl">
+    <head>
+        <title>Texas Holdem</title>
+        <link rel="stylesheet" type="text/css" href="css/websocket.css">
+    </head>
+    <body>
+        <div class="game">
+            <div class="table">
+                <div class="card spade"> A </div>
+                <div class="card diamond"> 2 </div>
+                <div class="card blank"> </div>
+                <div class="card back">  </div>
+            </div>
+
+            <ul id="log"></ul>
+
+            <form id="form">
+                <input type="text" id="text-input" autocomplete="off"/>
+                <input type="submit" value="send"/>
+            </form>
+        </div>
+        <script data-main="app" src="lib/require.js" ></script>
+</html>

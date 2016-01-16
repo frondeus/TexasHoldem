@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.HashMap;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -35,12 +36,14 @@ public class Server extends WebSocketServer {
     private IGameState state;
     private final IClientMessageBuilder clientMessageBuilder;
     private final IServerMessageBuilder serverMessageBuilder;
+    private HashMap<WebSocket, ServerClientThread> clients;
 
     private Server(int port) {
         super(new InetSocketAddress(port));
         this.clientMessageBuilder = new JSONClientMessageBuilder();
         this.serverMessageBuilder = new JSONServerMessageBuilder();
         this.state = Lobby.getInstance();
+        this.clients = new HashMap<>();
 
     }
 
@@ -55,18 +58,24 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        System.out.println("new connection " + conn.getRemoteSocketAddress());
+        System.out.println("New connection " + conn.getRemoteSocketAddress());
+        ServerClientThread client = new ServerClientThread(this, conn);
+
+        clients.put(conn, client);
+        state.onClientConnected(client);
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        System.out.println("closed " + conn.getRemoteSocketAddress()
-                + " with " + code + " " + reason);
+        ServerClientThread client = clients.get(conn);
+        state.onClientDisconnected(client);
+
     }
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        System.out.println("on message: " + message);
+        ServerClientThread client = clients.get(conn);
+        state.onClientMessage(client, clientMessageBuilder.deserializeMessage(message));
     }
 
     @Override

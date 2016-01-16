@@ -1,0 +1,75 @@
+
+.card {
+    @include border-radius(0.5em);
+
+    width: 2.5px  * 64;
+    height: 3.5px * 64;
+
+    background: $card-front;
+    color: black;
+    margin: 5pt;
+    box-shadow: 2px 2px 5px #000000;
+
+    &:before, &:after {
+        font-size: xx-large;
+        display: block;
+        margin: 0.1em;
+    }
+
+    font-size: xx-large;
+    text-align: center;
+    font-weight: bold;
+    //line-height: 3.5px * 64 / 3 ;//3.5px * 64;
+    vertical-align: middle;
+
+    &:before{
+        text-align: left;
+        margin-bottom: 30%;
+    }
+
+    &:after {
+        text-align: right;
+        margin-top: 30%;
+    }
+}
+
+.back {
+    background-color:#def;
+    background-image: radial-gradient(closest-side, transparent 98%, rgba(0,0,0,.3) 99%),
+    radial-gradient(closest-side, transparent 98%, rgba(0,0,0,.3) 99%);
+    background-size:80px 80px;
+    background-position:0 0, 40px 40px;
+    box-shadow: 5px 5px 5px #000000;
+}
+
+.blank {
+    background: none;
+    box-shadow: none;
+    border: 2px dashed #ffffff;
+}
+
+.spade, .club {
+    color: black;
+}
+
+.diamond, .heart {
+    color: red;
+}
+
+
+.heart:before, .heart:after {
+    content: "♥";
+}
+
+.diamond:before, .diamond:after {
+    content: "♦";
+}
+
+.club:before, .club:after {
+    content: "♣";
+}
+
+.spade:before, .spade:after {
+    content: "♠";
+}
+
