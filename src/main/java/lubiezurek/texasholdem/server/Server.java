@@ -55,7 +55,6 @@ public class Server extends WebSocketServer {
         return serverMessageBuilder;
     }
 
-
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         System.out.println("New connection " + conn.getRemoteSocketAddress());
@@ -92,30 +91,3 @@ public class Server extends WebSocketServer {
     }
 
 }
-
-/*
-public class Server {
-    public void run(String[] args) throws IOException {
-
-        int port = Integer.parseInt(args[1]);
-        Logger.status("Create server on port: " + args[1]);
-        ServerSocket serverSocket = new ServerSocket(port);
-
-        while(true) {
-            try {
-                Socket clientSocket = serverSocket.accept();
-                ServerClientThread thread = new ServerClientThread(this, clientSocket);
-                thread.start();
-            }
-            catch(SocketTimeoutException e) {
-                Logger.error("Socket timed out!");
-                return;
-            }
-            catch(IOException e) {
-                Logger.exception(e);
-                return;
-            }
-        }
-    }
-}
-*/

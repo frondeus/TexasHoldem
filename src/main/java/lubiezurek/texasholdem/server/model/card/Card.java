@@ -5,6 +5,9 @@ public class Card{
 	private CardValue value;
 
 	public Card(Suit new_suit, CardValue new_value){
+		if(new_suit == null) throw new IllegalArgumentException();
+		if(new_value == null) throw new IllegalArgumentException();
+
 		this.suit = new_suit;
 		this.value = new_value;
 	}

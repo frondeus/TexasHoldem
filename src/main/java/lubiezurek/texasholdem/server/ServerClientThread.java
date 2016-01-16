@@ -39,6 +39,7 @@ public class ServerClientThread extends Thread implements IPlayer {
 
     @Override
     public void setMoney(int money) {
+        if(money < 0) throw new IllegalArgumentException();
         this.money = money;
     }
 
