@@ -7,13 +7,13 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.Socket;
+import org.java_websocket.WebSocket;
 import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by frondeus on 21.12.2015.
@@ -39,15 +39,15 @@ public class ServerClientThreadTest {
     }
 
     private ServerClientThread createClient() throws Exception {
-        Socket socket = mock(Socket.class);
-        when(socket.getOutputStream()).thenReturn(new ByteArrayOutputStream());
+        WebSocket socket = mock(WebSocket.class);
+        stubVoid(socket).toReturn().on().close();
         when(socket.getRemoteSocketAddress()).thenReturn(new SocketAddress() {
             @Override
             public String toString() {
                 return "...";
             }
         });
-        return new ServerClientThread(socket);
+        return new ServerClientThread(Server.getInstance(), socket);
     }
 
     @Test
