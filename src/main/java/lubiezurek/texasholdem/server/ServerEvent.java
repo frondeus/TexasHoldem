@@ -1,4 +1,4 @@
-package main.java.lubiezurek.texasholdem.server;
+package lubiezurek.texasholdem.server;
 
 /**
  * Created by frondeus on 07.12.2015.
@@ -7,7 +7,8 @@ public class ServerEvent extends ServerMessage {
     public enum Type {
         ClientConnect,
         ClientDisconnect,
-        Chat
+        Chat,
+        ChangeState
     }
 
     private Type type;
@@ -22,11 +23,14 @@ public class ServerEvent extends ServerMessage {
     }
 
     public ServerEvent setType(Type type) {
+        if(type == null) throw new IllegalArgumentException();
         this.type = type;
         return this;
     }
 
     public ServerEvent setArguments(String[] arguments) {
+        if(arguments == null) throw new IllegalArgumentException();
+
         this.arguments = arguments;
         return this;
     }

@@ -1,12 +1,12 @@
-package main.java.lubiezurek.texasholdem.client;
+package lubiezurek.texasholdem.client;
 
-import main.java.lubiezurek.texasholdem.Logger;
-import main.java.lubiezurek.texasholdem.json.JSONClientMessageBuilder;
-import main.java.lubiezurek.texasholdem.json.JSONServerMessageBuilder;
-import main.java.lubiezurek.texasholdem.server.IServerMessageBuilder;
-import main.java.lubiezurek.texasholdem.server.ServerEvent;
-import main.java.lubiezurek.texasholdem.server.ServerMessage;
-import main.java.lubiezurek.texasholdem.server.ServerResponse;
+import lubiezurek.texasholdem.Logger;
+import lubiezurek.texasholdem.json.JSONClientMessageBuilder;
+import lubiezurek.texasholdem.json.JSONServerMessageBuilder;
+import lubiezurek.texasholdem.server.IServerMessageBuilder;
+import lubiezurek.texasholdem.server.ServerEvent;
+import lubiezurek.texasholdem.server.ServerMessage;
+import lubiezurek.texasholdem.server.ServerResponse;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -26,12 +26,10 @@ public class Client {
     }
 
 	private Socket socket;
-    private DataOutputStream out;
-    private IClientMessageBuilder clientMessageBuilder;
-    private IServerMessageBuilder serverMessageBuilder;
-    private ClientThread clientThread;
+    private final IClientMessageBuilder clientMessageBuilder;
+    private final IServerMessageBuilder serverMessageBuilder;
 
-	private Client() {
+    private Client() {
         clientMessageBuilder = new JSONClientMessageBuilder();
         serverMessageBuilder = new JSONServerMessageBuilder();
 	}
@@ -42,9 +40,9 @@ public class Client {
         Logger.status("Connecting to: " + address + ":" + port);
 
         socket = new Socket(address, port);
-        out = new DataOutputStream(socket.getOutputStream());
+        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
-        clientThread = new ClientThread(this);
+        ClientThread clientThread = new ClientThread(this);
         clientThread.start();
 
 		try {
@@ -65,16 +63,14 @@ public class Client {
 			while(clientThread.isAlive());
 			
 			Logger.status("Exiting");
-            this.clientThread.interrupt();
-            this.clientThread.join();
+            clientThread.interrupt();
+            clientThread.join();
 
 			socket.close();
 		}
-		catch (IOException e) {
+		catch (IOException | InterruptedException e) {
 			Logger.exception(e);
-		} catch (InterruptedException e) {
-            Logger.exception(e);
-        }
+		}
     }
 
 	public Socket getSocket() {

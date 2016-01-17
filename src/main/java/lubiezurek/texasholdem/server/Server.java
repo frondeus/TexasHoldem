@@ -1,15 +1,15 @@
-package main.java.lubiezurek.texasholdem.server;
+package lubiezurek.texasholdem.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import main.java.lubiezurek.texasholdem.Logger;
-import main.java.lubiezurek.texasholdem.client.IClientMessageBuilder;
-import main.java.lubiezurek.texasholdem.json.JSONClientMessageBuilder;
-import main.java.lubiezurek.texasholdem.json.JSONServerMessageBuilder;
-import main.java.lubiezurek.texasholdem.server.states.Lobby;
+import lubiezurek.texasholdem.Logger;
+import lubiezurek.texasholdem.client.IClientMessageBuilder;
+import lubiezurek.texasholdem.json.JSONClientMessageBuilder;
+import lubiezurek.texasholdem.json.JSONServerMessageBuilder;
+import lubiezurek.texasholdem.server.states.Lobby;
 
 public class Server {
     private volatile static Server instance;
@@ -22,10 +22,9 @@ public class Server {
         return instance;
     }
 
-	private ServerSocket serverSocket;
     private IGameState state;
-    private IClientMessageBuilder clientMessageBuilder;
-    private IServerMessageBuilder serverMessageBuilder;
+    private final IClientMessageBuilder clientMessageBuilder;
+    private final IServerMessageBuilder serverMessageBuilder;
 
     private Server() {
         this.clientMessageBuilder = new JSONClientMessageBuilder();
@@ -42,15 +41,17 @@ public class Server {
     }
 
 	public void run(String[] args) throws IOException {
+        if(args == null) throw new IllegalArgumentException();
+        if(args.length != 2) throw new IllegalArgumentException();
 
         int port = Integer.parseInt(args[1]);
         Logger.status("Create server on port: " + args[1]);
-        this.serverSocket = new ServerSocket(port);
+        ServerSocket serverSocket = new ServerSocket(port);
 
         while(true) {
 			try {
 				Socket clientSocket = serverSocket.accept();
-				ServerClientThread thread = new ServerClientThread(this, clientSocket);
+				ServerClientThread thread = new ServerClientThread(clientSocket);
                 thread.start();
 			}
 			catch(SocketTimeoutException e) {
@@ -66,5 +67,9 @@ public class Server {
 
     public IGameState getState() {
         return state;
+    }
+
+    public void setState(IGameState state) {
+        this.state = state;
     }
 }

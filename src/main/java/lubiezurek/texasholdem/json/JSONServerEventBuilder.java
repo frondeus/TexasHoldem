@@ -1,8 +1,8 @@
-package main.java.lubiezurek.texasholdem.json;
+package lubiezurek.texasholdem.json;
 
-import main.java.lubiezurek.texasholdem.server.IServerMessageBuilder;
-import main.java.lubiezurek.texasholdem.server.ServerEvent;
-import main.java.lubiezurek.texasholdem.server.ServerMessage;
+import lubiezurek.texasholdem.server.IServerMessageBuilder;
+import lubiezurek.texasholdem.server.ServerEvent;
+import lubiezurek.texasholdem.server.ServerMessage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

@@ -1,4 +1,4 @@
-package main.java.lubiezurek.texasholdem.client;
+package lubiezurek.texasholdem.client;
 
 
 /**

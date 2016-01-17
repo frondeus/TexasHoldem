@@ -1,9 +1,9 @@
-package main.java.lubiezurek.texasholdem.json;
+package lubiezurek.texasholdem.json;
 
-import main.java.lubiezurek.texasholdem.server.IServerMessageBuilder;
-import main.java.lubiezurek.texasholdem.server.ServerEvent;
-import main.java.lubiezurek.texasholdem.server.ServerMessage;
-import main.java.lubiezurek.texasholdem.server.ServerResponse;
+import lubiezurek.texasholdem.server.IServerMessageBuilder;
+import lubiezurek.texasholdem.server.ServerEvent;
+import lubiezurek.texasholdem.server.ServerMessage;
+import lubiezurek.texasholdem.server.ServerResponse;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -12,16 +12,16 @@ import java.util.HashMap;
  * Created by frondeus on 06.12.2015.
  */
 public class JSONServerMessageBuilder implements IServerMessageBuilder {
-    private HashMap<Class, IServerMessageBuilder> classBuilders = new HashMap<>();
-    private HashMap<String, IServerMessageBuilder> stringBuilders = new HashMap<>();
-    public static String messageTypeKey = "messageType";
+    private final HashMap<Class, IServerMessageBuilder> classBuilders = new HashMap<>();
+    private final HashMap<String, IServerMessageBuilder> stringBuilders = new HashMap<>();
+    public final static String messageTypeKey = "messageType";
 
     public JSONServerMessageBuilder() {
         addBuilder(ServerResponse.class, new JSONServerResponseBuilder());
         addBuilder(ServerEvent.class, new JSONServerEventBuilder());
     }
 
-    public void addBuilder(Class type, IServerMessageBuilder builder) {
+    private void addBuilder(Class type, IServerMessageBuilder builder) {
         classBuilders.put(type, builder);
         stringBuilders.put(type.toString(), builder);
     }
