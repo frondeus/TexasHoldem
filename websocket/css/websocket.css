@@ -64,7 +64,7 @@ html, body {
   height: 100%;
   overflow: auto; }
 
-.row-item-3 {
+.row-item-3, .game .hands, .game .table {
   flex: 3;
   height: 100%;
   overflow: auto; }
@@ -109,17 +109,17 @@ html, body {
   height: 100%;
   overflow: auto; }
 
-.row-item-12, .game .table {
+.row-item-12 {
   flex: 12;
   height: 100%;
   overflow: auto; }
 
-.vertical-align, .center-align, .game, .game .table {
+.vertical-align, .center-align, .game, .game .hands, .game .table {
   display: flex;
   align-items: center;
   justify-content: center; }
 
-.center-align, .game, .game .table {
+.center-align, .game, .game .hands, .game .table {
   text-align: center; }
 
 .icon {
@@ -167,54 +167,93 @@ body {
       /* remove scrollbar space */
       background: transparent;
       /* optional: just make scrollbar invisible */ }
-  .game .table {
-    perspective: 1000;
+  .game .hands {
     width: 100%; }
-    .game .table .card {
-      border-radius: 0.5em;
-      -webkit-border-radius: 0.5em;
-      width: 160px;
-      height: 224px;
-      background: #ffffff;
-      color: black;
+  .game .table {
+    width: 100%; }
+  .game .pattern, .game .deck, .game .back {
+    background-color: #def;
+    background-image: radial-gradient(closest-side, transparent 98%, rgba(0, 0, 0, 0.3) 99%), radial-gradient(closest-side, transparent 98%, rgba(0, 0, 0, 0.3) 99%);
+    background-size: 80px 80px;
+    background-position: 0 0, 40px 40px; }
+  .game .slot, .game .deck {
+    border: 2px dashed white;
+    margin: 5pt;
+    perspective: 1000;
+    -webkit-perspective: 1000;
+    display: inline-block;
+    overflow: visible; }
+    .game .slot.hover .card, .game .hover.deck .card {
+      transform: rotateY(180deg) translateZ(-2em); }
+  .game .hands {
+    overflow: hidden; }
+    .game .hands .hand {
       margin: 5pt;
-      box-shadow: 2px 2px 5px #000000;
+      width: 100%; }
+      .game .hands .hand .title {
+        display: block; }
+      .game .hands .hand .slot, .game .hands .hand .deck {
+        width: 128px;
+        height: 179.2px;
+        margin: 5pt; }
+  .game .deck {
+    box-shadow: 5px 5px 20px black; }
+    .game .deck .card {
+      transform: translateZ(3em); }
+    .game .deck.hover .card {
+      transform: rotateY(180deg) translateZ(-4em); }
+  .game .card, .game .slot, .game .deck, .game .face, .game .back, .game .front {
+    width: 160px;
+    height: 224px;
+    border-radius: 0.5em;
+    -webkit-border-radius: 0.5em; }
+  .game .card {
+    transition: 0.6s;
+    transform-style: preserve-3d;
+    position: relative; }
+  .game .card.blank .face, .game .card.blank .back, .game .card.blank .front {
+    display: none; }
+  .game .face, .game .back, .game .front {
+    backface-visibility: hidden;
+    position: absolute;
+    box-shadow: 2px 2px 5px black; }
+  .game .back {
+    transform: rotateY(0deg);
+    top: -2px;
+    left: -2px; }
+  .game .front {
+    background: white;
+    color: black;
+    font-size: xx-large;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    z-index: 2;
+    transform: rotateY(180deg);
+    top: -2px;
+    left: 2px; }
+    .game .front:before, .game .front:after {
       font-size: xx-large;
-      text-align: center;
-      font-weight: bold;
-      vertical-align: middle; }
-      .game .table .card:before, .game .table .card:after {
-        font-size: xx-large;
-        display: block;
-        margin: 0.1em; }
-      .game .table .card:before {
-        text-align: left;
-        margin-bottom: 30%; }
-      .game .table .card:after {
-        text-align: right;
-        margin-top: 30%; }
-    .game .table .back {
-      background-color: #def;
-      background-image: radial-gradient(closest-side, transparent 98%, rgba(0, 0, 0, 0.3) 99%), radial-gradient(closest-side, transparent 98%, rgba(0, 0, 0, 0.3) 99%);
-      background-size: 80px 80px;
-      background-position: 0 0, 40px 40px;
-      box-shadow: 5px 5px 5px #000000; }
-    .game .table .blank {
-      background: none;
-      box-shadow: none;
-      border: 2px dashed #ffffff; }
-    .game .table .spade, .game .table .club {
-      color: black; }
-    .game .table .diamond, .game .table .heart {
-      color: red; }
-    .game .table .heart:before, .game .table .heart:after {
-      content: "♥"; }
-    .game .table .diamond:before, .game .table .diamond:after {
-      content: "♦"; }
-    .game .table .club:before, .game .table .club:after {
-      content: "♣"; }
-    .game .table .spade:before, .game .table .spade:after {
-      content: "♠"; }
+      display: block;
+      margin: 0.1em;
+      text-align: left; }
+    .game .front:before {
+      margin-bottom: 30%; }
+    .game .front:after {
+      margin-top: 30%;
+      transform: rotateZ(180deg); }
+  .game .spade, .game .club {
+    color: black; }
+  .game .diamond, .game .heart {
+    color: red; }
+  .game .heart:before, .game .heart:after {
+    content: "♥"; }
+  .game .diamond:before, .game .diamond:after {
+    content: "♦"; }
+  .game .club:before, .game .club:after {
+    content: "♣"; }
+  .game .spade:before, .game .spade:after {
+    content: "♠"; }
   .game form {
     width: 100%;
     padding: 0;

@@ -4,7 +4,6 @@ $card-front: #ffffff;
 
 body {
     background-color: $bg-color;
-    //background: radial-gradient($bg-color, darken($bg-color,5%));
     color: #ffffff;
 }
 
@@ -53,14 +52,20 @@ body {
         }
     }
 
-    .table {
-        @extend .row-item-12;
+    .hands {
+        @extend .row-item-3;
         @extend .center-align;
-        perspective: 1000;
+        width: 100%;
+    }
+
+    .table {
+        @extend .row-item-3;
+        @extend .center-align;
         width: 100%;
 
-        @import "card.scss";
     }
+
+        @import "card.scss";
 
     form {
         @extend .row-item-1;
