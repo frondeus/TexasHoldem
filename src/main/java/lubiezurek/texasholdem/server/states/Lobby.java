@@ -25,20 +25,42 @@ public class Lobby implements IGameState {
         return ourInstance;
     }
 
-    private final int maxPlayerCount = 2;
-    private final int startMoney = 199;
+    public static void resetInstance() {
+        synchronized (Lobby.class) {
+            ourInstance = null;
+        }
+    }
+
+    public int maxPlayerCount = 2;
+    public final int startMoney = 199;
     private final ArrayList<IPlayer> players = new ArrayList<>();
 
     private Lobby() {
     }
 
+    public int getPlayersCount() {
+        return players.size();
+    }
+
     @Override
-    public void onClientConnected(ServerClientThread client) {
+    public void onClientConnected(IPlayer client) {
+        if(client == null) throw new IllegalArgumentException();
         if(players.size() < maxPlayerCount) {
             Logger.status(client + ": Add player to list");
             players.add(client);
 
             client.setMoney(startMoney);
+
+            ServerResponse response = new ServerResponse()
+                    .setStatus(ServerResponse.Status.Ok)
+                    .setMessage("Welcome");
+
+            try {
+                client.sendMessage(response);
+            }
+            catch (IOException e) {
+                Logger.exception(e);
+            }
 
             ServerEvent event = new ServerEvent()
                     .setType(ServerEvent.Type.ClientConnect)
@@ -86,7 +108,7 @@ public class Lobby implements IGameState {
         }
     }
 
-    private void broadcastExcept(ServerClientThread client, ServerMessage message) throws IOException {
+    private void broadcastExcept(IPlayer client, ServerMessage message) throws IOException {
         for(IPlayer all: players) {
             if(all != client)    all.sendMessage(message);
         }
@@ -94,11 +116,37 @@ public class Lobby implements IGameState {
 
     @Override
     public void onClientMessage(IPlayer client, ClientMessage message) {
+        if(client == null) throw new IllegalArgumentException();
+        if(message == null) throw  new IllegalArgumentException();
+
+        ServerResponse response;
+
+        if(players.indexOf(client) < 0) {
+            response = new ServerResponse()
+                    .setStatus(ServerResponse.Status.Failure)
+                    .setMessage("Not connected");
+            try {
+                client.sendMessage(response);
+            } catch (IOException e) {
+                Logger.exception(e);
+            }
+            return;
+        }
+
         String args = String.join(" ", message.getArguments());
         Logger.status(client + ": " + message.getCommand() + " " + args);
 
         switch (message.getCommand()) {
             case "chat":
+                response = new ServerResponse()
+                        .setStatus(ServerResponse.Status.Ok)
+                        .setMessage("Send");
+                try {
+                    client.sendMessage(response);
+                } catch (IOException e) {
+                    Logger.exception(e);
+                }
+
                 ArrayList<String> chatArguments = new ArrayList<>();
                 chatArguments.add(client.getUUID().toString());
                 chatArguments.addAll(Arrays.asList(message.getArguments()));
@@ -112,7 +160,7 @@ public class Lobby implements IGameState {
                 }
                 break;
             default:
-                ServerResponse response = new ServerResponse()
+                response = new ServerResponse()
                         .setStatus(ServerResponse.Status.Failure)
                         .setMessage("Invalid command");
                 try {
@@ -125,7 +173,7 @@ public class Lobby implements IGameState {
     }
 
     @Override
-    public void onClientDisconnected(ServerClientThread client) {
+    public void onClientDisconnected(IPlayer client) {
         Logger.status(client + ": Disconnected");
         if(players.indexOf(client) >= 0) {
             players.remove(client);
