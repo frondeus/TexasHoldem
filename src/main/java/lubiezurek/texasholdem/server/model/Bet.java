@@ -1,5 +1,6 @@
 package main.java.lubiezurek.texasholdem.server.model;
 
+import main.java.lubiezurek.texasholdem.server.IPlayer;
 import java.lang.Comparable;
 
 public class Bet{
