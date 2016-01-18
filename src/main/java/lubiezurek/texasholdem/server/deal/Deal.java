@@ -6,12 +6,12 @@ public class Deal{
 	IState currentState;
 
 	Deal(){
-
+		
 	}
 
-	IState getState(){
-		return currentState;
-	}
+	IState getState(){ return currentState; }
+
+	void setState(IState newState){ currentState = newState; }
 
 
 
