@@ -67,7 +67,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>Program</mainClass>
+							<mainClass>lubiezurek.texasholdem.Program</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
