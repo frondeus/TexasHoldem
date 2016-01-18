@@ -34,7 +34,7 @@ Lub shellscriptem (wraz z kompilacją):
 
 ```
 ./start_server
-./start_client
+
 ```
 
 ### Diagramy i inne
