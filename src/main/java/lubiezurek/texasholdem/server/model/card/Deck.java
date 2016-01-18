@@ -10,6 +10,10 @@ public class Deck{
 	public final static int DEFAULT_DECK_WIDTH = 52;
 	public final static int CARDS_PER_SUIT = 13;
 	public Deck() {
+		reset();
+	}
+
+	public void reset(){
 		cards = new ArrayList<Card>();
 		Suit[] cardSuits = {Suit.HEARTS,
 							Suit.SPADES,
