@@ -1,4 +1,6 @@
-package lubiezurek.texasholdem.server;
+package lubiezurek.texasholdem.server.deal;
+
+import states.IState;
 
 public class Deal{
 	IState currentState;
