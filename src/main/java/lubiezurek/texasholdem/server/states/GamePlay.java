@@ -3,6 +3,7 @@ package lubiezurek.texasholdem.server.states;
 import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.*;
+import lubiezurek.texasholdem.server.model.Deck;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class GamePlay implements IGameState {
     }
 
     private ArrayList<IPlayer> players = new ArrayList<>();
+    private Deck deck = new Deck();
 
     private GamePlay() {
     }
