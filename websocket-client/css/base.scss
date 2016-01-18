@@ -1,0 +1,137 @@
+// Variables
+
+$tablet: 600px;
+$pc: 960px;
+$large: 1280px;
+
+// Reset
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+* {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+// Responsive
+
+@mixin respond-to($media) {
+    @media all and ( min-width: $media ) {
+        @content;
+    }
+}
+
+@mixin respond-to-all($tag) {
+    #{$tag}-sm {
+        @content;
+    }
+
+    #{$tag}-md {
+        @include respond-to($tablet) {
+            @content;
+        }
+    }
+
+    #{$tag}-lg {
+        @include respond-to($pc) {
+            @content;
+        }
+    }
+}
+
+@mixin respond-to-parent($parent) {
+    #{$parent}-sm {
+        @extend #{$parent};
+        @content;
+    }
+
+    #{$parent}-md {
+        @extend #{$parent};
+        @include respond-to($tablet) {
+            @content;
+        }
+    }
+
+    #{$parent}-lg {
+        @extend #{$parent};
+        @include respond-to($pc) {
+            @content;
+        }
+    }
+}
+
+.show {
+    display: none;
+}
+
+@include respond-to-all('.hide') {
+    display: none;
+}
+
+@include respond-to-parent('.show') {
+    display: initial;
+}
+
+// Grid
+
+.row {
+    display: flex;
+    flex-direction: column;
+}
+
+@include respond-to-parent('.row'){
+    flex-direction: row;
+}
+
+@for $i from 1 through 12 {
+    .row-item-#{$i} {
+        flex: $i;
+
+        height: 100%;
+        //padding: 12em;
+        overflow: auto;
+    }
+}
+
+.row-item {
+    @extend .row-item-1;
+}
+
+
+// Other mixins
+
+@mixin border-radius($radius) {
+    border-radius: $radius;
+    -webkit-border-radius: $radius;
+}
+
+.vertical-align {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.center-align {
+    @extend .vertical-align;
+    text-align: center;
+}
+
+.icon {
+    vertical-align: 4%;
+    @include respond-to($tablet) {
+        font-size: 1.3em;
+        line-height: 0.75em;
+        vertical-align: 40%;
+    }
+}

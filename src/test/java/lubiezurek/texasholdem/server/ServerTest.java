@@ -30,20 +30,6 @@ public class ServerTest {
         assertNotNull(Server.getInstance().getServerMessageBuilder());
     }
 
-    @Test (expected = IllegalArgumentException.class, timeout = 100)
-    public void testRunNullArguments() throws Exception {
-        Server.getInstance().run(null);
-    }
-
-    @Test (expected = IllegalArgumentException.class, timeout = 100)
-    public void testRunInvalidNumberArguments() throws Exception {
-        Server.getInstance().run(new String[] { "-s", "1234", "5678" });
-    }
-
-    @Test (expected = NumberFormatException.class, timeout = 100)
-    public void testInvalidIntegerArgument() throws Exception {
-        Server.getInstance().run(new String[] { "-s", "j123asd" });
-    }
 
     @Test
     public void testState() throws Exception {

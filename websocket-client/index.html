@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html   lang="pl">
+    <head>
+        <title>Texas Holdem</title>
+        <link rel="stylesheet" type="text/css" href="css/websocket.css">
+    </head>
+    <body>
+        <div class="game">
+            <div class="hands">
+                <div class="hand">
+                    <span class="title"> Blue </span>
+                    <div class="slot">
+                        <div class="card blank"> <div class="back"> </div> <div class="front spade"> A </div> </div>
+                    </div>
+                    <div class="slot">
+                        <div class="card blank"> <div class="back"> </div> <div class="front spade"> A </div> </div>
+                    </div>
+                </div>
+                <div class="hand">
+                    <span class="title"> Red </span>
+                    <div class="slot">
+                        <div class="card blank"> <div class="back"> </div> <div class="front spade"> A </div> </div>
+                    </div>
+                    <div class="slot">
+                        <div class="card blank"> <div class="back"> </div> <div class="front spade"> A </div> </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table">
+                <div class="slot">
+                    <div class="card blank"> <div class="back"> </div> <div class="front spade"> A </div> </div>
+                </div>
+                <div class="slot">
+                    <div class="card blank"> <div class="back"> </div> <div class="front spade"> A </div> </div>
+                </div>
+                <div class="slot">
+                    <div class="card blank"> <div class="back"> </div> <div class="front spade"> A </div> </div>
+                </div>
+                <div class="slot">
+                    <div class="card blank"> <div class="back"> </div> <div class="front spade"> A </div> </div>
+                </div>
+                <div class="slot">
+                    <div class="card blank"> <div class="back"> </div> <div class="front spade"> A </div> </div>
+                </div>
+                <div class="deck">
+                    <div class="card"> <div class="back"> </div> <div class="front spade"> A </div> </div>
+                </div>
+            </div>
+
+            <div class="hands">
+                <div class="hand">
+                    <span class="title"> You </span>
+                    <div class="slot">
+                        <div class="card blank"> <div class="back"> </div> <div class="front spade"> A </div> </div>
+                    </div>
+                    <div class="slot">
+                        <div class="card blank"> <div class="back"> </div> <div class="front spade"> A </div> </div>
+                    </div>
+                </div>
+            </div>
+
+            <ul id="log"></ul>
+
+            <form id="form">
+                <input type="text" id="text-input" autocomplete="off"/>
+                <input type="submit" value="send"/>
+            </form>
+        </div>
+        <script data-main="app" src="lib/require.js" ></script>
+</html>
