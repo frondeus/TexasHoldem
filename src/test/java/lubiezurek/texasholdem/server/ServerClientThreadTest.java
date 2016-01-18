@@ -7,13 +7,13 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.Socket;
+import org.java_websocket.WebSocket;
 import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by frondeus on 21.12.2015.
@@ -35,19 +35,18 @@ public class ServerClientThreadTest {
 
     @Test (expected = IllegalArgumentException.class)
     public void testSocketNull() throws Exception {
-        new ServerClientThread(null);
+        new ServerClientThread(Server.getInstance(),null);
     }
 
-    private ServerClientThread createClient() throws Exception {
-        Socket socket = mock(Socket.class);
-        when(socket.getOutputStream()).thenReturn(new ByteArrayOutputStream());
-        when(socket.getRemoteSocketAddress()).thenReturn(new SocketAddress() {
-            @Override
-            public String toString() {
-                return "...";
-            }
-        });
-        return new ServerClientThread(socket);
+    @Test (expected  = IllegalArgumentException.class)
+    public void testServerNull() throws Exception {
+        WebSocket socket = mock(WebSocket.class);
+        new ServerClientThread(null, socket);
+    }
+
+    private ServerClientThread  createClient() throws Exception {
+        WebSocket socket = mock(WebSocket.class);
+        return new ServerClientThread(Server.getInstance(), socket);
     }
 
     @Test

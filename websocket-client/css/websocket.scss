@@ -1,0 +1,91 @@
+@import "base.scss";
+$bg-color: #355e3b;
+$card-front: #ffffff;
+
+body {
+    background-color: $bg-color;
+    color: #ffffff;
+}
+
+.error {
+    color: #ff3333;
+}
+
+.red {
+    color: #ffaaaa;
+}
+
+.green {
+    color: #aaffaa;
+}
+
+.blue {
+    color: #aaaaff;
+}
+
+.yellow {
+    color: #ffffaa;
+}
+
+.game{
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+
+    @extend .row;
+    @extend .center-align;
+
+    #log {
+        @extend .row-item-1;
+        list-style: none;
+        width: 100%;
+        text-align: left;
+        padding: 1em;
+        padding-left: 3em;
+        border-top: 2px dashed white;
+        overflow: scroll;
+        overflow-x: hidden;
+
+        &::-webkit-scrollbar {
+            width: 0px;  /* remove scrollbar space */
+            background: transparent;  /* optional: just make scrollbar invisible */
+        }
+    }
+
+    .hands {
+        @extend .row-item-3;
+        @extend .center-align;
+        width: 100%;
+    }
+
+    .table {
+        @extend .row-item-3;
+        @extend .center-align;
+        width: 100%;
+
+    }
+
+        @import "card.scss";
+
+    form {
+        @extend .row-item-1;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+
+        input {
+            padding: 1em;
+        }
+        input#text-input {
+            width: 80%;
+            margin: 0;
+        }
+
+        input[type="submit"] {
+            width: 10%;
+            margin: 0;
+            background: #fff;
+        }
+    }
+}
+
