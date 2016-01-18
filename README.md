@@ -30,6 +30,13 @@ Klient:
 java -jar target/TexasHoldem-0.0.1-SNAPSHOT-jar-with-dependencies.jar -c
 ```
 
+Lub shellscriptem (wraz z kompilacją):
+
+```
+./start_server
+./start_client
+```
+
 ### Diagramy i inne
 
 Główne klasy i interfejsy:
