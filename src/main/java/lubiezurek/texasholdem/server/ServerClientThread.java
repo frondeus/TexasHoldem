@@ -16,6 +16,8 @@ public class ServerClientThread extends Thread implements IPlayer {
     private UUID uuid;
 
     public ServerClientThread(Server server, WebSocket socket) {
+        if(server == null) throw new IllegalArgumentException();
+        if(socket == null) throw new IllegalArgumentException();
         this.server = server;
         this.socket = socket;
         this.uuid = UUID.randomUUID();

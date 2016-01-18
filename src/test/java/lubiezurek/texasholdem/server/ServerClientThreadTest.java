@@ -35,18 +35,17 @@ public class ServerClientThreadTest {
 
     @Test (expected = IllegalArgumentException.class)
     public void testSocketNull() throws Exception {
-        new ServerClientThread(null);
+        new ServerClientThread(Server.getInstance(),null);
     }
 
-    private ServerClientThread createClient() throws Exception {
+    @Test (expected  = IllegalArgumentException.class)
+    public void testServerNull() throws Exception {
         WebSocket socket = mock(WebSocket.class);
-        stubVoid(socket).toReturn().on().close();
-        when(socket.getRemoteSocketAddress()).thenReturn(new SocketAddress() {
-            @Override
-            public String toString() {
-                return "...";
-            }
-        });
+        new ServerClientThread(null, socket);
+    }
+
+    private ServerClientThread  createClient() throws Exception {
+        WebSocket socket = mock(WebSocket.class);
         return new ServerClientThread(Server.getInstance(), socket);
     }
 
