@@ -50,7 +50,6 @@ define(["jquery", "domReady!", "./logger", "./player", "./socket", "./string", "
                socket.send(JSON.stringify(message));
 
                $("#text-input").val("");
-               $("#log").animate({ scrollTop: $("#log")[0].scrollHeight}, 1000);
                event.preventDefault();
            });
        });

@@ -13,6 +13,7 @@ define(["jquery"], function($) {
         var li = $("<li>").text(time + " " + text);
         if(_class) li.addClass(_class);
         $("#log").append(li);
+        $("#log").animate({ scrollTop: $("#log")[0].scrollHeight}, 1000);
         console.log(text);
     };
 
