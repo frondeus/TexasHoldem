@@ -1,11 +1,4 @@
-// Variables
-
-$tablet: 600px;
-$pc: 960px;
-$large: 1280px;
-
-// Reset
-*, *::before, *::after {
+*, *:before, *:after {
     box-sizing: inherit;
 }
 
@@ -17,6 +10,7 @@ html {
     border: 0;
     margin: 0;
     padding: 0;
+    overflow: hidden;
 }
 
 html, body {
@@ -24,114 +18,41 @@ html, body {
     height: 100%;
 }
 
-// Responsive
-
-@mixin respond-to($media) {
-    @media all and ( min-width: $media ) {
-        @content;
-    }
-}
-
-@mixin respond-to-all($tag) {
-    #{$tag}-sm {
-        @content;
-    }
-
-    #{$tag}-md {
-        @include respond-to($tablet) {
-            @content;
-        }
-    }
-
-    #{$tag}-lg {
-        @include respond-to($pc) {
-            @content;
-        }
-    }
-}
-
-@mixin respond-to-parent($parent) {
-    #{$parent}-sm {
-        @extend #{$parent};
-        @content;
-    }
-
-    #{$parent}-md {
-        @extend #{$parent};
-        @include respond-to($tablet) {
-            @content;
-        }
-    }
-
-    #{$parent}-lg {
-        @extend #{$parent};
-        @include respond-to($pc) {
-            @content;
-        }
-    }
-}
-
-.show {
-    display: none;
-}
-
-@include respond-to-all('.hide') {
-    display: none;
-}
-
-@include respond-to-parent('.show') {
-    display: initial;
-}
-
-// Grid
-
-.row {
-    display: flex;
-    flex-direction: column;
-}
-
-@include respond-to-parent('.row'){
-    flex-direction: row;
-}
-
-@for $i from 1 through 12 {
-    .row-item-#{$i} {
-        flex: $i;
-
-        height: 100%;
-        //padding: 12em;
-        overflow: auto;
-    }
-}
-
-.row-item {
-    @extend .row-item-1;
-}
-
-
-// Other mixins
-
 @mixin border-radius($radius) {
     border-radius: $radius;
     -webkit-border-radius: $radius;
 }
 
-.vertical-align {
+@mixin flex-item($size) {
+    flex: $size;
+    width: 100%;
+}
+
+$deck-back-size: 10vh;
+
+@mixin deck-back() {
+    background-color:#def;
+    background-image: radial-gradient(closest-side, transparent 98%, rgba(0,0,0,.3) 99%),
+    radial-gradient(closest-side, transparent 98%, rgba(0,0,0,.3) 99%);
+    //background-size:80px 80px;
+    //background-position:0 0, 40px 40px;
+    background-size: $deck-back-size $deck-back-size;
+    background-position:0 0, $deck-back-size * 0.5 $deck-back-size * 0.5;
+}
+
+@mixin flex($direction) {
     display: flex;
+    flex-direction: $direction;;
     align-items: center;
     justify-content: center;
 }
 
-.center-align {
-    @extend .vertical-align;
-    text-align: center;
+
+@function capitalize($string) {
+    @return to-upper-case(str-slice($string, 1, 1)) + str-slice($string, 2);
 }
 
-.icon {
-    vertical-align: 4%;
-    @include respond-to($tablet) {
-        font-size: 1.3em;
-        line-height: 0.75em;
-        vertical-align: 40%;
-    }
+@mixin perspective($value) {
+    perspective: $value;
+    -webkit-perspective: $value;
 }

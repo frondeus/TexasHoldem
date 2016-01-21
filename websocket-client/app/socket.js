@@ -32,13 +32,15 @@ define(["domReady!", "./logger"], function(doc, logger){
         if(eventHandler) 
             eventHandlers["on" + event.type](event);
         else 
-            console.err("Unhandled event.type: " + event.type);
+            console.error("Unhandled event.type: " + event.type);
     };
 
     var onServerResponse = function(response) {
         console.log("Response");
         if(response.status != "Ok")
             logger.error(response.message);
+        else {
+        }
     };
 
     socket.onmessage = function(event) {

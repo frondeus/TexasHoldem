@@ -1,5 +1,6 @@
-define(["jquery", "domReady!", "./logger", "./player", "./socket", "./string", "./random", "./card"],
-       function($ , doc, logger, player, socket, str, random, card ) {
+define(["jquery", "domReady!", "./logger", "./player", "./socket",  
+       "./random", "./card", "text!./opponent.html", "text!./card.html"],
+       function($ , doc, logger, player, socket, random, card , opponentTemplate, cardTemplate ) {
 
            var myUUID = null;
 
@@ -9,34 +10,47 @@ define(["jquery", "domReady!", "./logger", "./player", "./socket", "./string", "
 
                var playerUUID = event.arguments.shift();
                var currentPlayer = player.getPlayer(playerUUID);
-               logger.log(currentPlayer.color.capitalizeFirstLetter() + " said: " + event.arguments.join(" "), currentPlayer.color);
+               logger.log(currentPlayer.name + " said: " + event.arguments.join(" "), currentPlayer.color);
            };
 
            var onClientConnect = function(event) {
 
                var playerUUID = event.arguments.shift();
                var currentPlayer = player.getPlayer(playerUUID);
-               logger.log(currentPlayer.color.capitalizeFirstLetter() + " joined to the table");
+               logger.log(currentPlayer.name + " joined to the table");
+
+
+               var opponentHtml = $.parseHTML(opponentTemplate);
+               $(".info" , opponentHtml).addClass(currentPlayer.color).text(currentPlayer.name);
+               $(".table > .opponents").append(opponentHtml);
+           };
+
+           var onChangeState = function(event) {
+               logger.log("Changed state into: " + event.arguments[0]);
            };
 
            socket.setHandlers({
                onChat: onChat,
-               onClientConnect: onClientConnect
+               onClientConnect: onClientConnect,
+               onChangeState: onChangeState
            });
 
+
            $(".deck").click(function(event) {
-               $(this).toggleClass("hover");
-               if($(this).hasClass("hover")) {
-                   card.random($(".front", this));
+               var myHand = $(".player .hand");
+               var freeSlot = $(".card-slot:empty:first", myHand);
+               var hover = "";
 
-                   var firstBlank = $(".table .card.blank")[0];
-                   if(firstBlank) {
-                       var firstSlot = $(firstBlank).removeClass("blank").parent();
-                       firstSlot.addClass("hover");
+               if(freeSlot.length <= 0) {
+                   freeSlot = $(".shared .card-slot:empty:first");
+                   hover = "hover";
+               }
 
-                       var firstFront = $(".front", firstSlot);
-                       card.random(firstFront);
-                   }
+               if(freeSlot.length > 0) {
+                   var cardHtml = $.parseHTML(cardTemplate);
+                   card.random($(".front", cardHtml));
+                   freeSlot.append(cardHtml);
+                   freeSlot.addClass(hover);
                }
            });
 
