@@ -70,9 +70,8 @@ public class LobbyTest {
             assertEquals(false, client.isDisconnected());
 
             messages = client.getLastMessages();
-            assertEquals(2, messages.length);
+            assertEquals(3, messages.length);
             assertResponse(ServerResponse.Status.Ok, "Welcome", messages[0]); // Info ze polaczono
-
             ArrayList<String> uuidsToSend = new ArrayList<>();
             uuidsToSend.add(client.getUUID().toString());
             uuidsToSend.addAll(uuids);
@@ -80,6 +79,7 @@ public class LobbyTest {
             assertEvent(ServerEvent.Type.Connected, uuidsToSend.toArray(new String[]{}) , messages[1]);
                 //Wysylamy info o jego UUID oraz o innych graczach,
 
+            assertEvent(ServerEvent.Type.Commands, new String[]{"chat"}, messages[2]);
             uuids.add(client.getUUID().toString());
 
         }
@@ -127,8 +127,8 @@ public class LobbyTest {
         PlayerMock client = createClient();
         Lobby.getInstance().onClientConnected(client);
         messages = client.getLastMessages();
-        assertEquals(4, messages.length);
-        assertEvent(ServerEvent.Type.ChangeState, new String[] { "Licitation"}, messages[2]);
+        assertEquals(5, messages.length);
+        assertEvent(ServerEvent.Type.ChangeState, new String[] { "Licitation"}, messages[3]);
 
         for(int i = 0; i < Lobby.getInstance().maxPlayerCount - 1; i++) {
             client = clients.get(i);

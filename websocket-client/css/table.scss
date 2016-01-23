@@ -29,6 +29,23 @@
     }
 
     .player {
+        .commands {
+            @include flex-item(1);
+            @include flex(row);
+            height: 100%;
+
+            button {
+                min-width: 20em;
+                min-height: 10em;
+                border: 2px solid $fg-color;
+                background-color: lighten($bg-color, 10%);
+                color: $fg-color;
+
+                &:hover {
+                    background-color: lighten($bg-color, 15%);
+                }
+            }
+        }
         .hand {
             @include flex-item(1);
             @include flex(row);

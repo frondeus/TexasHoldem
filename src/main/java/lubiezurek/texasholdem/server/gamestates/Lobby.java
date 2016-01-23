@@ -30,7 +30,7 @@ public class Lobby extends GameState {
         }
     }
 
-    public int maxPlayerCount = 4;
+    public int maxPlayerCount = 2;
     public final int startMoney = 199;
 
     private Lobby() {
@@ -66,6 +66,12 @@ public class Lobby extends GameState {
                     .setType(ServerEvent.Type.Connected)
                     .setArguments(uuids.toArray(new String[]{}));
                 client.sendMessage(connectEvent);
+
+            ServerEvent commandsEvent = new ServerEvent()
+                    .setType(ServerEvent.Type.Commands)
+                    .setArguments(new String[] {"chat"});
+            client.sendMessage(commandsEvent);
+
             ServerEvent event = new ServerEvent()
                     .setType(ServerEvent.Type.ClientConnect)
                     .setArguments(new String[] {client.getUUID().toString()});

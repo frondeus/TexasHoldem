@@ -8,6 +8,7 @@ import lubiezurek.texasholdem.server.model.Deck;
 import lubiezurek.texasholdem.server.states.Licitation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -60,8 +61,20 @@ public class GamePlay extends GameState {
 
     public void onClientMessage(IPlayer client, ClientMessage message) {
         IPlayer currentPlayer = deal.getCurrentPlayer();
-        if(currentPlayer == client)
-            deal.getState().onPlayerMessage(client, message);
+        if(currentPlayer == client) {
+            String[] availableCommands = deal.getState().getAvailableCommands();
+            for(String s: availableCommands) {
+                if(s.equals(message.getCommand()))
+                {
+                    deal.getState().onPlayerMessage(client, message);
+                    return;
+                }
+            }
+            ServerResponse response = new ServerResponse()
+                    .setStatus(ServerResponse.Status.Failure)
+                    .setMessage("Unknown command");
+            client.sendMessage(response);
+        }
         else {
             ServerResponse response = new ServerResponse()
                     .setStatus(ServerResponse.Status.Failure)
@@ -96,6 +109,16 @@ public class GamePlay extends GameState {
                     .setArguments(new String[] {client.getUUID().toString()});
 
             broadcastExcept(client, event);
+
+            for(IPlayer all : players) {
+                if(all.getNextPlayer() == client)
+                    all.setNextPlayer(client.getNextPlayer());
+            }
+            players.remove(client);
+            if(players.size() <= 1) {
+                Lobby.getInstance().setPlayers(players);
+                Server.getInstance().setState(Lobby.getInstance());
+            }
         }
     }
 }

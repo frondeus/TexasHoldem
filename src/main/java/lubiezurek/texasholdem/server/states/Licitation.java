@@ -1,5 +1,6 @@
 package lubiezurek.texasholdem.server.states;
 
+import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.IPlayer;
 import lubiezurek.texasholdem.server.IState;
@@ -40,11 +41,12 @@ public class Licitation implements IState {
 
     @Override
     public String[] getAvailableCommands() {
-        return new String[] {};
+        return new String[] {"Foo", "Bar"};
     }
 
     @Override
     public void onPlayerMessage(IPlayer player, ClientMessage message) {
+        Logger.status("Command: " + message.getCommand());
 
         deal.nextPlayer();
     }

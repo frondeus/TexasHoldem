@@ -7,8 +7,9 @@ define(
         "./random",
         "./card",
         "text!./opponent.html",
-        "text!./card.html"],
-        function($ , doc, logger, Player, Socket, random, card , opponentTemplate, cardTemplate ) {
+        "text!./card.html",
+        "text!./command.html"],
+        function($ , doc, logger, Player, Socket, random, card , opponentTemplate, cardTemplate, commandTemplate ) {
 
             var addPlayer = function(playerUUID) {
                 var currentPlayer = Player.getPlayer(playerUUID);
@@ -42,11 +43,13 @@ define(
                     var html = $("#"+playerUUID);
                     if(html) html.remove();
                 },
+
                 onChat: function(event) {
                     var playerUUID = event.arguments.shift();
                     var currentPlayer = Player.getPlayer(playerUUID);
                     logger.log(currentPlayer.name + " said: " + event.arguments.join(" "), currentPlayer.color);
                 },
+
                 onTurn: function(event) {
                     var playerUUID = event.arguments.shift();
 
@@ -54,11 +57,36 @@ define(
                     else {
                         var currentPlayer = Player.getPlayer(playerUUID);
                         logger.log(currentPlayer.name + "s turn", currentPlayer.color);
+                        $(".commands button").each(function(){
+                            $(this).prop("disabled", true);
+                        });
                     }
                 },
+
                 onCommands: function(event) {
                     logger.log("Available commands: " + event.arguments.join(" "));
+                    $(".commands").html("");
+                    for(var i in event.arguments) {
+                        var command = event.arguments[i];
+
+                        var commandHtml = $($.parseHTML(commandTemplate));
+                        commandHtml.text(command).data("command", command).click(function(event){
+                            var value = $("#text-input").val();
+                            var message = {
+                                command: $(this).data("command"),
+                                arguments: value.split(" ")
+                            };
+
+                            socket.send(JSON.stringify(message));
+
+                            $("#text-input").val("");
+                            event.preventDefault();
+                        });
+
+                        $(".commands").append(commandHtml);
+                    }
                 },
+
                 onChangeState: function(event) {
                     logger.log("Changed state into: " + event.arguments[0]);
                 }
@@ -85,16 +113,4 @@ define(
                 }
             });
 
-            $("#form").submit(function(event){
-                var value = $("#text-input").val();
-                var message = {
-                    command: "chat",
-                    arguments: value.split(" ")
-                };
-
-                socket.send(JSON.stringify(message));
-
-                $("#text-input").val("");
-                event.preventDefault();
-            });
         });

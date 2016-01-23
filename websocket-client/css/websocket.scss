@@ -36,6 +36,7 @@ body {
         @include flex-item(2);
         border-top: $dashed;
         padding: 1em;
+        overflow: auto;
     }
 
     #form {
@@ -43,7 +44,7 @@ body {
         display: flex;
         flex-direction: row;
 
-        input {
+        input, button {
             border: 2px solid $fg-color;
             background-color: lighten($bg-color, 10%);
             color: $fg-color;
@@ -51,19 +52,29 @@ body {
             &:hover {
                 background-color: lighten($bg-color,15%);
             }
+            &:disabled {
+                background-color: #aaaaaa;
+            }
         }
 
         input#text-input {
-            flex: 5;
+            flex: 2;
             padding: 0.5em;
 
         }
 
-        input[type="submit"] {
+        .commands {
             flex: 1;
+            display: flex;
+            flex-direction: row;
 
+            button {
+                flex: 1;
+                text-transform: uppercase;
+
+            }
         }
-        
+
 
     }
 }
