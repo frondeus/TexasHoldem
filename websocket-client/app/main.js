@@ -1,39 +1,59 @@
 define(["jquery", "domReady!", "./logger", "./player", "./socket",  
        "./random", "./card", "text!./opponent.html", "text!./card.html"],
-       function($ , doc, logger, player, socket, random, card , opponentTemplate, cardTemplate ) {
+       function($ , doc, logger, Player, Socket, random, card , opponentTemplate, cardTemplate ) {
 
-           var myUUID = null;
 
-           if(!socket) return null;
-
-           var onChat = function(event) {
-
-               var playerUUID = event.arguments.shift();
-               var currentPlayer = player.getPlayer(playerUUID);
-               logger.log(currentPlayer.name + " said: " + event.arguments.join(" "), currentPlayer.color);
-           };
-
-           var onClientConnect = function(event) {
-
-               var playerUUID = event.arguments.shift();
-               var currentPlayer = player.getPlayer(playerUUID);
-               logger.log(currentPlayer.name + " joined to the table");
+           var addPlayer = function(playerUUID) {
+               var currentPlayer = Player.getPlayer(playerUUID);
+               logger.log(currentPlayer.name + " joined to the table", currentPlayer.color);
 
 
                var opponentHtml = $.parseHTML(opponentTemplate);
+               $(opponentHtml).attr('id', playerUUID);
                $(".info" , opponentHtml).addClass(currentPlayer.color).text(currentPlayer.name);
                $(".table > .opponents").append(opponentHtml);
+           };
+
+           var onConnected = function(event) {
+               Player.setUUID(event.arguments.shift());
+               for(var p in event.arguments) {
+                   var playerUUID = event.arguments[p];
+                   addPlayer(playerUUID);
+               }
+           };
+
+           var onClientConnect = function(event) {
+               var playerUUID = event.arguments.shift();
+               addPlayer(playerUUID);
+           };
+
+           var onClientDisconnect = function(event) {
+               var playerUUID = event.arguments.shift();
+               var currentPlayer = Player.getPlayer(playerUUID);
+               logger.log(currentPlayer.name + " left the table", currentPlayer.color);
+
+               var html = $("#"+playerUUID);
+               if(html) html.remove();
+           };
+
+           var onChat = function(event) {
+               var playerUUID = event.arguments.shift();
+               var currentPlayer = Player.getPlayer(playerUUID);
+               logger.log(currentPlayer.name + " said: " + event.arguments.join(" "), currentPlayer.color);
            };
 
            var onChangeState = function(event) {
                logger.log("Changed state into: " + event.arguments[0]);
            };
 
-           socket.setHandlers({
-               onChat: onChat,
+           var socket = Socket({
+               onConnected: onConnected,
                onClientConnect: onClientConnect,
+               onClientDisconnect: onClientDisconnect,
+               onChat: onChat,
                onChangeState: onChangeState
            });
+           if(!socket) return null;
 
 
            $(".deck").click(function(event) {

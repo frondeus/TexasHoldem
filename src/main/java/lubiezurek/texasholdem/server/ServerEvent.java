@@ -5,6 +5,7 @@ package lubiezurek.texasholdem.server;
  */
 public class ServerEvent extends ServerMessage {
     public enum Type {
+        Connected,
         ClientConnect,
         ClientDisconnect,
         Chat,
@@ -35,3 +36,4 @@ public class ServerEvent extends ServerMessage {
         return this;
     }
 }
+

@@ -5,13 +5,10 @@ import lubiezurek.texasholdem.server.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.net.Socket;
-import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by frondeus on 27.12.2015.
@@ -38,63 +35,108 @@ public class LobbyTest {
         Lobby.getInstance().onClientConnected(null);
     }
 
-    @Test
-    public void testOnClientConnected() throws Exception {
+    private void assertResponse(ServerResponse.Status status, String message, ServerMessage msg) {
+        ServerResponse response = (ServerResponse) msg;
+        assertEquals(ServerResponse.class, response.getClass());
+        assertEquals(status, response.getStatus());
+        assertEquals(message, response.getMessage());
+    }
 
-        PlayerMock lastPlayer = null, client = null;
+    private void assertEvent(ServerEvent.Type type, String[] args, ServerMessage msg) {
+        ServerEvent event = (ServerEvent) msg;
+
+        assertEquals(ServerEvent.class, event.getClass());
+        assertEquals(type, event.getEventType());
+        assertEquals(args.length, event.getArguments().length);
+        for(int i = 0; i < args.length; i++)
+            assertEquals(args[i], event.getArguments()[i]);
+    }
+
+    @Test
+    public void testOnEveryClientConnected() throws Exception {
         Lobby.getInstance().maxPlayerCount = 16;
 
+        int oldPlayerCount;
         ServerMessage[] messages = null;
-        ServerMessage[] lastPlayerMessages = null;
+        ArrayList<String> uuids = new ArrayList<>();
 
-        for(int i = 0; i < Lobby.getInstance().maxPlayerCount; i++) {
-            int oldPlayerCount = Lobby.getInstance().getPlayersCount();
+        for(int i = 0; i < Lobby.getInstance().maxPlayerCount - 1; i++) {
+            oldPlayerCount = Lobby.getInstance().getPlayersCount();
 
-            if(client != null) lastPlayer = client;
-            client = createClient();
+            PlayerMock client = createClient();
             Lobby.getInstance().onClientConnected(client);
 
-            assertEquals(1, Lobby.getInstance().getPlayersCount() - oldPlayerCount);
-            assertEquals(Lobby.getInstance().startMoney, client.getMoney());
+            assertEquals(1, Lobby.getInstance().getPlayersCount() - oldPlayerCount);    //Polaczlo jednego
+            assertEquals(Lobby.getInstance().startMoney, client.getMoney());       // Ustawilo mu kase
             assertEquals(false, client.isDisconnected());
 
             messages = client.getLastMessages();
-            if(i < Lobby.getInstance().maxPlayerCount - 1)
+            assertEquals(2, messages.length);
+            assertResponse(ServerResponse.Status.Ok, "Welcome", messages[0]); // Info ze polaczono
+
+            ArrayList<String> uuidsToSend = new ArrayList<>();
+            uuidsToSend.add(client.getUUID().toString());
+            uuidsToSend.addAll(uuids);
+
+            assertEvent(ServerEvent.Type.Connected, uuidsToSend.toArray(new String[]{}) , messages[1]);
+                //Wysylamy info o jego UUID oraz o innych graczach,
+
+            uuids.add(client.getUUID().toString());
+        }
+    }
+
+    @Test
+    public void testOnMoreThanOneClientConnected() throws Exception {
+        Lobby.getInstance().maxPlayerCount = 16;
+
+        PlayerMock client = null, lastClient = null;
+        ServerMessage[] messages = null;
+
+        for(int i = 0; i < Lobby.getInstance().maxPlayerCount-1; i++) { // Ostatni gracz sprowadziłby zmianę stanu
+                                                                            // i wiecej wiadomosci
+            if(client != null) lastClient = client;
+            client = createClient();
+            Lobby.getInstance().onClientConnected(client);
+            client.getLastMessages();
+
+            if(lastClient != null) {
+                messages = lastClient.getLastMessages();
+
                 assertEquals(1, messages.length);
-            else
-                assertEquals(2, messages.length);
-            assertEquals(ServerResponse.class, messages[0].getClass());
-            assertEquals(ServerResponse.Status.Ok, ((ServerResponse)messages[0]).getStatus());
-            assertEquals("Welcome", ((ServerResponse)messages[0]).getMessage());
-
-            if(lastPlayer != null) {
-                lastPlayerMessages = lastPlayer.getLastMessages();
-                if(i < Lobby.getInstance().maxPlayerCount - 1)
-                    assertEquals(1, lastPlayerMessages.length);
-                else
-                    assertEquals(2, lastPlayerMessages.length);
-                assertEquals(ServerEvent.class, lastPlayerMessages[0].getClass());
-
-                assertEquals(ServerEvent.Type.ClientConnect, ((ServerEvent)lastPlayerMessages[0]).getEventType());
-                assertEquals(1, ((ServerEvent)lastPlayerMessages[0]).getArguments().length);
-                assertEquals(client.getUUID().toString(), ((ServerEvent)lastPlayerMessages[0]).getArguments()[0]);
+                assertEvent(ServerEvent.Type.ClientConnect, new String[] {client.getUUID().toString()}, messages[0]);
             }
         }
-        //Ostatni gracz
+    }
 
-        assertEquals(Lobby.getInstance().maxPlayerCount,GamePlay.getInstance().getPlayersCount());
-        assertEquals(GamePlay.getInstance(), Server.getInstance().getState());
+    @Test
+    public void testLastClientConnected() throws Exception {
+        Lobby.getInstance().maxPlayerCount = 16;
+        ServerMessage[] messages = null;
+        ArrayList<PlayerMock> clients = new ArrayList<>();
 
-        assertEquals(ServerEvent.class, messages[1].getClass());
-        assertEquals(ServerEvent.Type.ChangeState, ((ServerEvent)messages[1]).getEventType());
-        assertEquals(1, ((ServerEvent)messages[1]).getArguments().length);
-        assertEquals("GamePlay", ((ServerEvent)messages[1]).getArguments()[0]);
+        for(int i = 0; i < Lobby.getInstance().maxPlayerCount - 1; i++) {
+            PlayerMock client = createClient();
+            Lobby.getInstance().onClientConnected(client);
 
-        assertEquals(ServerEvent.class, lastPlayerMessages[1].getClass());
-        assertEquals(ServerEvent.Type.ChangeState, ((ServerEvent)lastPlayerMessages[1]).getEventType());
-        assertEquals(1, ((ServerEvent)lastPlayerMessages[1]).getArguments().length);
-        assertEquals("GamePlay", ((ServerEvent)lastPlayerMessages[1]).getArguments()[0]);
+            client.getLastMessages();
+            clients.add(client);
+        }
 
+        //Last client:
+        PlayerMock client = createClient();
+        Lobby.getInstance().onClientConnected(client);
+        messages = client.getLastMessages();
+        assertEquals(3, messages.length);
+        assertEvent(ServerEvent.Type.ChangeState, new String[] { "GamePlay"}, messages[2]);
+
+        for(int i = 0; i < Lobby.getInstance().maxPlayerCount - 1; i++) {
+            client = clients.get(i);
+
+            messages = client.getLastMessages();
+            assertEquals(Lobby.getInstance().maxPlayerCount - i, messages.length);
+            assertEvent(ServerEvent.Type.ChangeState,
+                    new String[] { "GamePlay"}, messages[Lobby.getInstance().maxPlayerCount-1-i]);
+        }
     }
 
     @Test

@@ -9,7 +9,7 @@ $card-width: $card-scale * 2.5 * $card-measure;
 $card-height: $card-scale * 3.5 * $card-measure;
 
 $colors: ('red', 'green', 'blue', 'yellow');
-$colors-hex: ('#ffaaaa', '#aaffaa', '#aaaaff', '#ffaaaa');
+$colors-hex: ('#ffaaaa', '#aaffaa', '#aaaaff', '#ffffaa');
 
 @for $i from 1 through length($colors) {
     $color: nth($colors, $i);
