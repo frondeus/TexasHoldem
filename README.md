@@ -14,6 +14,11 @@ Wojciech Polak i Błażej Michalik.
   [![codecov.io](https://codecov.io/github/frondeus/TexasHoldem/coverage.svg?branch=dev)](https://codecov.io/github/frondeus/TexasHoldem?branch=dev)
   ![codecov.io](https://codecov.io/github/frondeus/TexasHoldem/branch.svg?branch=dev)
 
+### Kompilacja testy i uruchomienie w jednym:
+```
+mvn clean compile assembly:single test exec:java -Dexec.mainClass="lubiezurek.texasholdem.Program"
+```
+
 ### Kompilacja
 ```
 mvn clean compile test assembly:single
