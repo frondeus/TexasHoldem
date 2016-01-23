@@ -1,4 +1,4 @@
-package lubiezurek.texasholdem.server.states;
+package lubiezurek.texasholdem.server.gamestates;
 
 import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.*;
@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -82,6 +81,7 @@ public class LobbyTest {
                 //Wysylamy info o jego UUID oraz o innych graczach,
 
             uuids.add(client.getUUID().toString());
+
         }
     }
 
@@ -104,6 +104,8 @@ public class LobbyTest {
 
                 assertEquals(1, messages.length);
                 assertEvent(ServerEvent.Type.ClientConnect, new String[] {client.getUUID().toString()}, messages[0]);
+
+                assertEquals(client, lastClient.getNextPlayer());
             }
         }
     }
@@ -128,6 +130,7 @@ public class LobbyTest {
         messages = client.getLastMessages();
         assertEquals(3, messages.length);
         assertEvent(ServerEvent.Type.ChangeState, new String[] { "GamePlay"}, messages[2]);
+        assertEquals(clients.get(0), client.getNextPlayer());
 
         for(int i = 0; i < Lobby.getInstance().maxPlayerCount - 1; i++) {
             client = clients.get(i);

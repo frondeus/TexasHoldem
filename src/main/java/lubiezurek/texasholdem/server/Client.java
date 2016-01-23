@@ -14,6 +14,7 @@ public class Client extends Thread implements IPlayer {
 
     private int money = 100;
     private UUID uuid;
+    private IPlayer nextPlayer = null;
 
     public Client(Server server, WebSocket socket) {
         if(server == null) throw new IllegalArgumentException();
@@ -52,5 +53,15 @@ public class Client extends Thread implements IPlayer {
 
     public void disconnect() {
         socket.close();
+    }
+
+    @Override
+    public IPlayer getNextPlayer() {
+        return nextPlayer;
+    }
+
+    @Override
+    public void setNextPlayer(IPlayer player) {
+        nextPlayer = player;
     }
 }

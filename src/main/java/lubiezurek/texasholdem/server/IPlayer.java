@@ -15,4 +15,7 @@ public interface IPlayer {
     void sendMessage(ServerMessage message);
 
     void disconnect();
+
+    IPlayer getNextPlayer();
+    void setNextPlayer(IPlayer player);
 }

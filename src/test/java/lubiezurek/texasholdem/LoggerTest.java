@@ -14,17 +14,21 @@ import static org.junit.Assert.*;
 public class LoggerTest {
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+    private PrintStream out;
+    private PrintStream err;
 
     @Before
     public void setUpStreams() {
+        this.err = System.err;
+        this.out = System.out;
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
     }
 
     @After
     public void cleanStreams() {
-        System.setOut(null);
-        System.setErr(null);
+        System.setOut(out);
+        System.setErr(err);
     }
 
     @org.junit.Test

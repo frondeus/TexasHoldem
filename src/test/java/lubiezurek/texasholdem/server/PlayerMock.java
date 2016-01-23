@@ -12,6 +12,7 @@ public class PlayerMock implements IPlayer {
     private int money;
     private ArrayList<ServerMessage> messages = new ArrayList<>();
     private boolean disconnected;
+    private IPlayer nextPlayer;
 
     public PlayerMock() {
         uuid = UUID.randomUUID();
@@ -42,6 +43,16 @@ public class PlayerMock implements IPlayer {
     @Override
     public void disconnect() {
         disconnected = true;
+    }
+
+    @Override
+    public IPlayer getNextPlayer() {
+        return nextPlayer;
+    }
+
+    @Override
+    public void setNextPlayer(IPlayer player) {
+        nextPlayer = player;
     }
 
     @Override

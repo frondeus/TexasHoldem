@@ -1,10 +1,9 @@
-package lubiezurek.texasholdem.server.states;
+package lubiezurek.texasholdem.server.gamestates;
 
 import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -12,7 +11,7 @@ import java.util.Arrays;
  * Created by frondeus on 06.12.2015.
  * Lobby. Players waits until game starts. Players can set game settings.
  */
-public class Lobby implements IGameState {
+public class Lobby extends GameState {
     private volatile static Lobby ourInstance;
     public static Lobby getInstance() {
         if(ourInstance == null) {
@@ -33,16 +32,14 @@ public class Lobby implements IGameState {
 
     public int maxPlayerCount = 4;
     public final int startMoney = 199;
-    private final ArrayList<IPlayer> players = new ArrayList<>();
 
     private Lobby() {
     }
 
-    public int getPlayersCount() {
-        return players.size();
+    public void onEnter() {
+
     }
 
-    @Override
     public void onClientConnected(IPlayer client) {
         if(client == null) throw new IllegalArgumentException();
         if(players.size() < maxPlayerCount) {
@@ -52,6 +49,12 @@ public class Lobby implements IGameState {
             for(IPlayer all: players)
                 uuids.add(all.getUUID().toString());
 
+            if(players.size() > 0) {
+                client.setNextPlayer(players.get(0));
+                players.get(players.size()-1).setNextPlayer(client);
+            }
+            else client.setNextPlayer(client);
+
             players.add(client);
 
             client.setMoney(startMoney);
@@ -60,7 +63,7 @@ public class Lobby implements IGameState {
                     .setStatus(ServerResponse.Status.Ok)
                     .setMessage("Welcome");
 
-                client.sendMessage(response);
+            client.sendMessage(response);
 
 
             ServerEvent connectEvent = new ServerEvent()
@@ -94,19 +97,6 @@ public class Lobby implements IGameState {
         }
     }
 
-    private void broadcast(ServerMessage message) {
-        for(IPlayer all: players) {
-            all.sendMessage(message);
-        }
-    }
-
-    private void broadcastExcept(IPlayer client, ServerMessage message) {
-        for(IPlayer all: players) {
-            if(all != client)    all.sendMessage(message);
-        }
-    }
-
-    @Override
     public void onClientMessage(IPlayer client, ClientMessage message) {
         if(client == null) throw new IllegalArgumentException();
         if(message == null) throw  new IllegalArgumentException();
@@ -147,7 +137,6 @@ public class Lobby implements IGameState {
         }
     }
 
-    @Override
     public void onClientDisconnected(IPlayer client) {
         Logger.status(client + ": Disconnected");
         if(players.indexOf(client) >= 0) {

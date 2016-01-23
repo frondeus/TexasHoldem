@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by frondeus on 21.12.2015.
  */
-public class ServerClientThreadTest {
+public class ClientTest {
 
     private Client client;
 

@@ -11,7 +11,7 @@ import java.net.InetSocketAddress;
 import lubiezurek.texasholdem.client.IClientMessageBuilder;
 import lubiezurek.texasholdem.json.JSONClientMessageBuilder;
 import lubiezurek.texasholdem.json.JSONServerMessageBuilder;
-import lubiezurek.texasholdem.server.states.Lobby;
+import lubiezurek.texasholdem.server.gamestates.Lobby;
 
 public class Server extends WebSocketServer {
     
@@ -28,7 +28,7 @@ public class Server extends WebSocketServer {
         return instance;
     }
 
-    private IGameState state;
+    private GameState state;
     private final IClientMessageBuilder clientMessageBuilder;
     private final IServerMessageBuilder serverMessageBuilder;
     private HashMap<WebSocket, Client> clients;
@@ -77,12 +77,13 @@ public class Server extends WebSocketServer {
         System.err.println("on error: " + ex);
     }
 
-    public IGameState getState() {
+    public GameState getState() {
         return this.state;
     }
 
-    public void setState(IGameState state) {
+    public void setState(GameState state) {
         this.state = state;
+        this.state.onEnter();
     }
 
 }

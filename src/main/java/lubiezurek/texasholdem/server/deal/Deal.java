@@ -1,18 +1,40 @@
 package lubiezurek.texasholdem.server.deal;
 
 
+import lubiezurek.texasholdem.server.IPlayer;
 import lubiezurek.texasholdem.server.IState;
+import lubiezurek.texasholdem.server.model.card.Card;
+
+import java.util.ArrayList;
 
 public class Deal{
-	IState currentState;
+	private IState currentState;
+	//ArrayList<Bet> bets = new ArrayList<Bet>();
+	private ArrayList<Card> cards = new ArrayList<Card>();
+	private IPlayer currentPlayer;
 
-	Deal(){
+	public Deal(){
 		
 	}
 
-	IState getState(){ return currentState; }
+    public void setFirstPlayer(IPlayer player) {
+        currentPlayer = player;
+    }
 
-	void setState(IState newState){ currentState = newState; }
+    public void nextPlayer() {
+        currentPlayer = currentPlayer.getNextPlayer();
+    }
+
+    public IPlayer getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+	public IState getState(){ return currentState; }
+
+	public void setState(IState newState){
+        currentState = newState;
+        currentState.onStart();
+    }
 
 
 

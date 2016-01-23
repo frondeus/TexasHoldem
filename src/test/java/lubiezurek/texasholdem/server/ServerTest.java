@@ -1,11 +1,7 @@
 package lubiezurek.texasholdem.server;
 
-import lubiezurek.texasholdem.server.states.GamePlay;
-import lubiezurek.texasholdem.server.states.Lobby;
+import lubiezurek.texasholdem.server.gamestates.GamePlay;
 import org.junit.Test;
-
-import java.text.NumberFormat;
-import java.text.ParseException;
 
 import static org.junit.Assert.*;
 

@@ -1,17 +1,16 @@
-package lubiezurek.texasholdem.server.states;
+package lubiezurek.texasholdem.server.gamestates;
 
 import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.*;
+import lubiezurek.texasholdem.server.deal.Deal;
 import lubiezurek.texasholdem.server.model.Deck;
-
-import java.io.IOException;
-import java.util.ArrayList;
+import lubiezurek.texasholdem.server.states.Licitation;
 
 /**
  * Created by frondeus on 14.12.2015.
  */
-public class GamePlay implements IGameState {
+public class GamePlay extends GameState {
     private volatile static GamePlay ourInstance;
     public static GamePlay getInstance() {
         if(ourInstance == null) {
@@ -22,31 +21,21 @@ public class GamePlay implements IGameState {
         return ourInstance;
     }
 
-    private ArrayList<IPlayer> players = new ArrayList<>();
-    private Deck deck = new Deck();
+    private Deck deck;
+    private Deal deal; // TODO: Zamienic na jakas liste lub stack.
 
     private GamePlay() {
+        deck = new Deck();
+        deal = new Deal();
     }
 
-    public int getPlayersCount() {
-        return players.size();
-    }
-    public void setPlayers(ArrayList<IPlayer> players) {
-        this.players = players;
-    }
-
-    protected void broadcast(ServerMessage message) throws IOException {
-        for(IPlayer all: players) {
-            all.sendMessage(message);
+    public void onEnter() {
+        if(players.size() > 0 ) {
+            deal.setFirstPlayer(players.get(0));
+            deal.setState(Licitation.getInstance());
         }
     }
 
-    private void broadcastExcept(IPlayer client, ServerMessage message) throws IOException {
-        for(IPlayer all: players) {
-            if(all != client)    all.sendMessage(message);
-        }
-    }
-    @Override
     public void onClientConnected(IPlayer client) {
         ServerResponse response = new ServerResponse()
                 .setStatus(ServerResponse.Status.Failure)
@@ -55,12 +44,10 @@ public class GamePlay implements IGameState {
         client.disconnect();
     }
 
-    @Override
     public void onClientMessage(IPlayer client, ClientMessage message) {
 
     }
 
-    @Override
     public void onClientDisconnected(IPlayer client) {
         Logger.status(client + ": Disconnected");
         if(players.indexOf(client) >= 0) {
@@ -70,12 +57,7 @@ public class GamePlay implements IGameState {
                     .setType(ServerEvent.Type.ClientDisconnect)
                     .setArguments(new String[] {client.getUUID().toString()});
 
-            try {
-                broadcastExcept(client, event);
-            }
-            catch(IOException e) {
-                Logger.exception(e);
-            }
+            broadcastExcept(client, event);
         }
     }
 }
