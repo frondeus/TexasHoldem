@@ -1,5 +1,5 @@
 @charset "UTF-8";
-*, *::before, *::after {
+*, *:before, *:after {
   box-sizing: inherit; }
 
 html {
@@ -8,134 +8,12 @@ html {
 * {
   border: 0;
   margin: 0;
-  padding: 0; }
+  padding: 0;
+  overflow: hidden; }
 
 html, body {
   width: 100%;
   height: 100%; }
-
-.show, .show-sm, .show-md, .show-lg {
-  display: none; }
-
-.hide-sm {
-  display: none; }
-
-@media all and (min-width: 600px) {
-  .hide-md {
-    display: none; } }
-
-@media all and (min-width: 960px) {
-  .hide-lg {
-    display: none; } }
-
-.show-sm {
-  display: initial; }
-
-@media all and (min-width: 600px) {
-  .show-md {
-    display: initial; } }
-
-@media all and (min-width: 960px) {
-  .show-lg {
-    display: initial; } }
-
-.row, .row-sm, .row-md, .row-lg, .game {
-  display: flex;
-  flex-direction: column; }
-
-.row-sm {
-  flex-direction: row; }
-
-@media all and (min-width: 600px) {
-  .row-md {
-    flex-direction: row; } }
-
-@media all and (min-width: 960px) {
-  .row-lg {
-    flex-direction: row; } }
-
-.row-item-1, .row-item, .game #log, .game form {
-  flex: 1;
-  height: 100%;
-  overflow: auto; }
-
-.row-item-2 {
-  flex: 2;
-  height: 100%;
-  overflow: auto; }
-
-.row-item-3, .game .hands, .game .table {
-  flex: 3;
-  height: 100%;
-  overflow: auto; }
-
-.row-item-4 {
-  flex: 4;
-  height: 100%;
-  overflow: auto; }
-
-.row-item-5 {
-  flex: 5;
-  height: 100%;
-  overflow: auto; }
-
-.row-item-6 {
-  flex: 6;
-  height: 100%;
-  overflow: auto; }
-
-.row-item-7 {
-  flex: 7;
-  height: 100%;
-  overflow: auto; }
-
-.row-item-8 {
-  flex: 8;
-  height: 100%;
-  overflow: auto; }
-
-.row-item-9 {
-  flex: 9;
-  height: 100%;
-  overflow: auto; }
-
-.row-item-10 {
-  flex: 10;
-  height: 100%;
-  overflow: auto; }
-
-.row-item-11 {
-  flex: 11;
-  height: 100%;
-  overflow: auto; }
-
-.row-item-12 {
-  flex: 12;
-  height: 100%;
-  overflow: auto; }
-
-.vertical-align, .center-align, .game, .game .hands, .game .table {
-  display: flex;
-  align-items: center;
-  justify-content: center; }
-
-.center-align, .game, .game .hands, .game .table {
-  text-align: center; }
-
-.icon {
-  vertical-align: 4%; }
-  @media all and (min-width: 600px) {
-    .icon {
-      font-size: 1.3em;
-      line-height: 0.75em;
-      vertical-align: 40%; } }
-
-body {
-  background-color: #355e3b;
-  color: #ffffff; }
-
-.error {
-  color: #ff3333; }
 
 .red {
   color: #ffaaaa; }
@@ -149,123 +27,145 @@ body {
 .yellow {
   color: #ffffaa; }
 
-.game {
-  height: 100%;
-  width: 100%;
-  overflow: hidden; }
-  .game #log {
-    list-style: none;
+.error {
+  color: red; }
+
+body {
+  background-color: #355e3b;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; }
+  body .table {
+    flex: 15;
     width: 100%;
-    text-align: left;
-    padding: 1em;
-    padding-left: 3em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; }
+    body .table .opponents, body .table .shared, body .table .player {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center; }
+    body .table .opponents .opponent {
+      flex: 1;
+      width: 100%;
+      margin: 0.5em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center; }
+      body .table .opponents .opponent .hand {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center; }
+        body .table .opponents .opponent .hand .card-slot, body .table .opponents .opponent .hand .deck {
+          margin: 0.5em; }
+    body .table .player .hand {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center; }
+      body .table .player .hand .card-slot, body .table .player .hand .deck {
+        margin: 0.5em; }
+    body .table .card-slot, body .table .deck, body .table .card, body .table .face, body .table .card .front, body .table .card .back {
+      border-radius: 2vh;
+      -webkit-border-radius: 2vh;
+      width: 12.5vh;
+      height: 17.5vh;
+      min-width: 12.5vh;
+      min-height: 17.5vh; }
+    body .table .card-slot, body .table .deck {
+      border: 2px dashed white;
+      margin: 1em;
+      perspective: 1000;
+      -webkit-perspective: 1000;
+      overflow: visible; }
+      body .table .card-slot:hover .card, body .table .deck:hover .card, body .table .card-slot.hover .card, body .table .hover.deck .card {
+        transform: rotateY(180deg) translateZ(-2em); }
+    body .table .card {
+      transition: transform 0.6s;
+      -webkit-transition: transform 0.6s;
+      transform-style: preserve-3d;
+      position: relative;
+      overflow: visible; }
+      body .table .card .face, body .table .card .front, body .table .card .back {
+        backface-visibility: hidden;
+        position: absolute;
+        top: -2px;
+        box-shadow: 2px 2px 5px black; }
+      body .table .card .front {
+        z-index: 2;
+        transform: rotateY(180deg);
+        left: 2px;
+        background-color: white;
+        color: black;
+        font-size: xx-large;
+        font-weight: bold;
+        text-align: center;
+        vertical-align: middle;
+        display: flex;
+        flex-direction: column; }
+        body .table .card .front:before, body .table .card .front:after {
+          font-size: xx-large;
+          display: block;
+          margin: 0.1em;
+          text-align: left;
+          flex: 1; }
+        body .table .card .front:after {
+          transform: rotateZ(180deg); }
+      body .table .card .spade, body .table .card .club {
+        color: black; }
+      body .table .card .diamond, body .table .card .heart {
+        color: red; }
+      body .table .card .heart:before, body .table .card .heart:after {
+        content: "♥"; }
+      body .table .card .diamond:before, body .table .card .diamond:after {
+        content: "♦"; }
+      body .table .card .club:before, body .table .card .club:after {
+        content: "♣"; }
+      body .table .card .spade:before, body .table .card .spade:after {
+        content: "♠"; }
+      body .table .card .back {
+        transform: rotateY(0deg);
+        left: -2px;
+        background-color: #def;
+        background-image: radial-gradient(closest-side, transparent 98%, rgba(0, 0, 0, 0.3) 99%), radial-gradient(closest-side, transparent 98%, rgba(0, 0, 0, 0.3) 99%);
+        background-size: 10vh 10vh;
+        background-position: 0 0, 5vh 5vh; }
+    body .table .deck {
+      border: 0;
+      background-color: #def;
+      background-image: radial-gradient(closest-side, transparent 98%, rgba(0, 0, 0, 0.3) 99%), radial-gradient(closest-side, transparent 98%, rgba(0, 0, 0, 0.3) 99%);
+      background-size: 10vh 10vh;
+      background-position: 0 0, 5vh 5vh;
+      box-shadow: 5px 5px 20px black; }
+  body #log {
+    flex: 2;
+    width: 100%;
     border-top: 2px dashed white;
-    overflow: scroll;
-    overflow-x: hidden; }
-    .game #log::-webkit-scrollbar {
-      width: 0px;
-      /* remove scrollbar space */
-      background: transparent;
-      /* optional: just make scrollbar invisible */ }
-  .game .hands {
-    width: 100%; }
-  .game .table {
-    width: 100%; }
-  .game .pattern, .game .deck, .game .back {
-    background-color: #def;
-    background-image: radial-gradient(closest-side, transparent 98%, rgba(0, 0, 0, 0.3) 99%), radial-gradient(closest-side, transparent 98%, rgba(0, 0, 0, 0.3) 99%);
-    background-size: 80px 80px;
-    background-position: 0 0, 40px 40px; }
-  .game .slot, .game .deck {
-    border: 2px dashed white;
-    margin: 5pt;
-    perspective: 1000;
-    -webkit-perspective: 1000;
-    display: inline-block;
-    overflow: visible; }
-    .game .slot.hover .card, .game .hover.deck .card {
-      transform: rotateY(180deg) translateZ(-2em); }
-  .game .hands {
-    overflow: hidden; }
-    .game .hands .hand {
-      margin: 5pt;
-      width: 100%; }
-      .game .hands .hand .title {
-        display: block; }
-      .game .hands .hand .slot, .game .hands .hand .deck {
-        width: 128px;
-        height: 179.2px;
-        margin: 5pt; }
-  .game .deck {
-    box-shadow: 5px 5px 20px black; }
-    .game .deck .card {
-      transform: translateZ(3em); }
-    .game .deck.hover .card {
-      transform: rotateY(180deg) translateZ(-4em); }
-  .game .card, .game .slot, .game .deck, .game .face, .game .back, .game .front {
-    width: 160px;
-    height: 224px;
-    border-radius: 0.5em;
-    -webkit-border-radius: 0.5em; }
-  .game .card {
-    transition: 0.6s;
-    transform-style: preserve-3d;
-    position: relative; }
-  .game .card.blank .face, .game .card.blank .back, .game .card.blank .front {
-    display: none; }
-  .game .face, .game .back, .game .front {
-    backface-visibility: hidden;
-    position: absolute;
-    box-shadow: 2px 2px 5px black; }
-  .game .back {
-    transform: rotateY(0deg);
-    top: -2px;
-    left: -2px; }
-  .game .front {
-    background: white;
-    color: black;
-    font-size: xx-large;
-    font-weight: bold;
-    text-align: center;
-    vertical-align: middle;
-    z-index: 2;
-    transform: rotateY(180deg);
-    top: -2px;
-    left: 2px; }
-    .game .front:before, .game .front:after {
-      font-size: xx-large;
-      display: block;
-      margin: 0.1em;
-      text-align: left; }
-    .game .front:before {
-      margin-bottom: 30%; }
-    .game .front:after {
-      margin-top: 30%;
-      transform: rotateZ(180deg); }
-  .game .spade, .game .club {
-    color: black; }
-  .game .diamond, .game .heart {
-    color: red; }
-  .game .heart:before, .game .heart:after {
-    content: "♥"; }
-  .game .diamond:before, .game .diamond:after {
-    content: "♦"; }
-  .game .club:before, .game .club:after {
-    content: "♣"; }
-  .game .spade:before, .game .spade:after {
-    content: "♠"; }
-  .game form {
+    padding: 1em; }
+  body #form {
+    flex: 1;
     width: 100%;
-    padding: 0;
-    margin: 0; }
-    .game form input {
-      padding: 1em; }
-    .game form input#text-input {
-      width: 80%;
-      margin: 0; }
-    .game form input[type="submit"] {
-      width: 10%;
-      margin: 0;
-      background: #fff; }
+    display: flex;
+    flex-direction: row; }
+    body #form input {
+      border: 2px solid white;
+      background-color: #477f4f;
+      color: white; }
+      body #form input:hover {
+        background-color: #518f5a; }
+    body #form input#text-input {
+      flex: 5;
+      padding: 0.5em; }
+    body #form input[type="submit"] {
+      flex: 1; }
 
 /*# sourceMappingURL=websocket.css.map */

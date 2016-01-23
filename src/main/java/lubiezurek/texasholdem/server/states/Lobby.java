@@ -31,7 +31,7 @@ public class Lobby implements IGameState {
         }
     }
 
-    public int maxPlayerCount = 2;
+    public int maxPlayerCount = 4;
     public final int startMoney = 199;
     private final ArrayList<IPlayer> players = new ArrayList<>();
 
@@ -47,6 +47,11 @@ public class Lobby implements IGameState {
         if(client == null) throw new IllegalArgumentException();
         if(players.size() < maxPlayerCount) {
             Logger.status(client + ": Add player to list");
+            ArrayList<String> uuids = new ArrayList<>();
+            uuids.add(client.getUUID().toString());
+            for(IPlayer all: players)
+                uuids.add(all.getUUID().toString());
+
             players.add(client);
 
             client.setMoney(startMoney);
@@ -59,6 +64,17 @@ public class Lobby implements IGameState {
                 client.sendMessage(response);
             }
             catch (IOException e) {
+                Logger.exception(e);
+            }
+
+
+            ServerEvent connectEvent = new ServerEvent()
+                    .setType(ServerEvent.Type.Connected)
+                    .setArguments(uuids.toArray(new String[]{}));
+            try {
+                client.sendMessage(connectEvent);
+            }
+            catch(IOException e) {
                 Logger.exception(e);
             }
 

@@ -1,0 +1,55 @@
+
+.front {
+    @extend .face;
+    z-index: 2;
+    transform: rotateY(180deg);
+    left: 2px;
+
+    background-color: white;
+    color: black;
+
+    font-size: xx-large;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+
+    display: flex;
+    flex-direction: column;
+
+    &:before, &:after {
+        font-size: xx-large;
+        display: block;
+        margin: 0.1em;
+        text-align: left;
+        flex: 1;
+    }
+
+    &:after {
+        transform: rotateZ(180deg);
+    }
+}
+
+.spade, .club {
+    color: black;
+}
+
+.diamond, .heart {
+    color: red;
+}
+
+.heart:before, .heart:after {
+    content: "♥";
+}
+
+.diamond:before, .diamond:after {
+    content: "♦";
+}
+
+.club:before, .club:after {
+    content: "♣";
+}
+
+.spade:before, .spade:after {
+    content: "♠";
+}
+
