@@ -1,6 +1,7 @@
 package lubiezurek.texasholdem.server.deal;
 
 
+import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.server.IPlayer;
 import lubiezurek.texasholdem.server.IState;
 import lubiezurek.texasholdem.server.ServerEvent;
@@ -12,19 +13,24 @@ import java.util.ArrayList;
 public class Deal{
 	private IState currentState;
 	//ArrayList<Bet> bets = new ArrayList<Bet>();
-	private ArrayList<Card> cards = new ArrayList<Card>();
 	private IPlayer currentPlayer;
+    private Card[] flop = new Card[3];
+    private Card turn = null;
+    private Card river = null;
 
 	public Deal(){
 		
 	}
 
-    public void setFirstPlayer(IPlayer player) {
+    public void setPlayer(IPlayer player) {
         currentPlayer = player;
+        GamePlay.getInstance().sendTurnEvent();
     }
 
     public void nextPlayer() {
-        currentPlayer = currentPlayer.getNextPlayer();
+        if(currentPlayer == null) Logger.error("There is no player!. Error");
+        if(currentPlayer.getNextPlayer() == null) Logger.error("There is no next player. Error!");
+        setPlayer(currentPlayer.getNextPlayer());
     }
 
     public IPlayer getCurrentPlayer() {

@@ -10,7 +10,8 @@ public class ServerEvent extends ServerMessage {
         ClientDisconnect,
         Commands,
         Chat,
-        ChangeState
+        ChangeState,
+        Turn
     }
 
     private Type type;

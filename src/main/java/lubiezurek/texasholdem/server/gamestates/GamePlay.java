@@ -7,6 +7,7 @@ import lubiezurek.texasholdem.server.deal.Deal;
 import lubiezurek.texasholdem.server.model.Deck;
 import lubiezurek.texasholdem.server.states.Licitation;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 /**
@@ -24,7 +25,7 @@ public class GamePlay extends GameState {
     }
 
     private Deck deck;
-    private Deal deal; // TODO: Zamienic na jakas liste lub stack.
+    public Deal deal; // TODO: Zamienic na jakas liste lub stack.
 
     private GamePlay() {
         deck = new Deck();
@@ -39,12 +40,13 @@ public class GamePlay extends GameState {
             for(int i = 0; i < players.size(); i++) {
                 if(player != null) lastPlayer = player;
                 player = players.get(i);
+                player.setNextPlayer(players.get(0));
                 if(lastPlayer != null)
                     lastPlayer.setNextPlayer(player);
             }
 
-            deal.setFirstPlayer(players.get(0));
             deal.setState(Licitation.getInstance());
+            deal.setPlayer(players.get(0));
         }
     }
 
@@ -57,15 +59,31 @@ public class GamePlay extends GameState {
     }
 
     public void onClientMessage(IPlayer client, ClientMessage message) {
-        if(message.getCommand() == "commands") {
-            ServerEvent event = new ServerEvent()
-                    .setType(ServerEvent.Type.Commands)
-                    .setArguments(deal.getState().getAvailableCommands());
-
-            client.sendMessage(event);
-        }
-        else
+        IPlayer currentPlayer = deal.getCurrentPlayer();
+        if(currentPlayer == client)
             deal.getState().onPlayerMessage(client, message);
+        else {
+            ServerResponse response = new ServerResponse()
+                    .setStatus(ServerResponse.Status.Failure)
+                    .setMessage("It's not your turn");
+            client.sendMessage(response);
+        }
+    }
+
+    public void sendTurnEvent() {
+        IPlayer currentPlayer = deal.getCurrentPlayer();
+
+        ServerEvent event = new ServerEvent()
+                .setType(ServerEvent.Type.Turn)
+                .setArguments(new String[]{currentPlayer.getUUID().toString()});
+
+        GamePlay.getInstance().broadcast(event);
+
+        ServerEvent commandsEvent = new ServerEvent()
+                .setType(ServerEvent.Type.Commands)
+                .setArguments(deal.getState().getAvailableCommands());
+
+        currentPlayer.sendMessage(commandsEvent);
     }
 
     public void onClientDisconnected(IPlayer client) {

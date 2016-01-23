@@ -3,6 +3,8 @@ package lubiezurek.texasholdem.server.states;
 import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.IPlayer;
 import lubiezurek.texasholdem.server.IState;
+import lubiezurek.texasholdem.server.deal.Deal;
+import lubiezurek.texasholdem.server.gamestates.GamePlay;
 import lubiezurek.texasholdem.server.gamestates.Lobby;
 
 /**
@@ -25,8 +27,10 @@ public class Licitation implements IState {
         }
     }
 
-    private Licitation() {
+    private Deal deal;
 
+    private Licitation() {
+        deal = GamePlay.getInstance().deal;
     }
 
     @Override
@@ -42,5 +46,6 @@ public class Licitation implements IState {
     @Override
     public void onPlayerMessage(IPlayer player, ClientMessage message) {
 
+        deal.nextPlayer();
     }
 }

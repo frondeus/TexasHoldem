@@ -22,6 +22,10 @@ define(["./random", "./string"], function(random, str) {
         myUUID = _myUUID;
     };
 
+    var getUUID = function(){ 
+        return myUUID;
+    };
+
     var getPlayer = function(playerUUID) {
         var player = players[playerUUID];
         if(myUUID == playerUUID && !player) {
@@ -37,6 +41,7 @@ define(["./random", "./string"], function(random, str) {
 
     return {
         getPlayer: getPlayer,
-        setUUID: setUUID
+        setUUID: setUUID,
+        myUUID: getUUID
     };
 });
