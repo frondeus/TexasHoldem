@@ -50,10 +50,8 @@ public class Deck{
 	}*/
 	
 	public void removeCard(int index) throws Exception {
-		if(size() - 1 < index || index < 0) 
-			throw new 
-				Exception("Given index is out of bounds with the deck"); 
-		
+		if(size() - 1 < index || index < 0)  throw new IndexOutOfBoundsException("index")
+
 		cards.remove(index);
 	}
 	

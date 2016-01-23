@@ -60,32 +60,17 @@ public class Lobby implements IGameState {
                     .setStatus(ServerResponse.Status.Ok)
                     .setMessage("Welcome");
 
-            try {
                 client.sendMessage(response);
-            }
-            catch (IOException e) {
-                Logger.exception(e);
-            }
 
 
             ServerEvent connectEvent = new ServerEvent()
                     .setType(ServerEvent.Type.Connected)
                     .setArguments(uuids.toArray(new String[]{}));
-            try {
                 client.sendMessage(connectEvent);
-            }
-            catch(IOException e) {
-                Logger.exception(e);
-            }
-
             ServerEvent event = new ServerEvent()
                     .setType(ServerEvent.Type.ClientConnect)
                     .setArguments(new String[] {client.getUUID().toString()});
-            try {
                 broadcastExcept(client,event);
-            } catch (IOException e) {
-                Logger.exception(e);
-            }
 
             //TODO: ready!?
             if(players.size() >= maxPlayerCount) {
@@ -94,12 +79,7 @@ public class Lobby implements IGameState {
                 event = new ServerEvent()
                         .setType(ServerEvent.Type.ChangeState)
                         .setArguments(new String[] {"GamePlay"});
-                try {
                     broadcast(event);
-                }
-                catch(IOException e) {
-                    Logger.exception(e);
-                }
             }
         }
         else {
@@ -109,22 +89,18 @@ public class Lobby implements IGameState {
             ServerResponse response = new ServerResponse()
                     .setStatus(ServerResponse.Status.Failure)
                     .setMessage("Full server");
-            try {
                 client.sendMessage(response);
-            } catch (IOException e) {
-                Logger.exception(e);
-            }
             client.disconnect();
         }
     }
 
-    private void broadcast(ServerMessage message) throws IOException {
+    private void broadcast(ServerMessage message) {
         for(IPlayer all: players) {
             all.sendMessage(message);
         }
     }
 
-    private void broadcastExcept(IPlayer client, ServerMessage message) throws IOException {
+    private void broadcastExcept(IPlayer client, ServerMessage message) {
         for(IPlayer all: players) {
             if(all != client)    all.sendMessage(message);
         }
@@ -141,11 +117,7 @@ public class Lobby implements IGameState {
             response = new ServerResponse()
                     .setStatus(ServerResponse.Status.Failure)
                     .setMessage("Not connected");
-            try {
                 client.sendMessage(response);
-            } catch (IOException e) {
-                Logger.exception(e);
-            }
             return;
         }
 
@@ -157,33 +129,20 @@ public class Lobby implements IGameState {
                 response = new ServerResponse()
                         .setStatus(ServerResponse.Status.Ok)
                         .setMessage("Send");
-                try {
                     client.sendMessage(response);
-                } catch (IOException e) {
-                    Logger.exception(e);
-                }
-
                 ArrayList<String> chatArguments = new ArrayList<>();
                 chatArguments.add(client.getUUID().toString());
                 chatArguments.addAll(Arrays.asList(message.getArguments()));
                 ServerEvent event = new ServerEvent()
                         .setType(ServerEvent.Type.Chat)
                         .setArguments(chatArguments.toArray(new String[]{}));
-                try {
-                    broadcast(event);
-                } catch (IOException e) {
-                    Logger.exception(e);
-                }
+                broadcast(event);
                 break;
             default:
                 response = new ServerResponse()
                         .setStatus(ServerResponse.Status.Failure)
                         .setMessage("Invalid command");
-                try {
                     client.sendMessage(response);
-                } catch (IOException e) {
-                    Logger.exception(e);
-                }
                 break;
         }
     }
@@ -196,11 +155,7 @@ public class Lobby implements IGameState {
             ServerEvent event = new ServerEvent()
                     .setType(ServerEvent.Type.ClientDisconnect)
                     .setArguments(new String[] {client.getUUID().toString()});
-            try {
                 broadcastExcept(client,event);
-            } catch (IOException e) {
-                Logger.exception(e);
-            }
         }
     }
 }

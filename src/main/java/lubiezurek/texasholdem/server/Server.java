@@ -1,18 +1,13 @@
 package lubiezurek.texasholdem.server;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.util.HashMap;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import java.net.UnknownHostException;
+
 import java.net.InetSocketAddress;
 
-import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.client.IClientMessageBuilder;
 import lubiezurek.texasholdem.json.JSONClientMessageBuilder;
 import lubiezurek.texasholdem.json.JSONServerMessageBuilder;
@@ -36,7 +31,7 @@ public class Server extends WebSocketServer {
     private IGameState state;
     private final IClientMessageBuilder clientMessageBuilder;
     private final IServerMessageBuilder serverMessageBuilder;
-    private HashMap<WebSocket, ServerClientThread> clients;
+    private HashMap<WebSocket, Client> clients;
 
     private Server(int port) {
         super(new InetSocketAddress(port));
@@ -58,7 +53,7 @@ public class Server extends WebSocketServer {
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         System.out.println("New connection " + conn.getRemoteSocketAddress());
-        ServerClientThread client = new ServerClientThread(this, conn);
+        Client client = new Client(this, conn);
 
         clients.put(conn, client);
         state.onClientConnected(client);
@@ -66,14 +61,14 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        ServerClientThread client = clients.get(conn);
+        Client client = clients.get(conn);
         state.onClientDisconnected(client);
 
     }
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        ServerClientThread client = clients.get(conn);
+        Client client = clients.get(conn);
         state.onClientMessage(client, clientMessageBuilder.deserializeMessage(message));
     }
 

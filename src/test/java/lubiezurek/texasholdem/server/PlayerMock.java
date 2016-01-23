@@ -35,7 +35,7 @@ public class PlayerMock implements IPlayer {
     }
 
     @Override
-    public void sendMessage(ServerMessage message) throws IOException {
+    public void sendMessage(ServerMessage message) {
         messages.add(message);
     }
 

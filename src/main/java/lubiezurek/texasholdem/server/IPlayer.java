@@ -12,7 +12,7 @@ public interface IPlayer {
 
     void setMoney(int money);
 
-    void sendMessage(ServerMessage message) throws IOException;
+    void sendMessage(ServerMessage message);
 
     void disconnect();
 }

@@ -8,14 +8,14 @@ import java.util.UUID;
 import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.client.ClientMessage;
 
-public class ServerClientThread extends Thread implements IPlayer {
+public class Client extends Thread implements IPlayer {
     private final Server server;
     private final WebSocket socket;
 
     private int money = 100;
     private UUID uuid;
 
-    public ServerClientThread(Server server, WebSocket socket) {
+    public Client(Server server, WebSocket socket) {
         if(server == null) throw new IllegalArgumentException();
         if(socket == null) throw new IllegalArgumentException();
         this.server = server;
@@ -45,8 +45,9 @@ public class ServerClientThread extends Thread implements IPlayer {
         this.money = money;
     }
 
-    public void sendMessage(ServerMessage message) throws IOException {
-        socket.send(this.server.getServerMessageBuilder().serializeMessage(message));
+    public void sendMessage(ServerMessage message) {
+            socket.send(this.server.getServerMessageBuilder().serializeMessage(message));
+            //Logger.exception(e);
     }
 
     public void disconnect() {

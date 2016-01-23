@@ -4,11 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.net.Socket;
 import org.java_websocket.WebSocket;
-import java.net.SocketAddress;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -20,7 +17,7 @@ import static org.mockito.Mockito.*;
  */
 public class ServerClientThreadTest {
 
-    private ServerClientThread client;
+    private Client client;
 
 
     @Before
@@ -35,18 +32,18 @@ public class ServerClientThreadTest {
 
     @Test (expected = IllegalArgumentException.class)
     public void testSocketNull() throws Exception {
-        new ServerClientThread(Server.getInstance(),null);
+        new Client(Server.getInstance(),null);
     }
 
     @Test (expected  = IllegalArgumentException.class)
     public void testServerNull() throws Exception {
         WebSocket socket = mock(WebSocket.class);
-        new ServerClientThread(null, socket);
+        new Client(null, socket);
     }
 
-    private ServerClientThread  createClient() throws Exception {
+    private Client createClient() throws Exception {
         WebSocket socket = mock(WebSocket.class);
-        return new ServerClientThread(Server.getInstance(), socket);
+        return new Client(Server.getInstance(), socket);
     }
 
     @Test

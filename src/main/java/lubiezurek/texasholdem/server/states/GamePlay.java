@@ -51,11 +51,7 @@ public class GamePlay implements IGameState {
         ServerResponse response = new ServerResponse()
                 .setStatus(ServerResponse.Status.Failure)
                 .setMessage("Game is in progress");
-        try {
-            client.sendMessage(response);
-        } catch (IOException e) {
-            Logger.exception(e);
-        }
+        client.sendMessage(response);
         client.disconnect();
     }
 
