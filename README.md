@@ -16,18 +16,18 @@ Wojciech Polak i Błażej Michalik.
 
 ### Kompilacja
 ```
-mvn clean compile assembly:single 
+mvn clean compile test assembly:single
 ```
 
 ### Uruchomienie
 Serwer:
 ```
-java -jar target/TexasHoldem-0.0.1-SNAPSHOT-jar-with-dependencies.jar -s
+java -jar target/TexasHoldem-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 ```
 
 Klient:
 ```
-java -jar target/TexasHoldem-0.0.1-SNAPSHOT-jar-with-dependencies.jar -c
+chromium --allow-file-access-from-files websocket-client/index.html
 ```
 
 ### Diagramy i inne
