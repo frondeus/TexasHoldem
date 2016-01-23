@@ -8,6 +8,7 @@ public class ServerEvent extends ServerMessage {
         Connected,
         ClientConnect,
         ClientDisconnect,
+        Commands,
         Chat,
         ChangeState
     }

@@ -39,7 +39,7 @@ public class JSONServerEventBuilder implements IServerMessageBuilder {
         JSONObject json  = new JSONObject();
         ServerEvent event = (ServerEvent) message;
 
-        json.put(JSONServerMessageBuilder.messageTypeKey, event.getClass().toString());
+        json.put(JSONServerMessageBuilder.messageTypeKey, event.getClass().getSimpleName());
         json.put("type", event.getEventType().toString());
         json.put("arguments", event.getArguments());
 

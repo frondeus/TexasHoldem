@@ -105,7 +105,6 @@ public class LobbyTest {
                 assertEquals(1, messages.length);
                 assertEvent(ServerEvent.Type.ClientConnect, new String[] {client.getUUID().toString()}, messages[0]);
 
-                assertEquals(client, lastClient.getNextPlayer());
             }
         }
     }
@@ -129,8 +128,7 @@ public class LobbyTest {
         Lobby.getInstance().onClientConnected(client);
         messages = client.getLastMessages();
         assertEquals(3, messages.length);
-        assertEvent(ServerEvent.Type.ChangeState, new String[] { "GamePlay"}, messages[2]);
-        assertEquals(clients.get(0), client.getNextPlayer());
+        assertEvent(ServerEvent.Type.ChangeState, new String[] { "Licitation"}, messages[2]);
 
         for(int i = 0; i < Lobby.getInstance().maxPlayerCount - 1; i++) {
             client = clients.get(i);
@@ -138,7 +136,7 @@ public class LobbyTest {
             messages = client.getLastMessages();
             assertEquals(Lobby.getInstance().maxPlayerCount - i, messages.length);
             assertEvent(ServerEvent.Type.ChangeState,
-                    new String[] { "GamePlay"}, messages[Lobby.getInstance().maxPlayerCount-1-i]);
+                    new String[] { "Licitation" }, messages[Lobby.getInstance().maxPlayerCount-1-i]);
         }
     }
 

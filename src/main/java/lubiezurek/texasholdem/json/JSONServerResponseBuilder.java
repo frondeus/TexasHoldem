@@ -26,7 +26,7 @@ public class JSONServerResponseBuilder implements IServerMessageBuilder {
         JSONObject json  = new JSONObject();
         ServerResponse response = (ServerResponse) message;
 
-        json.put(JSONServerMessageBuilder.messageTypeKey, response.getClass().toString());
+        json.put(JSONServerMessageBuilder.messageTypeKey, response.getClass().getSimpleName());
         json.put("status", response.getStatus().toString());
         json.put("message", response.getMessage());
 

@@ -26,7 +26,6 @@ define(["domReady!", "./logger"], function(doc, logger){
 
 
         var onServerEvent = function(event) {
-            console.log("Event: " + event.type);
 
             var eventHandler = eventHandlers["on" + event.type];
             if(eventHandler) 
@@ -36,7 +35,6 @@ define(["domReady!", "./logger"], function(doc, logger){
         };
 
         var onServerResponse = function(response) {
-            console.log("Response");
             if(response.status != "Ok")
                 logger.error(response.message);
             else {
@@ -46,12 +44,16 @@ define(["domReady!", "./logger"], function(doc, logger){
         socket.onmessage = function(event) {
             var message = JSON.parse(event.data);
 
-            if(message.messageType.endsWith("ServerEvent"))
+            switch(message.messageType) {
+            case "ServerEvent":
                 onServerEvent(message);
-            else if(message.messageType.endsWith("ServerResponse"))
+                break;
+            case "ServerResponse":
                 onServerResponse(message);
-            else 
+                break;
+            default:
                 console.err("Unknown message type: " + message.messageType);
+            }
 
             console.log(message);
         };

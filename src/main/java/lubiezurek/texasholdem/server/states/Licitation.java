@@ -35,6 +35,11 @@ public class Licitation implements IState {
     }
 
     @Override
+    public String[] getAvailableCommands() {
+        return new String[] {};
+    }
+
+    @Override
     public void onPlayerMessage(IPlayer player, ClientMessage message) {
 
     }

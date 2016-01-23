@@ -8,4 +8,5 @@ import lubiezurek.texasholdem.client.ClientMessage;
 public interface IState {
     void onPlayerMessage(IPlayer player, ClientMessage message);
     void onStart();
+    String[] getAvailableCommands();
 }

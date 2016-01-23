@@ -16,13 +16,13 @@ public abstract class GameState {
 
     protected ArrayList<IPlayer> players = new ArrayList<>();
 
-    protected void broadcast(ServerMessage message) {
+    public void broadcast(ServerMessage message) {
         for(IPlayer all: players) {
             all.sendMessage(message);
         }
     }
 
-    protected void broadcastExcept(IPlayer client, ServerMessage message) {
+    public void broadcastExcept(IPlayer client, ServerMessage message) {
         for(IPlayer all: players) {
             if(all != client)    all.sendMessage(message);
         }

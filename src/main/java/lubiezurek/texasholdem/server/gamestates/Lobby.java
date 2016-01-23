@@ -40,6 +40,7 @@ public class Lobby extends GameState {
 
     }
 
+
     public void onClientConnected(IPlayer client) {
         if(client == null) throw new IllegalArgumentException();
         if(players.size() < maxPlayerCount) {
@@ -49,11 +50,6 @@ public class Lobby extends GameState {
             for(IPlayer all: players)
                 uuids.add(all.getUUID().toString());
 
-            if(players.size() > 0) {
-                client.setNextPlayer(players.get(0));
-                players.get(players.size()-1).setNextPlayer(client);
-            }
-            else client.setNextPlayer(client);
 
             players.add(client);
 
@@ -79,10 +75,6 @@ public class Lobby extends GameState {
             if(players.size() >= maxPlayerCount) {
                 GamePlay.getInstance().setPlayers(players);
                 Server.getInstance().setState(GamePlay.getInstance());
-                event = new ServerEvent()
-                        .setType(ServerEvent.Type.ChangeState)
-                        .setArguments(new String[] {"GamePlay"});
-                    broadcast(event);
             }
         }
         else {
@@ -141,6 +133,7 @@ public class Lobby extends GameState {
         Logger.status(client + ": Disconnected");
         if(players.indexOf(client) >= 0) {
             players.remove(client);
+
             ServerEvent event = new ServerEvent()
                     .setType(ServerEvent.Type.ClientDisconnect)
                     .setArguments(new String[] {client.getUUID().toString()});

@@ -3,6 +3,8 @@ package lubiezurek.texasholdem.server.deal;
 
 import lubiezurek.texasholdem.server.IPlayer;
 import lubiezurek.texasholdem.server.IState;
+import lubiezurek.texasholdem.server.ServerEvent;
+import lubiezurek.texasholdem.server.gamestates.GamePlay;
 import lubiezurek.texasholdem.server.model.card.Card;
 
 import java.util.ArrayList;
@@ -33,6 +35,12 @@ public class Deal{
 
 	public void setState(IState newState){
         currentState = newState;
+
+        ServerEvent event = new ServerEvent()
+                .setType(ServerEvent.Type.ChangeState)
+                .setArguments(new String[] {newState.getClass().getSimpleName()});
+        GamePlay.getInstance().broadcast(event);
+
         currentState.onStart();
     }
 

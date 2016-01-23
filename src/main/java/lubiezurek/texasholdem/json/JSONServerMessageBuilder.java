@@ -23,7 +23,7 @@ public class JSONServerMessageBuilder implements IServerMessageBuilder {
 
     private void addBuilder(Class type, IServerMessageBuilder builder) {
         classBuilders.put(type, builder);
-        stringBuilders.put(type.toString(), builder);
+        stringBuilders.put(type.getSimpleName(), builder);
     }
 
     @Override
