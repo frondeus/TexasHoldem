@@ -136,17 +136,17 @@ body {
           flex: 1; }
         body .table .card .front:after {
           transform: rotateZ(180deg); }
-      body .table .card .spade, body .table .card .club {
+      body .table .card .spades, body .table .card .clubs {
         color: black; }
-      body .table .card .diamond, body .table .card .heart {
+      body .table .card .diamonds, body .table .card .hearts {
         color: red; }
-      body .table .card .heart:before, body .table .card .heart:after {
+      body .table .card .hearts:before, body .table .card .hearts:after {
         content: "♥"; }
-      body .table .card .diamond:before, body .table .card .diamond:after {
+      body .table .card .diamonds:before, body .table .card .diamonds:after {
         content: "♦"; }
-      body .table .card .club:before, body .table .card .club:after {
+      body .table .card .clubs:before, body .table .card .clubs:after {
         content: "♣"; }
-      body .table .card .spade:before, body .table .card .spade:after {
+      body .table .card .spades:before, body .table .card .spades:after {
         content: "♠"; }
       body .table .card .back {
         transform: rotateY(0deg);

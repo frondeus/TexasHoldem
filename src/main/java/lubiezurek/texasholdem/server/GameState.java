@@ -35,4 +35,7 @@ public abstract class GameState {
         this.players = players;
     }
 
+    public ArrayList<IPlayer> getPlayers() {
+        return players;
+    }
 }

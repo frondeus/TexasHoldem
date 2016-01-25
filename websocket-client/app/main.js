@@ -21,6 +21,26 @@ define(
                 $(".table > .opponents").append(opponentHtml);
             };
 
+            var addHandCard = function(color, value){
+            
+                var myHand = $(".player .hand");
+                var freeSlot = $(".card-slot:empty:first", myHand);
+                var hover = "hover"
+
+                //if(freeSlot.length <= 0) {
+                    //freeSlot = $(".shared .card-slot:empty:first");
+                    //hover = "hover";
+                //}
+
+                if(freeSlot.length > 0) {
+                    var cardHtml = $.parseHTML(cardTemplate);
+
+                    card.create($(".front", cardHtml), value,color );
+                    freeSlot.append(cardHtml);
+                    freeSlot.addClass(hover);
+                }
+            };
+
             var socket = Socket({
                 onConnected: function(event) {
                     Player.setUUID(event.arguments.shift());
@@ -87,6 +107,12 @@ define(
                     }
                 },
 
+                onHand: function(event) {
+                    console.table(event);
+                    addHandCard(event.arguments[0], event.arguments[1]);
+                    addHandCard(event.arguments[2], event.arguments[3]);
+                },
+
                 onChangeState: function(event) {
                     logger.log("Changed state into: " + event.arguments[0]);
                 }
@@ -96,21 +122,6 @@ define(
 
 
             $(".deck").click(function(event) {
-                var myHand = $(".player .hand");
-                var freeSlot = $(".card-slot:empty:first", myHand);
-                var hover = "";
-
-                if(freeSlot.length <= 0) {
-                    freeSlot = $(".shared .card-slot:empty:first");
-                    hover = "hover";
-                }
-
-                if(freeSlot.length > 0) {
-                    var cardHtml = $.parseHTML(cardTemplate);
-                    card.random($(".front", cardHtml));
-                    freeSlot.append(cardHtml);
-                    freeSlot.addClass(hover);
-                }
             });
 
         });

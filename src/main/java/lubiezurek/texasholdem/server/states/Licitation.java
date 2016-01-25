@@ -4,9 +4,12 @@ import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.IPlayer;
 import lubiezurek.texasholdem.server.IState;
+import lubiezurek.texasholdem.server.ServerEvent;
 import lubiezurek.texasholdem.server.deal.Deal;
 import lubiezurek.texasholdem.server.gamestates.GamePlay;
 import lubiezurek.texasholdem.server.gamestates.Lobby;
+import lubiezurek.texasholdem.server.model.Deck;
+import lubiezurek.texasholdem.server.model.card.Card;
 
 /**
  * Created by frondeus on 23.01.16.
@@ -36,7 +39,30 @@ public class Licitation implements IState {
 
     @Override
     public void onStart() {
+        Deck deck = GamePlay.getInstance().getDeck();
+        deck.reset();
+        deck.shuffle();
 
+        for(IPlayer player: GamePlay.getInstance().getPlayers()) {
+
+            try {
+                Card first = deck.drawLast();
+                Card second = deck.drawLast();
+                ServerEvent event = new ServerEvent()
+                        .setType(ServerEvent.Type.Hand)
+                        .setArguments(new String[]{
+                                first.getSuit().toString(),
+                                first.getCardValue().toString(),
+                                second.getSuit().toString(),
+                                second.getCardValue().toString()
+                        });
+
+                player.sendMessage(event);
+            } catch (Exception e) {
+                Logger.exception(e);
+            }
+
+        }
     }
 
     @Override
@@ -47,6 +73,7 @@ public class Licitation implements IState {
     @Override
     public void onPlayerMessage(IPlayer player, ClientMessage message) {
         Logger.status("Command: " + message.getCommand());
+
 
         deal.nextPlayer();
     }

@@ -6,6 +6,7 @@ import lubiezurek.texasholdem.server.IPlayer;
 import lubiezurek.texasholdem.server.IState;
 import lubiezurek.texasholdem.server.ServerEvent;
 import lubiezurek.texasholdem.server.gamestates.GamePlay;
+import lubiezurek.texasholdem.server.model.Deck;
 import lubiezurek.texasholdem.server.model.card.Card;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class Deal{
     private Card turn = null;
     private Card river = null;
 
-	public Deal(){
+    public Deal(){
 		
 	}
 
@@ -49,7 +50,6 @@ public class Deal{
 
         currentState.onStart();
     }
-
 
 
 }

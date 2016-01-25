@@ -121,4 +121,8 @@ public class GamePlay extends GameState {
             }
         }
     }
+
+    public Deck getDeck() {
+        return deck;
+    }
 }

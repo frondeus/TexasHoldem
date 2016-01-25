@@ -29,27 +29,27 @@
     }
 }
 
-.spade, .club {
+.spades, .clubs {
     color: black;
 }
 
-.diamond, .heart {
+.diamonds, .hearts {
     color: red;
 }
 
-.heart:before, .heart:after {
+.hearts:before, .hearts:after {
     content: "♥";
 }
 
-.diamond:before, .diamond:after {
+.diamonds:before, .diamonds:after {
     content: "♦";
 }
 
-.club:before, .club:after {
+.clubs:before, .clubs:after {
     content: "♣";
 }
 
-.spade:before, .spade:after {
+.spades:before, .spades:after {
     content: "♠";
 }
 

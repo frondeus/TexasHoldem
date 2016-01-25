@@ -1,6 +1,10 @@
 define(["./random"], function(random) {
-    var cardColors = ["spade", "diamond", "heart", "club"];
+    var cardColors = ["spades", "diamonds", "hearts", "clubs"];
     var cardValues = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" ];
+    var cardValuesNames = ["ACE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE",
+    "TEN", "JACK", "QUEEN", "KING"];
+    
+
 
     var randomColor = function() {
         return random.array(cardColors);
@@ -22,10 +26,23 @@ define(["./random"], function(random) {
         card.addClass(randomColor()).text(randomValue());
     };
 
+    var createCard = function(card, value, color) {
+        clearCard(card);
+        color = color.toLowerCase();
+        console.log(color);
+        var index = cardValuesNames.indexOf(value);
+        var val = cardValues[index];
+
+        card.addClass(color).text(val);
+
+
+    };
+
     return {
         randomColor: randomColor,
         randomValue: randomValue,
         clear: clearCard,
-        random: randomCard
+        random: randomCard,
+        create: createCard
     };
 });
