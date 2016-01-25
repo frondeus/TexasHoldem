@@ -2,6 +2,8 @@ package lubiezurek.texasholdem.server;
 
 import java.io.EOFException;
 import java.io.IOException;
+
+import lubiezurek.texasholdem.server.model.card.Card;
 import org.java_websocket.WebSocket;
 import java.util.UUID;
 
@@ -15,6 +17,7 @@ public class Client extends Thread implements IPlayer {
     private int money = 100;
     private UUID uuid;
     private IPlayer nextPlayer = null;
+    private Card[] hand = new Card[2];
 
     public Client(Server server, WebSocket socket) {
         if(server == null) throw new IllegalArgumentException();
@@ -63,5 +66,15 @@ public class Client extends Thread implements IPlayer {
     @Override
     public void setNextPlayer(IPlayer player) {
         nextPlayer = player;
+    }
+
+    @Override
+    public Card[] getHand() {
+        return hand;
+    }
+
+    @Override
+    public void setHand(Card[] cards) {
+        hand = cards;
     }
 }

@@ -1,5 +1,7 @@
 package lubiezurek.texasholdem.server;
 
+import lubiezurek.texasholdem.server.model.card.Card;
+
 import java.io.IOException;
 import java.util.UUID;
 
@@ -18,4 +20,7 @@ public interface IPlayer {
 
     IPlayer getNextPlayer();
     void setNextPlayer(IPlayer player);
+
+    Card[] getHand();
+    void setHand(Card[] cards);
 }

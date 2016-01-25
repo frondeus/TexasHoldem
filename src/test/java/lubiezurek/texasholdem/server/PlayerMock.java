@@ -1,5 +1,7 @@
 package lubiezurek.texasholdem.server;
 
+import lubiezurek.texasholdem.server.model.card.Card;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -13,6 +15,7 @@ public class PlayerMock implements IPlayer {
     private ArrayList<ServerMessage> messages = new ArrayList<>();
     private boolean disconnected;
     private IPlayer nextPlayer;
+    private Card[] hand = new Card[2];
 
     public PlayerMock() {
         uuid = UUID.randomUUID();
@@ -53,6 +56,16 @@ public class PlayerMock implements IPlayer {
     @Override
     public void setNextPlayer(IPlayer player) {
         nextPlayer = player;
+    }
+
+    @Override
+    public Card[] getHand() {
+        return hand;
+    }
+
+    @Override
+    public void setHand(Card[] cards) {
+        hand = cards;
     }
 
     @Override

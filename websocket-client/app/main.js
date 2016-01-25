@@ -5,11 +5,11 @@ define(
         "./player",
         "./socket",
         "./random",
-        "./card",
+        "./table",
         "text!./opponent.html",
-        "text!./card.html",
-        "text!./command.html"],
-        function($ , doc, logger, Player, Socket, random, card , opponentTemplate, cardTemplate, commandTemplate ) {
+        "text!./command.html"
+    ],
+        function($ , doc, logger, Player, Socket, random, Table, opponentTemplate, commandTemplate ) {
 
             var addPlayer = function(playerUUID) {
                 var currentPlayer = Player.getPlayer(playerUUID);
@@ -19,51 +19,6 @@ define(
                 $(opponentHtml).attr('id', playerUUID);
                 $(".info" , opponentHtml).addClass(currentPlayer.color).text(currentPlayer.name);
                 $(".table > .opponents").append(opponentHtml);
-            };
-
-            var clearHand = function() {
-                var myHand = $(".player .hand");
-                $(".card-slot", myHand).each(function(){
-                    $(this).html("").removeClass("hover");
-                });
-            };
-
-            var clearShared = function() {
-                console.log("Clear Shared");
-                var shared  = $(".shared");
-                $(".card-slot", shared).each(function(){
-                    $(this).html("").removeClass("hover");
-                });
-            };
-
-            var addSharedCard = function(color, value) {
-                var freeSlot = $(".shared .card-slot:empty:first");
-                if(freeSlot.length > 0) {
-                    var cardHtml = $.parseHTML(cardTemplate);
-
-                    card.create($(".front", cardHtml), value, color);
-                    freeSlot.append(cardHtml);
-                }
-            };
-
-            $(".shared .card-slot, .player .hand .card-slot").each(function(){
-                var slot = $(this);
-                slot.click(function(){
-                    slot.toggleClass("hover");
-                });
-            });
-
-            var addHandCard = function(color, value){
-            
-                var myHand = $(".player .hand");
-                var freeSlot = $(".card-slot:empty:first", myHand);
-
-                if(freeSlot.length > 0) {
-                    var cardHtml = $.parseHTML(cardTemplate);
-
-                    card.create($(".front", cardHtml), value,color );
-                    freeSlot.append(cardHtml);
-                }
             };
 
             var socket = Socket({
@@ -133,21 +88,26 @@ define(
                 },
 
                 onHand: function(event) {
-                    console.table(event);
-                    addHandCard(event.arguments[0], event.arguments[1]);
-                    addHandCard(event.arguments[2], event.arguments[3]);
+                    Table.addHandCard(event.arguments[0], event.arguments[1]);
+                    Table.addHandCard(event.arguments[2], event.arguments[3]);
                 },
 
                 onSharedCard: function(event) {
-                    addSharedCard(event.arguments[0], event.arguments[1]);
+                    Table.addSharedCard(event.arguments[0], event.arguments[1]);
+                },
+
+                onOtherHand: function(event) {
+                    var playerUUID = event.arguments.shift();
+
+                    Table.addOtherHandCard(playerUUID , event.arguments[0], event.arguments[1]);
+                    Table.addOtherHandCard(playerUUID, event.arguments[2], event.arguments[3]);
                 },
 
                 onChangeState: function(event) {
                     logger.log("Changed state into: " + event.arguments[0]);
                     switch(event.arguments[0]) {
                     case "Licitation":
-                        clearHand();
-                        clearShared();
+                        Table.clear();
                         break;
                     default:
                         console.log("Unknown state!");
@@ -156,9 +116,5 @@ define(
             });
 
             if(!socket) return null;
-
-
-            $(".deck").click(function(event) {
-            });
 
         });

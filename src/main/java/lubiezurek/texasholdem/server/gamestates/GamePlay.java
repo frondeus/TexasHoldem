@@ -124,6 +124,20 @@ public class GamePlay extends GameState {
         broadcast(event);
     }
 
+    public void sendOtherHand(IPlayer player, IPlayer other, Card first, Card second) {
+        ServerEvent event = new ServerEvent()
+                .setType(ServerEvent.Type.OtherHand)
+                .setArguments(new String[] {
+                        other.getUUID().toString(),
+                        first.getSuit().toString(),
+                        first.getCardValue().toString(),
+                        second.getSuit().toString(),
+                        second.getCardValue().toString()
+                });
+
+        player.sendMessage(event);
+    }
+
     public void onClientDisconnected(IPlayer client) {
         Logger.status(client + ": Disconnected");
         if(players.indexOf(client) >= 0) {

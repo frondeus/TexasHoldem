@@ -52,4 +52,7 @@ public class Deal{
     }
 
 
+    public void setFlop(Card[] flop) {
+        this.flop = flop;
+    }
 }

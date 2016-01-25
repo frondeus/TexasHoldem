@@ -11,6 +11,8 @@ import lubiezurek.texasholdem.server.gamestates.Lobby;
 import lubiezurek.texasholdem.server.model.Deck;
 import lubiezurek.texasholdem.server.model.card.Card;
 
+import java.util.ArrayList;
+
 /**
  * Created by frondeus on 23.01.16.
  */
@@ -47,6 +49,7 @@ public class Licitation implements IState {
             try {
                 Card first = deck.drawLast();
                 Card second = deck.drawLast();
+                player.setHand(new Card[] { first, second });
                 GamePlay.getInstance().sendHand(player, first, second);
             } catch (Exception e) {
                 Logger.exception(e);
@@ -54,15 +57,7 @@ public class Licitation implements IState {
 
         }
 
-        try {
-            for(int i = 0; i < 3; i++) {
-                Card card = deck.drawLast();
-                GamePlay.getInstance().sendSharedCard(card);
-            }
-        }
-        catch (Exception e) {
-            Logger.exception(e);
-        }
+
     }
 
     @Override
@@ -73,7 +68,39 @@ public class Licitation implements IState {
     @Override
     public void onPlayerMessage(IPlayer player, ClientMessage message) {
         Logger.status("Command: " + message.getCommand());
+        Deck deck = GamePlay.getInstance().getDeck();
 
+        switch(message.getCommand()) {
+        case "Foo":
+            Logger.status("Flop");
+            //TODO: Przenieść stąd do stanu Flop
+            try {
+                //Card[] flop = new Card[3];
+                //for(int i = 0; i < 3; i++) {
+                    //flop[i] = deck.drawLast();
+                Card[] flop = new Card[]{ deck.drawLast() };
+                    GamePlay.getInstance().sendSharedCard(flop[0]);
+                //}
+                //GamePlay.getInstance().deal.setFlop(flop);
+            }
+            catch (Exception e) {
+                Logger.exception(e);
+            }
+            break;
+            case "Bar":
+                Logger.status("Showdown");
+                //TODO: Przenieść stąd do stanu Showdown
+                for(IPlayer p: GamePlay.getInstance().getPlayers()) {
+                    ArrayList<String> args = new ArrayList<>();
+                    for(IPlayer other: GamePlay.getInstance().getPlayers()) {
+                        if(p!= other) {
+                            Card[] hand = other.getHand();
+                            GamePlay.getInstance().sendOtherHand(p, other, hand[0], hand[1]);
+                        }
+                    }
+                }
+            break;
+        }
 
         deal.nextPlayer();
     }
