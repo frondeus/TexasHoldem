@@ -29,7 +29,6 @@ define(["./random"], function(random) {
     var createCard = function(card, value, color) {
         clearCard(card);
         color = color.toLowerCase();
-        console.log(color);
         var index = cardValuesNames.indexOf(value);
         var val = cardValues[index];
 

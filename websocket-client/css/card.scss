@@ -15,7 +15,7 @@
     @include perspective(1000);
     overflow: visible;
 
-    &:hover .card, &.hover .card {
+    &.hover .card {
         transform: rotateY(180deg) translateZ(-2em);
     }
 }
@@ -23,6 +23,7 @@
 .card {
     transition: transform 0.6s;
     -webkit-transition: transform 0.6s;
+
 
     transform-style: preserve-3d;
     position: relative;
@@ -34,7 +35,7 @@
         top: -2px;
         box-shadow: 2px 2px 5px black;
     }
-    
+
     @import "card-front";
     .back {
         @extend .face;

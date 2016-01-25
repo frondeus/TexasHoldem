@@ -44,24 +44,24 @@ public class Licitation implements IState {
         deck.shuffle();
 
         for(IPlayer player: GamePlay.getInstance().getPlayers()) {
-
             try {
                 Card first = deck.drawLast();
                 Card second = deck.drawLast();
-                ServerEvent event = new ServerEvent()
-                        .setType(ServerEvent.Type.Hand)
-                        .setArguments(new String[]{
-                                first.getSuit().toString(),
-                                first.getCardValue().toString(),
-                                second.getSuit().toString(),
-                                second.getCardValue().toString()
-                        });
-
-                player.sendMessage(event);
+                GamePlay.getInstance().sendHand(player, first, second);
             } catch (Exception e) {
                 Logger.exception(e);
             }
 
+        }
+
+        try {
+            for(int i = 0; i < 3; i++) {
+                Card card = deck.drawLast();
+                GamePlay.getInstance().sendSharedCard(card);
+            }
+        }
+        catch (Exception e) {
+            Logger.exception(e);
         }
     }
 

@@ -21,23 +21,48 @@ define(
                 $(".table > .opponents").append(opponentHtml);
             };
 
+            var clearHand = function() {
+                var myHand = $(".player .hand");
+                $(".card-slot", myHand).each(function(){
+                    $(this).html("").removeClass("hover");
+                });
+            };
+
+            var clearShared = function() {
+                console.log("Clear Shared");
+                var shared  = $(".shared");
+                $(".card-slot", shared).each(function(){
+                    $(this).html("").removeClass("hover");
+                });
+            };
+
+            var addSharedCard = function(color, value) {
+                var freeSlot = $(".shared .card-slot:empty:first");
+                if(freeSlot.length > 0) {
+                    var cardHtml = $.parseHTML(cardTemplate);
+
+                    card.create($(".front", cardHtml), value, color);
+                    freeSlot.append(cardHtml);
+                }
+            };
+
+            $(".shared .card-slot, .player .hand .card-slot").each(function(){
+                var slot = $(this);
+                slot.click(function(){
+                    slot.toggleClass("hover");
+                });
+            });
+
             var addHandCard = function(color, value){
             
                 var myHand = $(".player .hand");
                 var freeSlot = $(".card-slot:empty:first", myHand);
-                var hover = "hover"
-
-                //if(freeSlot.length <= 0) {
-                    //freeSlot = $(".shared .card-slot:empty:first");
-                    //hover = "hover";
-                //}
 
                 if(freeSlot.length > 0) {
                     var cardHtml = $.parseHTML(cardTemplate);
 
                     card.create($(".front", cardHtml), value,color );
                     freeSlot.append(cardHtml);
-                    freeSlot.addClass(hover);
                 }
             };
 
@@ -113,8 +138,20 @@ define(
                     addHandCard(event.arguments[2], event.arguments[3]);
                 },
 
+                onSharedCard: function(event) {
+                    addSharedCard(event.arguments[0], event.arguments[1]);
+                },
+
                 onChangeState: function(event) {
                     logger.log("Changed state into: " + event.arguments[0]);
+                    switch(event.arguments[0]) {
+                    case "Licitation":
+                        clearHand();
+                        clearShared();
+                        break;
+                    default:
+                        console.log("Unknown state!");
+                    }
                 }
             });
 

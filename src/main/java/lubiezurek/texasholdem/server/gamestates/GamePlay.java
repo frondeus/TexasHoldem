@@ -5,6 +5,7 @@ import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.*;
 import lubiezurek.texasholdem.server.deal.Deal;
 import lubiezurek.texasholdem.server.model.Deck;
+import lubiezurek.texasholdem.server.model.card.Card;
 import lubiezurek.texasholdem.server.states.Licitation;
 
 import java.util.ArrayList;
@@ -97,6 +98,30 @@ public class GamePlay extends GameState {
                 .setArguments(deal.getState().getAvailableCommands());
 
         currentPlayer.sendMessage(commandsEvent);
+    }
+
+    public void sendHand(IPlayer player, Card first, Card second) {
+        ServerEvent event = new ServerEvent()
+                .setType(ServerEvent.Type.Hand)
+                .setArguments(new String[]{
+                        first.getSuit().toString(),
+                        first.getCardValue().toString(),
+                        second.getSuit().toString(),
+                        second.getCardValue().toString()
+                });
+
+        player.sendMessage(event);
+    }
+
+    public void sendSharedCard(Card card) {
+        ServerEvent event = new ServerEvent()
+                .setType(ServerEvent.Type.SharedCard)
+                .setArguments(new String[]{
+                        card.getSuit().toString(),
+                        card.getCardValue().toString()
+                });
+
+        broadcast(event);
     }
 
     public void onClientDisconnected(IPlayer client) {
