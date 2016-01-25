@@ -127,7 +127,7 @@ public class LobbyTest {
         PlayerMock client = createClient();
         Lobby.getInstance().onClientConnected(client);
         messages = client.getLastMessages();
-        assertEquals(6 + 3 + 1, messages.length);
+        assertEquals(6, messages.length);
         assertEvent(ServerEvent.Type.ChangeState, new String[] { "Licitation"}, messages[3]);
 
         for(int i = 0; i < Lobby.getInstance().maxPlayerCount - 1; i++) {
