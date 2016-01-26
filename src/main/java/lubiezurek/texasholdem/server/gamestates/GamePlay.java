@@ -4,10 +4,7 @@ import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.*;
 import lubiezurek.texasholdem.server.deal.Deal;
-import lubiezurek.texasholdem.server.model.Deck;
-import lubiezurek.texasholdem.server.model.card.Card;
 import lubiezurek.texasholdem.server.states.Licitation;
-import org.mockito.internal.matchers.Null;
 
 import java.util.Collections;
 
@@ -56,7 +53,7 @@ public class GamePlay extends GameState {
 
             dealer = players.get(0);
             if(deal == null) deal = new Deal(); //Sprawdzanie nulla do testow
-            deal.setUp();
+            deal.start();
             deal.setState(Licitation.getInstance());
         }
     }

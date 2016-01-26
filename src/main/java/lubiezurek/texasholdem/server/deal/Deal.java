@@ -12,7 +12,7 @@ import lubiezurek.texasholdem.server.model.card.Card;
 import java.util.ArrayList;
 
 public class Deal{
-	private IState currentState;
+	private IState currentState = null;
 	//ArrayList<Bet> bets = new ArrayList<Bet>();
     private Card[] flop = new Card[3];
     private Card turn = null;
@@ -22,7 +22,9 @@ public class Deal{
 		
 	}
 
+    public void start() {
 
+    }
 
 
 	public IState getState(){ return currentState; }
@@ -30,8 +32,7 @@ public class Deal{
 	public void setState(IState newState){
         currentState = newState;
 
-        GamePlay.getInstance().broadcast(
-                new ServerEvent(ServerEvent.Type.ChangeState, new String[]{
+        GamePlay.getInstance().broadcast(new ServerEvent(ServerEvent.Type.ChangeState, new String[]{
                         newState.getClass().getSimpleName()
                         })
         );
@@ -41,11 +42,4 @@ public class Deal{
     }
 
 
-    public void setFlop(Card[] flop) {
-        this.flop = flop;
-    }
-
-    public void setUp() {
-
-    }
 }

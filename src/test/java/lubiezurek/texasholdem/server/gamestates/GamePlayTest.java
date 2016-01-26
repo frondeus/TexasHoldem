@@ -1,17 +1,13 @@
 package lubiezurek.texasholdem.server.gamestates;
 
-import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.StateMock;
 import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.*;
 import lubiezurek.texasholdem.server.deal.Deal;
-import lubiezurek.texasholdem.server.model.Deck;
 import lubiezurek.texasholdem.server.states.Licitation;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.internal.runners.statements.Fail;
-import org.mockito.Spy;
 
 import java.util.ArrayList;
 
@@ -75,8 +71,7 @@ public class GamePlayTest extends TestHelper {
 
     @Test
     public void onEnterShouldSetupDeal() {
-        verify(deal, times(1)).setUp();
-        assertEquals(GamePlay.getInstance().getLicitationState(), deal.getState());
+        verify(deal, times(1)).start();
     }
 
     @Test
