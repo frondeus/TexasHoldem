@@ -36,11 +36,11 @@ public class Licitation implements IState {
     private Deal deal;
 
     private Licitation() {
-        deal = GamePlay.getInstance().getDeal();
     }
 
     @Override
-    public void onStart() {
+    public void onStart(Deal deal) {
+        deal = GamePlay.getInstance().getDeal();
         /*
         Deck deck = GamePlay.getInstance().getDeck();
         deck.reset();
@@ -74,6 +74,11 @@ public class Licitation implements IState {
     @Override
     public String[] getAvailableCommands() {
         return new String[] {"Foo", "Bar"};
+    }
+
+    @Override
+    public boolean isPlayerTurn(IPlayer player) {
+        return false;
     }
 
     @Override

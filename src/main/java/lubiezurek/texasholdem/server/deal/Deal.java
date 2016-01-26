@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class Deal{
 	private IState currentState;
 	//ArrayList<Bet> bets = new ArrayList<Bet>();
-	private IPlayer dealer = null;
     private Card[] flop = new Card[3];
     private Card turn = null;
     private Card river = null;
@@ -23,19 +22,8 @@ public class Deal{
 		
 	}
 
-    public void setDealer(IPlayer dealer) {
-        this.dealer = dealer;
-    }
 
-    public void nextDealer() {
-        if(dealer == null) Logger.error("There is no player!. Error");
-        if(dealer.getNextPlayer() == null) Logger.error("There is no next player. Error!");
-        setDealer(dealer.getNextPlayer());
-    }
 
-    public IPlayer getDealer() {
-        return dealer;
-    }
 
 	public IState getState(){ return currentState; }
 
@@ -49,7 +37,7 @@ public class Deal{
         );
 
 
-        currentState.onStart();
+        currentState.onStart(this);
     }
 
 
