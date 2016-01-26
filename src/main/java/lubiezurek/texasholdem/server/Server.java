@@ -60,6 +60,7 @@ public class Server extends WebSocketServer {
 
         clients.put(conn, client);
         state.onClientConnected(client);
+        state.changeState();
     }
 
     @Override
@@ -73,6 +74,7 @@ public class Server extends WebSocketServer {
     public void onMessage(WebSocket conn, String message) {
         Client client = clients.get(conn);
         state.onClientMessage(client, clientMessageBuilder.deserializeMessage(message));
+        state.changeState();
     }
 
     @Override

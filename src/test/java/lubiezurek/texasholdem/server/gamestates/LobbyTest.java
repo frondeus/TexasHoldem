@@ -12,236 +12,164 @@ import static org.junit.Assert.*;
 /**
  * Created by frondeus on 27.12.2015.
  */
-public class LobbyTest {
+public class LobbyTest extends TestHelper {
+
 
     @Before
     public void setUp() {
-        Lobby.resetInstance();
-        Server.getInstance().setState(Lobby.getInstance());
-    }
-
-    @Test
-    public void testGetInstance() throws Exception {
-        assertNotNull(Lobby.getInstance());
-    }
-
-    private PlayerMock createClient() throws Exception {
-        return new PlayerMock();
+        setUpLobby();
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void testOnNullClientConnected() throws Exception {
+    public void onClientConnectedOnNullShouldThrowException() throws Exception {
         Lobby.getInstance().onClientConnected(null);
     }
 
-    private void assertResponse(ServerResponse.Status status, String message, ServerMessage msg) {
-        ServerResponse response = (ServerResponse) msg;
-        assertEquals(ServerResponse.class, response.getClass());
-        assertEquals(status, response.getStatus());
-        assertEquals(message, response.getMessage());
-    }
 
-    private void assertEvent(ServerEvent.Type type, String[] args, ServerMessage msg) {
-        ServerEvent event = (ServerEvent) msg;
+    @Test
+    public void onClientConnectedShouldAddPlayer() throws Exception {
+        ArrayList<IPlayer> players = Lobby.getInstance().getPlayers();
 
-        assertEquals(ServerEvent.class, event.getClass());
-        assertEquals(type, event.getEventType());
-        assertEquals(args.length, event.getArguments().length);
-        for(int i = 0; i < args.length; i++)
-            assertEquals(args[i], event.getArguments()[i]);
+        PlayerMock player = new PlayerMock();
+        assertFalse(players.contains(player));
+        Lobby.getInstance().onClientConnected(player);
+        assertTrue(players.contains(player));
+        assertFalse(player.isDisconnected());
     }
 
     @Test
-    public void testOnEveryClientConnected() throws Exception {
-        int oldPlayerCount;
-        ServerMessage[] messages = null;
-        ArrayList<String> uuids = new ArrayList<>();
-
-        for(int i = 0; i < Server.getInstance().Options.getMaxPlayerCount() - 1; i++) {
-            oldPlayerCount = Lobby.getInstance().getPlayersCount();
-
-            PlayerMock client = createClient();
-            Lobby.getInstance().onClientConnected(client);
-
-            assertEquals(1, Lobby.getInstance().getPlayersCount() - oldPlayerCount);    //Polaczlo jednego
-            assertEquals(Server.getInstance().Options.getStartMoney(), client.getMoney());       // Ustawilo mu kase
-            assertEquals(false, client.isDisconnected());
-
-            messages = client.getLastMessages();
-            assertEquals(3, messages.length);
-            assertResponse(ServerResponse.Status.Ok, "Welcome", messages[0]); // Info ze polaczono
-            ArrayList<String> uuidsToSend = new ArrayList<>();
-            uuidsToSend.add(client.getUUID().toString());
-            uuidsToSend.addAll(uuids);
-
-            assertEvent(ServerEvent.Type.Connected, uuidsToSend.toArray(new String[]{}) , messages[1]);
-                //Wysylamy info o jego UUID oraz o innych graczach,
-
-            assertEvent(ServerEvent.Type.Commands, new String[]{"chat"}, messages[2]);
-            uuids.add(client.getUUID().toString());
-
-        }
+    public void onClientConnectedShouldSendConnectedEvent() {
+        addRestPlayers();
+        PlayerMock playerMock = addPlayer();
+        ServerMessage[] messages = playerMock.getLastMessages();
+        assertTrue(1 <= messages.length);
+        uuids.remove(uuids.size()-1);
+        uuids.add(0, playerMock.getUUID().toString());
+        assertEvent(ServerEvent.Type.Connected, uuids, messages[0]);
     }
 
     @Test
-    public void testOnMoreThanOneClientConnected() throws Exception {
-
-        PlayerMock client = null, lastClient = null;
-        ServerMessage[] messages = null;
-
-        for(int i = 0; i < Server.getInstance().Options.getMaxPlayerCount() - 1; i++) { // Ostatni gracz sprowadziłby zmianę stanu
-                                                                            // i wiecej wiadomosci
-            if(client != null) lastClient = client;
-            client = createClient();
-            Lobby.getInstance().onClientConnected(client);
-            client.getLastMessages();
-
-            if(lastClient != null) {
-                messages = lastClient.getLastMessages();
-
-                assertEquals(1, messages.length);
-                assertEvent(ServerEvent.Type.ClientConnect, new String[] {client.getUUID().toString()}, messages[0]);
-
-            }
-        }
+    public void onClientConnectedShouldSendAvailableCommands() {
+        PlayerMock playerMock = addPlayer();
+        ServerMessage[] messages = playerMock.getLastMessages();
+        assertTrue(2 <= messages.length);
+        assertEvent(ServerEvent.Type.Commands, new String[]{"chat"}, messages[1]);
     }
 
     @Test
-    public void testLastClientConnected() throws Exception {
-        ServerMessage[] messages = null;
-        ArrayList<PlayerMock> clients = new ArrayList<>();
-
-        for(int i = 0; i < Server.getInstance().Options.getMaxPlayerCount() - 1; i++) {
-            PlayerMock client = createClient();
-            Lobby.getInstance().onClientConnected(client);
-
-            client.getLastMessages();
-            clients.add(client);
-        }
-
-        //Last client:
-        PlayerMock client = createClient();
-        Lobby.getInstance().onClientConnected(client);
-        messages = client.getLastMessages();
-        assertTrue(6 <= messages.length);
-        assertEvent(ServerEvent.Type.ChangeState, new String[] { "Licitation"}, messages[3]);
-
-        for(int i = 0; i < Server.getInstance().Options.getMaxPlayerCount() - 1; i++) {
-            client = clients.get(i);
-
-            messages = client.getLastMessages();
-            assertTrue(Server.getInstance().Options.getMaxPlayerCount() - i +1 <= messages.length);
-            assertEvent(ServerEvent.Type.ChangeState,
-                    new String[] { "Licitation" }, messages[Server.getInstance().Options.getMaxPlayerCount() -1-i]);
-        }
+    public void onClientConnectedShouldBroadcastClientConnectedEvent() {
+        PlayerMock lastPlayer = addRestPlayers();
+        PlayerMock playerMock = addPlayer();
+        ServerMessage[] messages = lastPlayer.getLastMessages();
+        assertTrue(3 <= messages.length);
+        assertEvent(ServerEvent.Type.ClientConnect, new String[]{
+                playerMock.getUUID().toString()
+        },messages[2]);
     }
 
     @Test
-    public void testOnClientChat() throws Exception {
-        PlayerMock client = createClient();
-        Lobby.getInstance().onClientConnected(client);
-        assertEquals(false, client.isDisconnected());
-        client.getLastMessages();
-
-        ClientMessage message = new ClientMessage()
-                .setCommand("chat")
-                .setArguments(new String[] { "Hello", "world!" });
-
-        Lobby.getInstance().onClientMessage(client, message);
-
-        ServerMessage[] messages = client.getLastMessages();
-
-        assertEquals(2, messages.length);
-        assertEquals(ServerResponse.class, messages[0].getClass());
-        assertEquals(ServerResponse.Status.Ok, ((ServerResponse)messages[0]).getStatus());
-        assertEquals("Send", ((ServerResponse)messages[0]).getMessage());
-
-
-        assertEquals(ServerEvent.class, messages[1].getClass());
-        assertEquals(ServerEvent.Type.Chat, ((ServerEvent)messages[1]).getEventType());
-        assertEquals(3, ((ServerEvent)messages[1]).getArguments().length);
-        assertEquals(client.getUUID().toString(), ((ServerEvent)messages[1]).getArguments()[0]);
-        assertEquals("Hello", ((ServerEvent)messages[1]).getArguments()[1]);
-        assertEquals("world!", ((ServerEvent)messages[1]).getArguments()[2]);
-
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testOnClientNullMessage() throws Exception {
-        PlayerMock client = createClient();
-        Lobby.getInstance().onClientConnected(client);
-        client.getLastMessages();
-
-        Lobby.getInstance().onClientMessage(client, null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testOnClientNullPlayerMessage() throws Exception {
-
-        ClientMessage message = new ClientMessage()
-                .setCommand("foo")
-                .setArguments(new String[] { "Hello", "world!" });
-
-        Lobby.getInstance().onClientMessage(null, message);
-    }
-
-    @Test
-    public void testOnClientNotConnectedMessage() throws  Exception {
-        PlayerMock client = createClient();
-
-        ClientMessage message = new ClientMessage()
-                .setCommand("foo")
-                .setArguments(new String[] { "Hello", "world!" });
-
-        Lobby.getInstance().onClientMessage(client, message);
-
-        ServerMessage[] messages = client.getLastMessages();
-
+    public void onClientConnectedWhenFullShouldSendResponse() {
+        addRestPlayers();
+        addPlayer();
+        PlayerMock playerMock = addPlayer();
+        ServerMessage[] messages = playerMock.getLastMessages();
         assertEquals(1, messages.length);
-        assertEquals(ServerResponse.class, messages[0].getClass());
-        assertEquals(ServerResponse.Status.Failure, ((ServerResponse)messages[0]).getStatus());
-        assertEquals("Not connected", ((ServerResponse)messages[0]).getMessage());
+        assertResponse(ServerResponse.Status.Failure, "Full server", messages[0]);
+        assertTrue(playerMock.isDisconnected());
     }
 
     @Test
-    public void testOnClientInvalidCommand() throws Exception {
-        PlayerMock client = createClient();
-        Lobby.getInstance().onClientConnected(client);
-        client.getLastMessages();
-
-        ClientMessage message = new ClientMessage()
-                .setCommand("foo")
-                .setArguments(new String[] { "Hello", "world!" });
-
-        Lobby.getInstance().onClientMessage(client, message);
-
-        ServerMessage[] messages = client.getLastMessages();
-
-        assertEquals(1, messages.length);
-        assertEquals(ServerResponse.class, messages[0].getClass());
-        assertEquals(ServerResponse.Status.Failure, ((ServerResponse)messages[0]).getStatus());
-        assertEquals("Invalid command", ((ServerResponse)messages[0]).getMessage());
+    public void onLastClientConnectedShouldChangeState() {
+        addRestPlayers();
+        addPlayer();
+        Lobby.getInstance().changeState();
+        assertEquals(GamePlay.getInstance(), Server.getInstance().getState());
+        assertEquals(Lobby.getInstance().getPlayers(), GamePlay.getInstance().getPlayers());
     }
 
+    @Test (expected = IllegalArgumentException.class)
+    public void onClientMessageNullPlayerShouldThrowException() {
+        Lobby.getInstance().onClientMessage(null, new ClientMessage("chat", new String[]{"hello"}));
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void onClientMessageNullMessageShouldThrowException() {
+        PlayerMock playerMock = addPlayer();
+        Lobby.getInstance().onClientMessage(playerMock, null);
+    }
 
     @Test
-    public void testOnClientDisconnected() throws Exception {
-        PlayerMock lastClient = createClient();
-        Lobby.getInstance().onClientConnected(lastClient);
-
-        PlayerMock client = createClient();
-        Lobby.getInstance().onClientConnected(client);
-        lastClient.getLastMessages();
-        client.getLastMessages();
-
-        Lobby.getInstance().onClientDisconnected(client);
-
-        ServerMessage[] messages = lastClient.getLastMessages();
-
+    public void onClientMessagePlayerNotInListShouldSendResponse() {
+        PlayerMock playerMock = new PlayerMock();
+        Lobby.getInstance().onClientMessage(playerMock, new ClientMessage("chat",
+                new String[]{"hello"}));
+        ServerMessage[] messages = playerMock.getLastMessages();
         assertEquals(1, messages.length);
-        assertEquals(ServerEvent.class, messages[0].getClass());
-        assertEquals(ServerEvent.Type.ClientDisconnect, ((ServerEvent)messages[0]).getEventType());
-        assertEquals(1, ((ServerEvent)messages[0]).getArguments().length);
-        assertEquals(client.getUUID().toString(), ((ServerEvent)messages[0]).getArguments()[0]);
+        assertResponse(ServerResponse.Status.Failure, "Not connected", messages[0]);
+    }
+
+    @Test
+    public void onClientMessageUnknownCommandShouldSendResponse() {
+        PlayerMock playerMock = addPlayer();
+        playerMock.getLastMessages();
+        Lobby.getInstance().onClientMessage(playerMock, new ClientMessage("unknown",
+                new String[]{"hello"}));
+        ServerMessage[] messages = playerMock.getLastMessages();
+        assertEquals(1, messages.length);
+        assertResponse(ServerResponse.Status.Failure, "Invalid command", messages[0]);
+    }
+
+    @Test
+    public void onClientChatShouldBroadcastChatEvent() {
+        PlayerMock lastPlayer = addRestPlayers();
+        PlayerMock playerMock = addPlayer();
+        lastPlayer.getLastMessages();
+        playerMock.getLastMessages();
+
+        Lobby.getInstance().onClientMessage(playerMock, new ClientMessage("chat",
+                new String[]{"hello"}));
+
+        String[] args = new String[] {
+            playerMock.getUUID().toString(),
+                "hello"
+        };
+        ServerMessage[] messages = lastPlayer.getLastMessages();
+        assertEquals(1, messages.length);
+        assertEvent(ServerEvent.Type.Chat, args, messages[0]);
+
+        messages = playerMock.getLastMessages();
+        assertEquals(1, messages.length);
+        assertEvent(ServerEvent.Type.Chat, args, messages[0]);
+
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void onClientDisconnectedNullPlayerShouldThrowException() {
+        Lobby.getInstance().onClientDisconnected(null);
+    }
+
+    @Test
+    public void onClientDisconnectedShouldRemovePlayer() {
+        ArrayList<IPlayer> players = Lobby.getInstance().getPlayers();
+
+        PlayerMock playerMock = addPlayer();
+        assertTrue(players.contains(playerMock));
+        Lobby.getInstance().onClientDisconnected(playerMock);
+        assertFalse(players.contains(playerMock));
+    }
+
+    @Test
+    public void onClientDisconnectedShouldBroadcastDisconnectedEvent() {
+        PlayerMock lastPlayer = addRestPlayers();
+        PlayerMock playerMock = addPlayer();
+        lastPlayer.getLastMessages();
+        playerMock.getLastMessages();
+        Lobby.getInstance().onClientDisconnected(playerMock);
+        ServerMessage[] messages = lastPlayer.getLastMessages();
+        assertEquals(1, messages.length);
+        assertEvent(ServerEvent.Type.ClientDisconnect, new String[] {
+                playerMock.getUUID().toString()
+        },messages[0]);
+
     }
 }

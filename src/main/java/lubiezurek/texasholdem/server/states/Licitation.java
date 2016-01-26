@@ -36,24 +36,26 @@ public class Licitation implements IState {
     private Deal deal;
 
     private Licitation() {
-        deal = GamePlay.getInstance().deal;
+        deal = GamePlay.getInstance().getDeal();
     }
 
     @Override
     public void onStart() {
+        /*
         Deck deck = GamePlay.getInstance().getDeck();
         deck.reset();
         deck.shuffle();
 
         for(IPlayer player: GamePlay.getInstance().getPlayers()) {
-            ServerEvent betEvent = new ServerEvent()
-                    .setType(ServerEvent.Type.Bet)
-                    .setArguments(new String[] {
+            GamePlay.getInstance().broadcast(new ServerEvent(
+                    ServerEvent.Type.Bet,
+                    new String[] {
                             player.getUUID().toString(),
                             Integer.toString(player.getMoney()),
                             Integer.toString(0)
-                    });
-            GamePlay.getInstance().broadcast(betEvent);
+                    }
+                    ));
+
 
             try {
                 Card first = deck.drawLast();
@@ -66,7 +68,7 @@ public class Licitation implements IState {
 
         }
 
-
+*/
     }
 
     @Override
@@ -76,6 +78,7 @@ public class Licitation implements IState {
 
     @Override
     public void onPlayerMessage(IPlayer player, ClientMessage message) {
+        /*
         Logger.status("Command: " + message.getCommand());
         Deck deck = GamePlay.getInstance().getDeck();
 
@@ -107,5 +110,6 @@ public class Licitation implements IState {
         }
 
         deal.nextPlayer();
+        */
     }
 }

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Deal{
 	private IState currentState;
 	//ArrayList<Bet> bets = new ArrayList<Bet>();
-	private IPlayer currentPlayer;
+	private IPlayer dealer = null;
     private Card[] flop = new Card[3];
     private Card turn = null;
     private Card river = null;
@@ -23,19 +23,18 @@ public class Deal{
 		
 	}
 
-    public void setPlayer(IPlayer player) {
-        currentPlayer = player;
-        GamePlay.getInstance().sendTurnEvent();
+    public void setDealer(IPlayer dealer) {
+        dealer = dealer;
     }
 
-    public void nextPlayer() {
-        if(currentPlayer == null) Logger.error("There is no player!. Error");
-        if(currentPlayer.getNextPlayer() == null) Logger.error("There is no next player. Error!");
-        setPlayer(currentPlayer.getNextPlayer());
+    public void nextDealer() {
+        if(dealer == null) Logger.error("There is no player!. Error");
+        if(dealer.getNextPlayer() == null) Logger.error("There is no next player. Error!");
+        setDealer(dealer.getNextPlayer());
     }
 
-    public IPlayer getCurrentPlayer() {
-        return currentPlayer;
+    public IPlayer getDealer() {
+        return dealer;
     }
 
 	public IState getState(){ return currentState; }
@@ -43,10 +42,12 @@ public class Deal{
 	public void setState(IState newState){
         currentState = newState;
 
-        ServerEvent event = new ServerEvent()
-                .setType(ServerEvent.Type.ChangeState)
-                .setArguments(new String[] {newState.getClass().getSimpleName()});
-        GamePlay.getInstance().broadcast(event);
+        GamePlay.getInstance().broadcast(
+                new ServerEvent(ServerEvent.Type.ChangeState, new String[]{
+                        newState.getClass().getSimpleName()
+                        })
+        );
+
 
         currentState.onStart();
     }
@@ -54,5 +55,9 @@ public class Deal{
 
     public void setFlop(Card[] flop) {
         this.flop = flop;
+    }
+
+    public void setUp() {
+
     }
 }
