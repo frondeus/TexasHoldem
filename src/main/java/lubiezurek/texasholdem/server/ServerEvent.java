@@ -11,7 +11,7 @@ public class ServerEvent extends ServerMessage {
         Commands,
         Chat,
         ChangeState,
-        Hand, SharedCard, OtherHand, Turn
+        Hand, SharedCard, OtherHand, Bet, Turn
     }
 
     private Type type;

@@ -17,12 +17,12 @@ public class Server extends WebSocketServer {
     
     private volatile static Server instance;
     public static Server getInstance() {
-        return getInstance(7777);
+        return getInstance(7777,new ServerOptions());
     }
-    public static Server getInstance(int port) {
+    public static Server getInstance(int port, ServerOptions options) {
         if(instance == null) {
             synchronized(Server.class) {
-                if(instance == null) instance = new Server(port);
+                if(instance == null) instance = new Server(port, options);
             }
         }
         return instance;
@@ -33,8 +33,11 @@ public class Server extends WebSocketServer {
     private final IServerMessageBuilder serverMessageBuilder;
     private HashMap<WebSocket, Client> clients;
 
-    private Server(int port) {
+    public ServerOptions Options = new ServerOptions();
+
+    private Server(int port,ServerOptions options) {
         super(new InetSocketAddress(port));
+        this.Options = options;
         this.clientMessageBuilder = new JSONClientMessageBuilder();
         this.serverMessageBuilder = new JSONServerMessageBuilder();
         this.state = Lobby.getInstance();

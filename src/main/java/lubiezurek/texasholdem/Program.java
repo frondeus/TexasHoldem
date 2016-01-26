@@ -1,29 +1,26 @@
 package lubiezurek.texasholdem;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import lubiezurek.texasholdem.server.Server;
+import lubiezurek.texasholdem.server.ServerOptions;
 
 class Program {
-    private static final String DEFAULT_PORT = "7777";
-    private static final String DEFAULT_LOCALHOST = "127.0.0.1";
 
     public static void main(String[] args) {
         try {
+            int maxRaiseFixedLimit, fixedLimitBet;
 
+            ArrayList<String> a = new ArrayList<>(Arrays.asList(args));
+            int port = 7777;
 
-            if(args.length == 0) {
-                String[] default_args = new String[1];
-                default_args[0] = DEFAULT_PORT;
-                args = default_args;
-
+            if(a.size() > 0) {
+                port = Integer.parseInt(a.get(0));
+                a.remove(0);
             }
-
-            if (args.length != 1) {
-                Logger.error("Invalid number of arguments");
-                return;
-            }
-            Server.getInstance(Integer.parseInt(args[0])).run();
+            Server.getInstance(port,new ServerOptions(a.toArray(new String[]{}))).run();
         }
         catch(Exception e) {
             Logger.exception(e);

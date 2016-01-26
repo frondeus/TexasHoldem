@@ -34,7 +34,7 @@ define(
         };
 
         var addOtherHandCard = function(other, color, value) {
-            var opponent = $("#"+other);
+            var opponent = $("."+other);
             var freeSlot = $(".hand .card-slot:empty:first", opponent);
             console.log("Opponent cards: " + other);
             console.log(opponent);

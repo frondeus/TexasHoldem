@@ -30,8 +30,6 @@ public class Lobby extends GameState {
         }
     }
 
-    public int maxPlayerCount = 2;
-    public final int startMoney = 199;
 
     private Lobby() {
     }
@@ -43,7 +41,7 @@ public class Lobby extends GameState {
 
     public void onClientConnected(IPlayer client) {
         if(client == null) throw new IllegalArgumentException();
-        if(players.size() < maxPlayerCount) {
+        if(players.size() < Server.getInstance().Options.getMaxPlayerCount()) {
             Logger.status(client + ": Add player to list");
             ArrayList<String> uuids = new ArrayList<>();
             uuids.add(client.getUUID().toString());
@@ -53,7 +51,7 @@ public class Lobby extends GameState {
 
             players.add(client);
 
-            client.setMoney(startMoney);
+            client.setMoney(Server.getInstance().Options.getStartMoney());
 
             ServerResponse response = new ServerResponse()
                     .setStatus(ServerResponse.Status.Ok)
@@ -72,13 +70,14 @@ public class Lobby extends GameState {
                     .setArguments(new String[] {"chat"});
             client.sendMessage(commandsEvent);
 
-            ServerEvent event = new ServerEvent()
+
+            ServerEvent connectedEvent = new ServerEvent()
                     .setType(ServerEvent.Type.ClientConnect)
                     .setArguments(new String[] {client.getUUID().toString()});
-                broadcastExcept(client,event);
+                broadcastExcept(client,connectedEvent);
 
             //TODO: ready!?
-            if(players.size() >= maxPlayerCount) {
+            if(players.size() >= Server.getInstance().Options.getMaxPlayerCount()) {
                 GamePlay.getInstance().setPlayers(players);
                 Server.getInstance().setState(GamePlay.getInstance());
             }

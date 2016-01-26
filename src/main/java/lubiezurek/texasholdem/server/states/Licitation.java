@@ -46,6 +46,15 @@ public class Licitation implements IState {
         deck.shuffle();
 
         for(IPlayer player: GamePlay.getInstance().getPlayers()) {
+            ServerEvent betEvent = new ServerEvent()
+                    .setType(ServerEvent.Type.Bet)
+                    .setArguments(new String[] {
+                            player.getUUID().toString(),
+                            Integer.toString(player.getMoney()),
+                            Integer.toString(0)
+                    });
+            GamePlay.getInstance().broadcast(betEvent);
+
             try {
                 Card first = deck.drawLast();
                 Card second = deck.drawLast();
@@ -75,13 +84,8 @@ public class Licitation implements IState {
             Logger.status("Flop");
             //TODO: Przenieść stąd do stanu Flop
             try {
-                //Card[] flop = new Card[3];
-                //for(int i = 0; i < 3; i++) {
-                    //flop[i] = deck.drawLast();
                 Card[] flop = new Card[]{ deck.drawLast() };
                     GamePlay.getInstance().sendSharedCard(flop[0]);
-                //}
-                //GamePlay.getInstance().deal.setFlop(flop);
             }
             catch (Exception e) {
                 Logger.exception(e);

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+chromium --allow-file-access-from-files websocket-client/index.html &

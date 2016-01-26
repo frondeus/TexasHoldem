@@ -1,16 +1,23 @@
 define(["domReady!", "./logger"], function(doc, logger){
     if(!window.WebSocket) {
-        alert("Websocket is not supported");
+        logger.error("WebSocket is not supported");
         return null;
     } 
 
     var eventHandlers = {};
 
-    var init  = function(_eventHandlers) {
+    var init  = function(address, _eventHandlers) {
         console.log("Set Handlers");
         eventHandlers = _eventHandlers;
 
-        var socket = new WebSocket("ws://localhost:7777");
+        if(address == "") address = "localhost:7777";
+        var socket = new WebSocket("ws://"+ address);
+        if(!socket ){
+            logger.error("Invalid address or connection issue");
+            return null;
+        }
+
+        //else socket = new WebSocket("ws://localhost:7777");
         socket.onopen = function() {
             logger.log("Connected");
         };

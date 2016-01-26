@@ -53,20 +53,18 @@ public class LobbyTest {
 
     @Test
     public void testOnEveryClientConnected() throws Exception {
-        Lobby.getInstance().maxPlayerCount = 16;
-
         int oldPlayerCount;
         ServerMessage[] messages = null;
         ArrayList<String> uuids = new ArrayList<>();
 
-        for(int i = 0; i < Lobby.getInstance().maxPlayerCount - 1; i++) {
+        for(int i = 0; i < Server.getInstance().Options.getMaxPlayerCount() - 1; i++) {
             oldPlayerCount = Lobby.getInstance().getPlayersCount();
 
             PlayerMock client = createClient();
             Lobby.getInstance().onClientConnected(client);
 
             assertEquals(1, Lobby.getInstance().getPlayersCount() - oldPlayerCount);    //Polaczlo jednego
-            assertEquals(Lobby.getInstance().startMoney, client.getMoney());       // Ustawilo mu kase
+            assertEquals(Server.getInstance().Options.getStartMoney(), client.getMoney());       // Ustawilo mu kase
             assertEquals(false, client.isDisconnected());
 
             messages = client.getLastMessages();
@@ -87,12 +85,11 @@ public class LobbyTest {
 
     @Test
     public void testOnMoreThanOneClientConnected() throws Exception {
-        Lobby.getInstance().maxPlayerCount = 16;
 
         PlayerMock client = null, lastClient = null;
         ServerMessage[] messages = null;
 
-        for(int i = 0; i < Lobby.getInstance().maxPlayerCount-1; i++) { // Ostatni gracz sprowadziłby zmianę stanu
+        for(int i = 0; i < Server.getInstance().Options.getMaxPlayerCount() - 1; i++) { // Ostatni gracz sprowadziłby zmianę stanu
                                                                             // i wiecej wiadomosci
             if(client != null) lastClient = client;
             client = createClient();
@@ -111,11 +108,10 @@ public class LobbyTest {
 
     @Test
     public void testLastClientConnected() throws Exception {
-        Lobby.getInstance().maxPlayerCount = 16;
         ServerMessage[] messages = null;
         ArrayList<PlayerMock> clients = new ArrayList<>();
 
-        for(int i = 0; i < Lobby.getInstance().maxPlayerCount - 1; i++) {
+        for(int i = 0; i < Server.getInstance().Options.getMaxPlayerCount() - 1; i++) {
             PlayerMock client = createClient();
             Lobby.getInstance().onClientConnected(client);
 
@@ -127,16 +123,16 @@ public class LobbyTest {
         PlayerMock client = createClient();
         Lobby.getInstance().onClientConnected(client);
         messages = client.getLastMessages();
-        assertEquals(6 + 3 + 1, messages.length);
+        assertTrue(6 <= messages.length);
         assertEvent(ServerEvent.Type.ChangeState, new String[] { "Licitation"}, messages[3]);
 
-        for(int i = 0; i < Lobby.getInstance().maxPlayerCount - 1; i++) {
+        for(int i = 0; i < Server.getInstance().Options.getMaxPlayerCount() - 1; i++) {
             client = clients.get(i);
 
             messages = client.getLastMessages();
-            assertTrue(Lobby.getInstance().maxPlayerCount - i +1 <= messages.length);
+            assertTrue(Server.getInstance().Options.getMaxPlayerCount() - i +1 <= messages.length);
             assertEvent(ServerEvent.Type.ChangeState,
-                    new String[] { "Licitation" }, messages[Lobby.getInstance().maxPlayerCount-1-i]);
+                    new String[] { "Licitation" }, messages[Server.getInstance().Options.getMaxPlayerCount() -1-i]);
         }
     }
 
