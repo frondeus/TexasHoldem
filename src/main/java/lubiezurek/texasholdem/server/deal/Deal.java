@@ -24,7 +24,7 @@ public class Deal{
 	}
 
     public void setDealer(IPlayer dealer) {
-        dealer = dealer;
+        this.dealer = dealer;
     }
 
     public void nextDealer() {

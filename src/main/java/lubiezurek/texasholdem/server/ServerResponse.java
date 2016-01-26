@@ -13,6 +13,8 @@ public class ServerResponse extends ServerMessage {
     private String message;
 
     public ServerResponse(Status status, String message) {
+        if(status == null) throw new IllegalArgumentException();
+        if(message == null) throw new IllegalArgumentException();
         this.status = status;
         this.message = message;
     }

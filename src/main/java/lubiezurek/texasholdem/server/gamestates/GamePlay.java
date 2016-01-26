@@ -47,9 +47,12 @@ public class GamePlay extends GameState {
     }
 
     public void onEnter() {
+        //TODO:
+        licitationState = Licitation.getInstance();
         if(players.size() > 0 ) {
             createQueue();
 
+            Logger.status("Deal: " + deal);
             if(deal == null) deal = new Deal(); //Sprawdzanie nulla do testow
             deal.setDealer(players.get(0));
             deal.setUp();

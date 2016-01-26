@@ -17,16 +17,16 @@ public class LicitationTest {
 
     @Before
     public void setUp() throws Exception {
-        GamePlay.resetInstance();
-        Licitation.resetInstance();
-        Lobby.resetInstance();
+        //GamePlay.resetInstance();
+        //Licitation.resetInstance();
+        //Lobby.resetInstance();
 
-        for(int i = 0; i < Server.getInstance().Options.getMaxPlayerCount(); i++)
-            Lobby.getInstance().onClientConnected(new PlayerMock());
+        //for(int i = 0; i < Server.getInstance().Options.getMaxPlayerCount(); i++)
+            //Lobby.getInstance().onClientConnected(new PlayerMock());
 
-        Server.getInstance().setState(GamePlay.getInstance());
+        //Server.getInstance().setState(GamePlay.getInstance());
         //Licitation is ready
-        assertEquals(Licitation.getInstance(), GamePlay.getInstance().deal.getState());
+        //assertEquals(Licitation.getInstance(), GamePlay.getInstance().deal.getState());
     }
 
     @After

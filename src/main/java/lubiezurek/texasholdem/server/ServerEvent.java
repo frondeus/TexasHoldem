@@ -21,6 +21,8 @@ public class ServerEvent extends ServerMessage {
     private String[] arguments;
 
     public ServerEvent(Type type, String[] arguments) {
+        if(type == null) throw  new IllegalArgumentException();
+        if(arguments == null) throw new IllegalArgumentException();
         this.type = type;
         this.arguments = arguments;
     }
@@ -38,6 +40,7 @@ public class ServerEvent extends ServerMessage {
     }
 
     public void setArguments(String[] arguments) {
+        if(arguments == null) throw new IllegalArgumentException();
         this.arguments = arguments;
     }
 }

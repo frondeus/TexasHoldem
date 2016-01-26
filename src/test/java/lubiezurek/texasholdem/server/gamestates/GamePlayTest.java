@@ -1,5 +1,6 @@
 package lubiezurek.texasholdem.server.gamestates;
 
+import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.server.IPlayer;
 import lubiezurek.texasholdem.server.TestHelper;
 import lubiezurek.texasholdem.server.deal.Deal;
@@ -12,6 +13,7 @@ import org.mockito.Spy;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -20,7 +22,7 @@ import static org.mockito.Mockito.verify;
  */
 public class GamePlayTest extends TestHelper {
     ArrayList<IPlayer> players;
-    @Spy Deal deal = new Deal();
+    Deal deal = spy(new Deal());
 
     @Before
     public void setUp() throws Exception {
@@ -28,6 +30,7 @@ public class GamePlayTest extends TestHelper {
         addRestPlayers();
         addPlayer();
         GamePlay.resetInstance();
+        Logger.status("Set Deal: " + deal);
         GamePlay.getInstance().setDeal(deal);
         Lobby.getInstance().changeState();
         players = GamePlay.getInstance().getPlayers();
@@ -56,7 +59,7 @@ public class GamePlayTest extends TestHelper {
      */
 
     @Test
-    void onEnterShouldCreateQueue() {
+    public void onEnterShouldCreateQueue() {
         for (IPlayer player: players) {
             assertNotNull(player.getNextPlayer());
         } // Upewniam się że każdy ma następce
@@ -73,15 +76,14 @@ public class GamePlayTest extends TestHelper {
     }
 
     @Test
-    void onEnterShouldRandomDealer() {
-        Deal deal = GamePlay.getInstance().getDeal();
+    public void onEnterShouldRandomDealer() {
         assertNotNull(deal);
         IPlayer firstPlayer = players.get(0);
         assertEquals(firstPlayer, deal.getDealer());
     }
 
     @Test
-    void onEnterShouldSetupLicitationState() {
+    public void onEnterShouldSetupLicitationState() {
         assertNotNull(GamePlay.getInstance().getLicitationState());
         switch(Options().getLicitationType()) {
         default:
@@ -92,7 +94,7 @@ public class GamePlayTest extends TestHelper {
     }
 
     @Test
-    void onEnterShouldSetupDeal() {
+    public void onEnterShouldSetupDeal() {
         verify(deal, times(1)).setUp();
         assertEquals(GamePlay.getInstance().getLicitationState(), deal.getState());
     }
