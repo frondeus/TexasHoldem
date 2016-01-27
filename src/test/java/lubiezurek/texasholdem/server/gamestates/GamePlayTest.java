@@ -3,6 +3,7 @@ package lubiezurek.texasholdem.server.gamestates;
 import lubiezurek.texasholdem.StateMock;
 import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.*;
+import lubiezurek.texasholdem.server.deal.Bet;
 import lubiezurek.texasholdem.server.deal.Deal;
 import lubiezurek.texasholdem.server.states.Licitation;
 import org.junit.Before;
@@ -70,8 +71,34 @@ public class GamePlayTest extends TestHelper {
     }
 
     @Test
+    public void onEnterShouldSetupMoney() {
+        for(IPlayer player : players) {
+            assertEquals(Options().getStartMoney(), player.getMoney());
+        }
+    }
+
+    @Test
+    public void onEnterShouldBroadcastMoney() {
+        PlayerMock player = (PlayerMock) players.get(0);
+        player.getLastMessages();
+
+        GamePlay.getInstance().setupMoney();
+
+        ServerMessage[] messages = player.getLastMessages();
+        assertEquals(players.size(),  messages.length);
+        for(int i = 0; i < players.size(); i++) {
+            IPlayer otherPlayer = players.get(i);
+            assertEvent(ServerEvent.Type.Bet, new String[] {
+                    otherPlayer.getUUID().toString(),
+                    Integer.toString(otherPlayer.getMoney()),
+                    "0"
+            },messages[i]);
+        }
+    }
+
+    @Test
     public void onEnterShouldSetupDeal() {
-        verify(deal, times(1)).start();
+        verify(deal, times(1)).start(GamePlay.getInstance().getDealer());
     }
 
     @Test
