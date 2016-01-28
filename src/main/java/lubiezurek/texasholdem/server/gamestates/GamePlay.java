@@ -89,11 +89,6 @@ public class GamePlay extends GameState {
     }
 
     public void onClientMessage(IPlayer client, ClientMessage message) {
-        if(!isPlayerTurn(client)) {
-            client.sendMessage(new ServerResponse("It's not your turn"));
-            return;
-        }
-
         String[] availableCommands = deal.getState().getAvailableCommands(client);
         for(String s: availableCommands) if(s.equals(message.getCommand())) {
             deal.getState().onPlayerMessage(client, message);
