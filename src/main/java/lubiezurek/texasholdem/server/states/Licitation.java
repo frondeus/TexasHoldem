@@ -28,8 +28,6 @@ public abstract class Licitation implements IState {
 
     @Override
     public void onStart(Deal deal) {
-        //Todo: if starting player broke, turn to next until one not 
-        //          broke found, or if no players have money go to next state
         biggestBet = 0;
         this.deal = deal;
     }
@@ -72,7 +70,7 @@ public abstract class Licitation implements IState {
                 
                 if(!betIsFair(player, betValue)){
                     player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
-                        "Bet command: bad amount"));
+                        "Bet: bad amount"));
                     break;
                 }
 
