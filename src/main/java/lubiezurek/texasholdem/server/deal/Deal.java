@@ -24,13 +24,15 @@ public class Deal{
         smallBlindPlayer = dealer.getNextPlayer();
         bigBlindPlayer = smallBlindPlayer.getNextPlayer();
 
-        addBet(smallBlindPlayer, Server.getInstance().Options.getSmallBlind());
-        addBet(bigBlindPlayer, Server.getInstance().Options.getBigBlind());
+        //TODO: set first state to hand shuffle
+        setState(GamePlay.getInstance().getLicitationState());
+        //TODO: blinds should be added through Licitation, not through addBet()
+        //addBet(smallBlindPlayer, Server.getInstance().Options.getSmallBlind());
+        //addBet(bigBlindPlayer, Server.getInstance().Options.getBigBlind());
 
         if(deck == null) deck = new Deck(); // Nie twórz na unit testach
         deck.shuffle();
 
-        setState(GamePlay.getInstance().getLicitationState());
 
         for (IPlayer p : GamePlay.getInstance().getPlayers()) {
             p.setPlayerState(PlayerState.WAITING);
