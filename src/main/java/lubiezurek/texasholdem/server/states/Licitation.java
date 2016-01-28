@@ -86,7 +86,7 @@ public abstract class Licitation implements IState {
                 break;
 
             case "Check":
-                //if( != ) //TODO if need to call give response: bad command
+                //if( != ) //TODO if needs to call give response: bad command
                 //TODO: else: next player
                 //TODO:      check if licitation should end
                 break;

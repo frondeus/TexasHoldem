@@ -72,11 +72,6 @@ public class Deal{
         return sum;
     }
 
-    public int availableMoney(IPlayer player) {
-        return player.getMoney() - sumBetAmount(player);
-    }
-
-
 	public void setState(IState newState){
         currentState = newState;
 
