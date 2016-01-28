@@ -80,12 +80,12 @@ public class Client extends Thread implements IPlayer {
     }
 
     @Override
-    void setPlayerState(PlayerState state){
+    public void setPlayerState(PlayerState state){
         this.state = state;
     }
 
     @Override
-    PlayerState getPlayerState(){
+    public PlayerState getPlayerState(){
         return this.state;
     }
 
