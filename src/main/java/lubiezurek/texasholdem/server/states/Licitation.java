@@ -41,7 +41,6 @@ public class Licitation implements IState {
 
     @Override
     public void onStart() {
-        //TODO: set all playerstates to starting ones
         biggestBet = 0;
         deal = GamePlay.getInstance().getDeal();
     }
@@ -53,7 +52,7 @@ public class Licitation implements IState {
 
     @Override
     public boolean isPlayerTurn(IPlayer player) {
-        return false;
+        //TODO
     }
 
     @Override
@@ -63,8 +62,14 @@ public class Licitation implements IState {
         if(client == null) throw new IllegalArgumentException();
         if(message == null) throw  new IllegalArgumentException();
 
-        //TODO: check if we are talking about the right player
+        if(!isPlayerTurn(player)){
+            player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
+                "Bad command: not your turn"));
+            return;
+        }
 
+
+        //TODO: broadcast the moves
         switch(message.getCommand()){
             case "Bet":
                 int betValue;
@@ -72,16 +77,16 @@ public class Licitation implements IState {
                     betValue = Integer.parseInt(message.getArguments()[]);
                 }
                 catch(NumberFormatException ex){
-                    client.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
+                    player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
                         "Bet command: argument invalid"));
                     break;
                 }
                 /*
                 TODO: add Bet to Deal
                       check if player has enough money to bet betValue
-                      check if betValue => biggestBet
+                      check if betValue+playerBets => biggestBet
                       take away money from player
-                      next state (?)
+                      next state (?) - check if player is the last one to 
                 */
 
 

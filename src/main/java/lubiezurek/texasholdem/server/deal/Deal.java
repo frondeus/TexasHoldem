@@ -24,7 +24,10 @@ public class Deal{
 	}
 
     public void start() {
-
+        //TODO: giving blinds, set dealer
+        for (IPlayer player : GamePlay.getInstance().getPlayers()){
+            player.setPlayerState(PlayerState.WAITING);
+        }
     }
 
 
