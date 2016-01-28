@@ -40,7 +40,7 @@ public class Deal{
     }
 
     public void addBet(IPlayer player, int amount) {
-        int moneyLeft = availableMoney(player);
+        int moneyLeft = player.getMoney();
 
         player.takeAwayMoney(amount);
 
