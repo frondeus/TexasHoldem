@@ -168,4 +168,14 @@ public class DealTest extends TestHelper {
         verify(state, times(1)).onStart(deal);
     }
 
+    @Test
+    public void addBetShouldTakeAwayMoneyFromPlayer(){
+        PlayerMock player = (PlayerMock) players.get(0);
+        int money_before = player.getMoney();
+
+        deal.addBet(player, 10);
+
+        AssertEquals(player.getMoney, money_before - 10);
+    }
+
 }

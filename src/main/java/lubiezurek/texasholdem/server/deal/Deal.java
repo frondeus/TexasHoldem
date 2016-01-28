@@ -39,6 +39,8 @@ public class Deal{
     public void addBet(IPlayer player, int amount) {
         int moneyLeft = availableMoney(player);
 
+        player.takeAwayMoney(amount);
+
         Bet bet = new Bet(player, Math.min(amount, moneyLeft));
         bets.add(bet);
 
