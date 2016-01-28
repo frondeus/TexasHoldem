@@ -170,12 +170,14 @@ public class DealTest extends TestHelper {
 
     @Test
     public void addBetShouldTakeAwayMoneyFromPlayer(){
+        //TODO
         PlayerMock player = (PlayerMock) players.get(0);
         int money_before = player.getMoney();
 
         deal.addBet(player, 10);
 
-        AssertEquals(player.getMoney, money_before - 10);
+        assertEquals(player.getMoney(), money_before - 10);
+
     }
 
 }

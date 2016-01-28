@@ -40,6 +40,11 @@ public class PlayerMock implements IPlayer {
     }
 
     @Override
+    public void takeAwayMoney(int money) {
+        this.money -= money;
+    }
+
+    @Override
     public void sendMessage(ServerMessage message) {
         messages.add(message);
     }

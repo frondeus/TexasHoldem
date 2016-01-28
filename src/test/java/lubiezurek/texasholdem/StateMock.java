@@ -20,7 +20,7 @@ public class StateMock implements IState {
     }
 
     @Override
-    public String[] getAvailableCommands() {
+    public String[] getAvailableCommands(IPlayer player) {
         return new String[] {};
     }
 

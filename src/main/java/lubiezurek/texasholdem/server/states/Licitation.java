@@ -10,6 +10,8 @@ import lubiezurek.texasholdem.server.gamestates.GamePlay;
 import lubiezurek.texasholdem.server.gamestates.Lobby;
 import lubiezurek.texasholdem.server.model.Deck;
 import lubiezurek.texasholdem.server.model.card.Card;
+import lubiezurek.texasholdem.server.ServerResponse;
+import lubiezurek.texasholdem.server.PlayerState;
 
 import java.util.ArrayList;
 
@@ -17,34 +19,18 @@ import java.util.ArrayList;
  * Created by frondeus on 23.01.16.
  */
 public abstract class Licitation implements IState {
-    private volatile  static Licitation instance;
-    public static Licitation getInstance() {
-        if(instance == null) {
-            synchronized(Licitation.class) {
-                if(instance == null) instance = new Licitation();
-            }
-        }
-        return instance;
-    }
-
-    public static void resetInstance() {
-        synchronized (Licitation.class) {
-            instance = null;
-        }
-    }
-
-    private Deal deal = NULL;
+    private Deal deal = null;
     private int biggestBet;
 
-    private Licitation() {
+    public Licitation() {
     }
 
     @Override
-    public void onStart() {
+    public void onStart(Deal deal) {
         //Todo: if starting player broke, turn to next until one not 
         //          broke found, or if no players have money go to next state
         biggestBet = 0;
-        deal = GamePlay.getInstance().getDeal();
+        this.deal = deal;
     }
 
     @Override
@@ -53,19 +39,22 @@ public abstract class Licitation implements IState {
             return new String[] {"Bet", "Check", "Fold",
                                  "GetRequiredBet", "GetPot", 
                                  "GetLicitationType"};
+        else return new String[] {"GetRequiredBet", "GetPot", 
+                                 "GetLicitationType"};
     }
 
     @Override
     public boolean isPlayerTurn(IPlayer player) {
         //TODO
+        return true;
     }
 
     @Override
     public void onPlayerMessage(IPlayer player, ClientMessage message) {
         Logger.status("Command: " + message.getCommand());
 
-        if(client == null) throw new IllegalArgumentException();
-        if(message == null) throw  new IllegalArgumentException();
+        if(player == null) throw new IllegalArgumentException();
+        if(message == null) throw new IllegalArgumentException();
 
         if(!isPlayerTurn(player)){
             player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
@@ -79,7 +68,7 @@ public abstract class Licitation implements IState {
             case "Bet":
                 int betValue;
                 try{
-                    betValue = Integer.parseInt(message.getArguments()[]);
+                    betValue = Integer.parseInt(message.getArguments()[0]);
                 }
                 catch(NumberFormatException ex){
                     player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
@@ -93,21 +82,21 @@ public abstract class Licitation implements IState {
                     break;
                 }
 
-                makeBet(player, betValue);
+                deal.addBet(player, betValue);
 
                 break;
 
             case "Check":
-                if( != ) //TODO if need to call give response: bad command
+                //if( != ) //TODO if need to call give response: bad command
                 //TODO: else: next player
                 //      check if licitation should end
                 break;
 
             case "Fold":
-                //TODO: tell Client class that player folded
+                player.setPlayerState(PlayerState.FOLD);
                 break;
 
-            case "GetRequiredBet":
+            case "GetPot":
                 //TODO: tell Client what is the current state of the pot
                 break;
 
@@ -115,8 +104,11 @@ public abstract class Licitation implements IState {
                 player.sendMessage(new ServerResponse(ServerResponse.Status.Ok,
                         this.getLicitationType()));
                 break;
+
             case "GetRequiredBet":
+                //TOFO: tell Client the required amount to call
                 break;
+
             default:
                 player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
                         "Invalid command"));
@@ -133,13 +125,4 @@ public abstract class Licitation implements IState {
 
     /*TODO in subclasses: return information about licitation type*/
     public abstract String getLicitationType();
-    
-    public void makeBet(IPlayer player, int betValue){
-        /*TODO:
-                add bet to deal
-                take away money from player
-        */
-    }
-
-
 }

@@ -60,17 +60,6 @@ public class GamePlayTest extends TestHelper {
     }
 
     @Test
-    public void onEnterShouldSetupLicitationState() {
-        assertNotNull(GamePlay.getInstance().getLicitationState());
-        switch(Options().getLicitationType()) {
-        default:
-            //TODO Różne typy licytacji
-            assertEquals(Licitation.getInstance(), GamePlay.getInstance().getLicitationState());
-            break;
-        }
-    }
-
-    @Test
     public void onEnterShouldSetupMoney() {
         for(IPlayer player : players) {
             assertEquals(Options().getStartMoney(), player.getMoney());
@@ -159,7 +148,7 @@ public class GamePlayTest extends TestHelper {
 
         PlayerMock player = (PlayerMock) players.get(0);
         when(mockState.isPlayerTurn(player)).thenReturn(false);
-        when(mockState.getAvailableCommands()).thenReturn(new String[] { "Foo" });
+        when(mockState.getAvailableCommands(player)).thenReturn(new String[] { "Foo" });
 
         player.getLastMessages();
         ClientMessage message = new ClientMessage("Foo", new String[] {});
@@ -175,7 +164,7 @@ public class GamePlayTest extends TestHelper {
 
         PlayerMock player = (PlayerMock) players.get(0);
         when(mockState.isPlayerTurn(player)).thenReturn(true);
-        when(mockState.getAvailableCommands()).thenReturn(new String[] { "Foo" });
+        when(mockState.getAvailableCommands(player)).thenReturn(new String[] { "Foo" });
 
         player.getLastMessages();
         ClientMessage message = new ClientMessage("Foo", new String[] {});

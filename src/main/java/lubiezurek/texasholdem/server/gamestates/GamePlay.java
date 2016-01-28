@@ -4,7 +4,7 @@ import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.*;
 import lubiezurek.texasholdem.server.deal.Deal;
-import lubiezurek.texasholdem.server.states.Licitation;
+import lubiezurek.texasholdem.server.states.LicitationNoLimit;
 
 import java.util.Collections;
 
@@ -36,11 +36,11 @@ public class GamePlay extends GameState {
         Collections.shuffle(players);
 
         IPlayer player = null, lastPlayer = null;
-        for(int i = 0; i < players.size(); i++) {
-            if(player != null) lastPlayer = player;
-            player = players.get(i);
+        for (IPlayer aPlayer : players) {
+            if (player != null) lastPlayer = player;
+            player = aPlayer;
             player.setNextPlayer(players.get(0));
-            if(lastPlayer != null)
+            if (lastPlayer != null)
                 lastPlayer.setNextPlayer(player);
         }
     }
@@ -62,7 +62,7 @@ public class GamePlay extends GameState {
 
     public void onEnter() {
         //TODO:
-        licitationState = Licitation.getInstance();
+        licitationState = new LicitationNoLimit();
         if(players.size() > 0 ) {
             createQueue();
             setupMoney();
@@ -94,7 +94,7 @@ public class GamePlay extends GameState {
             return;
         }
 
-        String[] availableCommands = deal.getState().getAvailableCommands();
+        String[] availableCommands = deal.getState().getAvailableCommands(client);
         for(String s: availableCommands) if(s.equals(message.getCommand())) {
             deal.getState().onPlayerMessage(client, message);
             return;

@@ -1,10 +1,7 @@
 package lubiezurek.texasholdem.server.deal;
 
 
-import lubiezurek.texasholdem.server.IPlayer;
-import lubiezurek.texasholdem.server.IState;
-import lubiezurek.texasholdem.server.Server;
-import lubiezurek.texasholdem.server.ServerEvent;
+import lubiezurek.texasholdem.server.*;
 import lubiezurek.texasholdem.server.gamestates.GamePlay;
 import lubiezurek.texasholdem.server.model.Deck;
 import lubiezurek.texasholdem.server.model.card.Card;
@@ -34,6 +31,10 @@ public class Deal{
         deck.shuffle();
 
         setState(GamePlay.getInstance().getLicitationState());
+
+        for (IPlayer p : GamePlay.getInstance().getPlayers()) {
+            p.setPlayerState(PlayerState.WAITING);
+        }
     }
 
     public void addBet(IPlayer player, int amount) {
@@ -58,6 +59,14 @@ public class Deal{
         int sum = 0;
         for(Bet bet: bets)
             if(bet.getPlayer() == player) sum += bet.getAmount();
+        return sum;
+    }
+
+    public int getPotAmount(){
+        int sum = 0;
+        for (Bet bet: bets) {
+            sum += bet.getAmount();
+        }
         return sum;
     }
 
