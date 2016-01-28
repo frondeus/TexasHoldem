@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public abstract class Licitation implements IState {
     protected Deal deal = null;
     protected int biggestBet;
-    protected IPlayer bigFish;
+    protected IPlayer bigFish = null;
 
     public Licitation() {
     }
@@ -78,7 +78,9 @@ public abstract class Licitation implements IState {
 
                 deal.addBet(player, betValue);
                 if(player.getMoney() == 0) player.setPlayerState(PlayerState.BROKE);
+
                 //TODO: calculate biggest bet, if player bet > biggestBet -> bigFish = player
+
                 //TODO: switch state to next player, notify next player that it's his turn
                 break;
 
@@ -113,7 +115,7 @@ public abstract class Licitation implements IState {
             case "GetRequiredBet":
                 player.sendMessage(
                         new ServerEvent(ServerEvent.Type.RequiredBet,
-                        new String[] {Integer.toString(biggestBet - deal.sumBetAmount(player))}
+                        new String[] {Integer.toString(getRequiredBet(player))}
                 ));
                 break;
 
@@ -130,6 +132,7 @@ public abstract class Licitation implements IState {
                 check if betValue+playerBets => biggestBet
     */
     public abstract boolean betIsFair(IPlayer player, int betValue);
+    public abstract int getRequiredBet(IPlayer player);
 
     /*TODO in subclasses: return information about licitation type*/
     public abstract String getLicitationType();
