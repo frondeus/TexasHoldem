@@ -1,4 +1,4 @@
-package main.java.lubiezurek.texasholdem.server.model;
+package lubiezurek.texasholdem.server.deal;
 
 import lubiezurek.texasholdem.server.IPlayer;
 import java.lang.Comparable;
