@@ -16,9 +16,11 @@ public class JSONServerEventBuilder implements IServerMessageBuilder {
     @Override
     public ServerMessage deserializeMessage(String input) {
         JSONObject json = new JSONObject(input);
-        ServerEvent event = new ServerEvent();
+        ServerEvent event = new ServerEvent(
+                ServerEvent.Type.valueOf(json.getString("type")),
+                new String[]{}
+        );
 
-        event.setType(ServerEvent.Type.valueOf(json.getString("type")));
 
         JSONArray array = json.getJSONArray("arguments");
         if(array != null) {

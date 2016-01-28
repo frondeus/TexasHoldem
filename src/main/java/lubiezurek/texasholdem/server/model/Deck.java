@@ -45,10 +45,6 @@ public class Deck{
 		Collections.shuffle(cards);
 	}
 
-	/*public void addCard(Card newCard){
-		cards.add(newCard);
-	}*/
-	
 	public void removeCard(int index) throws Exception {
 		if(size() - 1 < index || index < 0)  throw new IndexOutOfBoundsException("index");
 

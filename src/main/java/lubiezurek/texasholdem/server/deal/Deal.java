@@ -12,9 +12,8 @@ import lubiezurek.texasholdem.server.model.card.Card;
 import java.util.ArrayList;
 
 public class Deal{
-	private IState currentState;
+	private IState currentState = null;
 	//ArrayList<Bet> bets = new ArrayList<Bet>();
-	private IPlayer currentPlayer;
     private Card[] flop = new Card[3];
     private Card turn = null;
     private Card river = null;
@@ -23,36 +22,24 @@ public class Deal{
 		
 	}
 
-    public void setPlayer(IPlayer player) {
-        currentPlayer = player;
-        GamePlay.getInstance().sendTurnEvent();
+    public void start() {
+
     }
 
-    public void nextPlayer() {
-        if(currentPlayer == null) Logger.error("There is no player!. Error");
-        if(currentPlayer.getNextPlayer() == null) Logger.error("There is no next player. Error!");
-        setPlayer(currentPlayer.getNextPlayer());
-    }
-
-    public IPlayer getCurrentPlayer() {
-        return currentPlayer;
-    }
 
 	public IState getState(){ return currentState; }
 
 	public void setState(IState newState){
         currentState = newState;
 
-        ServerEvent event = new ServerEvent()
-                .setType(ServerEvent.Type.ChangeState)
-                .setArguments(new String[] {newState.getClass().getSimpleName()});
-        GamePlay.getInstance().broadcast(event);
+        GamePlay.getInstance().broadcast(new ServerEvent(ServerEvent.Type.ChangeState, new String[]{
+                        newState.getClass().getSimpleName()
+                        })
+        );
 
-        currentState.onStart();
+
+        currentState.onStart(this);
     }
 
 
-    public void setFlop(Card[] flop) {
-        this.flop = flop;
-    }
 }
