@@ -18,6 +18,7 @@ public class Client extends Thread implements IPlayer {
     private UUID uuid;
     private IPlayer nextPlayer = null;
     private Card[] hand = new Card[2];
+    private PlayerState state = PlayerState.WAITING;
 
     public Client(Server server, WebSocket socket) {
         if(server == null) throw new IllegalArgumentException();
@@ -77,4 +78,15 @@ public class Client extends Thread implements IPlayer {
     public void setHand(Card[] cards) {
         hand = cards;
     }
+
+    @Override
+    void setPlayerState(PlayerState state){
+        this.state = state;
+    }
+
+    @Override
+    PlayerState getPlayerState(){
+        return this.state;
+    }
+
 }
