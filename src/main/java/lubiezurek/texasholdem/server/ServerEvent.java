@@ -17,6 +17,7 @@ public class ServerEvent extends ServerMessage {
         PotAmount,
         RequiredBet,
         LicitationType,
+        Fold,
         Hand, SharedCard, OtherHand, Bet, Turn
     }
 

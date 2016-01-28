@@ -84,6 +84,7 @@ public abstract class Licitation implements IState {
                 }
 
                 deal.addBet(player, betValue);
+                //TODO: all-in states in Player: broke
                 //TODO: calculate biggest bet, if player bet > biggestBet -> bigFish = player
                 //TODO: switch state to next player, notify next player that it's his turn
                 break;
@@ -91,11 +92,15 @@ public abstract class Licitation implements IState {
             case "Check":
                 //if( != ) //TODO if need to call give response: bad command
                 //TODO: else: next player
-                //      check if licitation should end
+                //TODO:      check if licitation should end
                 break;
 
             case "Fold":
                 player.setPlayerState(PlayerState.FOLD);
+                GamePlay.getInstance().broadcast(
+                        new ServerEvent(ServerEvent.Type.Fold,
+                        new String[] {player.getUUID().toString()}
+                ));
                 break;
 
             case "GetPot":
