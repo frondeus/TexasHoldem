@@ -83,7 +83,7 @@ public abstract class Licitation implements IState {
                 }
 
                 deal.addBet(player, betValue);
-
+                //TODO: calculate biggest bet
                 break;
 
             case "Check":
