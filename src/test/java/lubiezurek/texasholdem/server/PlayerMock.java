@@ -16,6 +16,7 @@ public class PlayerMock implements IPlayer {
     private boolean disconnected;
     private IPlayer nextPlayer;
     private Card[] hand = new Card[2];
+    private PlayerState state = PlayerState.WAITING;
 
     public PlayerMock() {
         uuid = UUID.randomUUID();
@@ -81,5 +82,15 @@ public class PlayerMock implements IPlayer {
         ServerMessage[] msg = messages.toArray(new ServerMessage[] {});
         messages.clear();
         return msg;
+    }
+
+    @Override
+    public void setPlayerState(PlayerState state){
+        this.state = state;
+    }
+
+    @Override
+    public PlayerState getPlayerState(){
+        return this.state;
     }
 }
