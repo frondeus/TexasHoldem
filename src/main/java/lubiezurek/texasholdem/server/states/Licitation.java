@@ -79,7 +79,10 @@ public abstract class Licitation implements IState {
                 deal.addBet(player, betValue);
                 if(player.getMoney() == 0) player.setPlayerState(PlayerState.BROKE);
 
-                //TODO: calculate biggest bet, if player bet > biggestBet -> bigFish = player
+                if(biggestBet < deal.sumBetAmount(player) + betValue){
+                    bigFish = player;
+                    biggestBet = deal.sumBetAmount(player) + betValue;
+                }
 
                 //TODO: switch state to next player, notify next player that it's his turn
                 break;
