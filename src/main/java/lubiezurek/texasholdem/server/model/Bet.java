@@ -5,9 +5,9 @@ import java.lang.Comparable;
 
 public class Bet{
 	private IPlayer player;
-	private float amount;
+	private int amount;
 
-	public Bet(IPlayer player, float amount){
+	public Bet(IPlayer player, int amount){
 		this.player = player;
 		this.amount = amount;
 	}
@@ -16,7 +16,11 @@ public class Bet{
 		return player;
 	}
 
-	public float getAmount(){
+	public int getAmount(){
 		return amount;
+	}
+
+	public void addAmount(int amount){
+		this.amount += amount;
 	}
 }

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 /**
  * Created by frondeus on 23.01.16.
  */
-public class Licitation implements IState {
+public abstract class Licitation implements IState {
     private volatile  static Licitation instance;
     public static Licitation getInstance() {
         if(instance == null) {
@@ -41,13 +41,18 @@ public class Licitation implements IState {
 
     @Override
     public void onStart() {
+        //Todo: if starting player broke, turn to next until one not 
+        //          broke found, or if no players have money go to next state
         biggestBet = 0;
         deal = GamePlay.getInstance().getDeal();
     }
 
     @Override
-    public String[] getAvailableCommands() {
-        return new String[] {"Bet", "Check", "Fold"};
+    public String[] getAvailableCommands(IPlayer forPlayer) {
+        if(forPlayer.getPlayerState() == PlayerState.TURN)
+            return new String[] {"Bet", "Check", "Fold",
+                                 "GetRequiredBet", "GetPot", 
+                                 "GetLicitationType"};
     }
 
     @Override
@@ -81,29 +86,60 @@ public class Licitation implements IState {
                         "Bet command: argument invalid"));
                     break;
                 }
-                /*
-                TODO: add Bet to Deal
-                      check if player has enough money to bet betValue
-                      check if betValue+playerBets => biggestBet
-                      take away money from player
-                      next state (?) - check if player is the last one to 
-                */
+                
+                if(!betIsFair(player, betValue)){
+                    player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
+                        "Bet command: bad amount"));
+                    break;
+                }
 
+                makeBet(player, betValue);
 
                 break;
+
             case "Check":
-                if(biggestBet != 0) //TODO give response: bad command
+                if( != ) //TODO if need to call give response: bad command
                 //TODO: else: next player
+                //      check if licitation should end
                 break;
 
             case "Fold":
-                //TODO: tell 
-                //TODO: tell the deal class that the player folded.
+                //TODO: tell Client class that player folded
+                break;
+
+            case "GetRequiredBet":
+                //TODO: tell Client what is the current state of the pot
+                break;
+
+            case "GetLicitationType":
+                player.sendMessage(new ServerResponse(ServerResponse.Status.Ok,
+                        this.getLicitationType()));
+                break;
+            case "GetRequiredBet":
                 break;
             default:
-                client.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
+                player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
                         "Invalid command"));
                 break;
         }
     }
+
+    /*TODO in subclasses: check if bet is fair according to licitation type
+                check if betValue > bigBlind
+                check if player has enough money to bet betValue
+                check if betValue+playerBets => biggestBet
+    */
+    public abstract boolean betIsFair(IPlayer player, int betValue);
+
+    /*TODO in subclasses: return information about licitation type*/
+    public abstract String getLicitationType();
+    
+    public void makeBet(IPlayer player, int betValue){
+        /*TODO:
+                add bet to deal
+                take away money from player
+        */
+    }
+
+
 }

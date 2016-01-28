@@ -13,18 +13,23 @@ import java.util.ArrayList;
 
 public class Deal{
 	private IState currentState;
-	ArrayList<Bet> bets = new ArrayList<Bet>();
+	ArrayList<Bet> betsFromEach; 
 	private IPlayer dealer = null;
     private Card[] flop = new Card[3];
     private Card turn = null;
     private Card river = null;
 
     public Deal(){
-		
+        ArrayList<IPlayer> players = GamePlay.getInstance().getPlayers();
+        int playerAmount = players.size();
+		betsFromEach = new ArrayList<Bet>(playerAmount);
+        for (int i = 0; i < playerAmount; ++i) {
+            betsFromEach[i] = new Bet(players[i], 0);
+        }
 	}
 
     public void start() {
-        //TODO: giving blinds, set dealer
+        //TODO: giving blinds (maybe should be in another state?)
         for (IPlayer player : GamePlay.getInstance().getPlayers()){
             player.setPlayerState(PlayerState.WAITING);
         }
@@ -45,7 +50,10 @@ public class Deal{
         currentState.onStart(this);
     }
 
-    public void addBet(Bet betToAdd) {
-        bets.add(betToAdd);
+    public void addBet(int betToAdd, IPlayer fromPlayer) {
+        int playerIndex = GamePlay.getInstance().getPlayers().indexOf(fromPlayer);
+        if(playerIndex == -1) throw new IllegalArgumentException();
+
+        betsFromEach[playerIndex].addAmount(betToAdd);
     }
 }

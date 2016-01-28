@@ -9,7 +9,7 @@ import lubiezurek.texasholdem.server.deal.Deal;
 public interface IState {
     void onPlayerMessage(IPlayer player, ClientMessage message);
     void onStart(Deal deal);
-    String[] getAvailableCommands();
+    String[] getAvailableCommands(IPlayer forPlayer);
 
     boolean isPlayerTurn(IPlayer player);
 }
