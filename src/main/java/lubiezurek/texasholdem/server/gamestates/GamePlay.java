@@ -45,16 +45,31 @@ public class GamePlay extends GameState {
         }
     }
 
+    public void setupMoney() { // publiczne tylko dla testów
+        for(IPlayer player: players) {
+            player.setMoney(Server.getInstance().Options.getStartMoney());
+
+            broadcast(new ServerEvent(
+                    ServerEvent.Type.Bet,
+                    new String[] {
+                            player.getUUID().toString(),
+                            Integer.toString(player.getMoney()),
+                            Integer.toString(0)
+                    }
+            ));
+        }
+    }
+
     public void onEnter() {
         //TODO:
         licitationState = Licitation.getInstance();
         if(players.size() > 0 ) {
             createQueue();
+            setupMoney();
 
             dealer = players.get(0);
             if(deal == null) deal = new Deal(); //Sprawdzanie nulla do testow
-            deal.start();
-            deal.setState(Licitation.getInstance());
+            deal.start(dealer);
         }
     }
 
