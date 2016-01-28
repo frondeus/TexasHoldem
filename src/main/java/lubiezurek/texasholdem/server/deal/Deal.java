@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class Deal{
 	private IState currentState;
-	//ArrayList<Bet> bets = new ArrayList<Bet>();
+	ArrayList<Bet> bets = new ArrayList<Bet>();
 	private IPlayer dealer = null;
     private Card[] flop = new Card[3];
     private Card turn = null;
@@ -59,5 +59,9 @@ public class Deal{
 
     public void setUp() {
 
+    }
+
+    public void addBet(Bet betToAdd) {
+        bets.add(betToAdd);
     }
 }

@@ -49,6 +49,11 @@ public class Client extends Thread implements IPlayer {
         this.money = money;
     }
 
+    @Override public void takeAwayMoney(int money){
+        if(this.money - money < 0 || money < 0) throw new IllegalArgumentException();
+        this.money -= money;
+    }
+
     public void sendMessage(ServerMessage message) {
             socket.send(this.server.getServerMessageBuilder().serializeMessage(message));
             //Logger.exception(e);

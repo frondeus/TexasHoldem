@@ -10,9 +10,10 @@ import java.util.UUID;
  */
 public interface IPlayer {
     UUID getUUID();
-    int getMoney();
 
+    int getMoney();
     void setMoney(int money);
+    void takeAwayMoney(int money);
 
     void sendMessage(ServerMessage message);
 

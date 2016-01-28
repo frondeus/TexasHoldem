@@ -33,7 +33,8 @@ public class Licitation implements IState {
         }
     }
 
-    private Deal deal;
+    private Deal deal = NULL;
+    private int biggestBet;
 
     private Licitation() {
         deal = GamePlay.getInstance().getDeal();
@@ -41,75 +42,59 @@ public class Licitation implements IState {
 
     @Override
     public void onStart() {
-        /*
-        Deck deck = GamePlay.getInstance().getDeck();
-        deck.reset();
-        deck.shuffle();
-
-        for(IPlayer player: GamePlay.getInstance().getPlayers()) {
-            GamePlay.getInstance().broadcast(new ServerEvent(
-                    ServerEvent.Type.Bet,
-                    new String[] {
-                            player.getUUID().toString(),
-                            Integer.toString(player.getMoney()),
-                            Integer.toString(0)
-                    }
-                    ));
-
-
-            try {
-                Card first = deck.drawLast();
-                Card second = deck.drawLast();
-                player.setHand(new Card[] { first, second });
-                GamePlay.getInstance().sendHand(player, first, second);
-            } catch (Exception e) {
-                Logger.exception(e);
-            }
-
-        }
-
-*/
+        //TODO: set all playerstates to starting ones
+        biggestBet = 0;
+        deal = GamePlay.getInstance().getDeal();
     }
 
     @Override
     public String[] getAvailableCommands() {
-        return new String[] {"Foo", "Bar"};
+        return new String[] {"Bet", "Check", "Fold"};
     }
 
     @Override
     public void onPlayerMessage(IPlayer player, ClientMessage message) {
-        /*
         Logger.status("Command: " + message.getCommand());
-        Deck deck = GamePlay.getInstance().getDeck();
 
-        switch(message.getCommand()) {
-        case "Foo":
-            Logger.status("Flop");
-            //TODO: Przenieść stąd do stanu Flop
-            try {
-                Card[] flop = new Card[]{ deck.drawLast() };
-                    GamePlay.getInstance().sendSharedCard(flop[0]);
-            }
-            catch (Exception e) {
-                Logger.exception(e);
-            }
-            break;
-            case "Bar":
-                Logger.status("Showdown");
-                //TODO: Przenieść stąd do stanu Showdown
-                for(IPlayer p: GamePlay.getInstance().getPlayers()) {
-                    ArrayList<String> args = new ArrayList<>();
-                    for(IPlayer other: GamePlay.getInstance().getPlayers()) {
-                        if(p!= other) {
-                            Card[] hand = other.getHand();
-                            GamePlay.getInstance().sendOtherHand(p, other, hand[0], hand[1]);
-                        }
-                    }
+        if(client == null) throw new IllegalArgumentException();
+        if(message == null) throw  new IllegalArgumentException();
+
+        //TODO: check if we are talking about the right player
+
+        switch(message.getCommand()){
+            case "Bet":
+                int betValue;
+                try{
+                    betValue = Integer.parseInt(message.getArguments()[]);
                 }
-            break;
-        }
+                catch(NumberFormatException ex){
+                    client.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
+                        "Bet command: argument invalid"));
+                    break;
+                }
+                /*
+                TODO: add Bet to Deal
+                      check if player has enough money to bet betValue
+                      check if betValue => biggestBet
+                      take away money from player
+                      next state (?)
+                */
 
-        deal.nextPlayer();
-        */
+
+                break;
+            case "Check":
+                if(biggestBet != 0) //TODO give response: bad command
+                //TODO: else: next player
+                break;
+
+            case "Fold":
+                //TODO: tell 
+                //TODO: tell the deal class that the player folded.
+                break;
+            default:
+                client.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
+                        "Invalid command"));
+                break;
+        }
     }
 }
