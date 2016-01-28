@@ -24,7 +24,7 @@ public class Deal{
         smallBlindPlayer = dealer.getNextPlayer();
         bigBlindPlayer = smallBlindPlayer.getNextPlayer();
 
-        //TODO: set first state to hand shuffle
+        //TODO: set first state to handShuffle, generate cards, then set state to Licitation
         setState(GamePlay.getInstance().getLicitationState());
         //TODO: blinds should be added through Licitation, not through addBet()
         //addBet(smallBlindPlayer, Server.getInstance().Options.getSmallBlind());

@@ -77,7 +77,7 @@ public abstract class Licitation implements IState {
                 }
 
                 deal.addBet(player, betValue);
-                //TODO: all-in states in Player: broke
+                if(player.getMoney() == 0) player.setPlayerState(PlayerState.BROKE);
                 //TODO: calculate biggest bet, if player bet > biggestBet -> bigFish = player
                 //TODO: switch state to next player, notify next player that it's his turn
                 break;
@@ -113,7 +113,7 @@ public abstract class Licitation implements IState {
             case "GetRequiredBet":
                 player.sendMessage(
                         new ServerEvent(ServerEvent.Type.RequiredBet,
-                        new String[] {Integer.toString(biggestBet)}
+                        new String[] {Integer.toString(biggestBet - deal.sumBetAmount(player))}
                 ));
                 break;
 
