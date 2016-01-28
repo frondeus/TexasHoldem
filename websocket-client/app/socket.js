@@ -45,6 +45,7 @@ define(["domReady!", "./logger"], function(doc, logger){
             if(response.status != "Ok")
                 logger.error(response.message);
             else {
+                logger.log(response.message);
             }
         };
 
