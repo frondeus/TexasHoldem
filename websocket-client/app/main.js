@@ -139,6 +139,17 @@ define(
                 });
 
                 if(!socket) return null;
+
+                send_message = function(msg) {
+                    var command = msg.shift();
+                    var message = {
+                        command: command,
+                        arguments: msg
+                    };
+                    socket.send(JSON.stringify(message));
+                    return JSON.stringify(message);
+                }
+
                 $("#login-form").removeClass("visible");
             });
 
