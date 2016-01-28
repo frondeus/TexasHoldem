@@ -84,6 +84,7 @@ public abstract class Licitation implements IState {
 
                 deal.addBet(player, betValue);
                 //TODO: calculate biggest bet
+                //TODO: switch state to next player, notify next player that it's his turn
                 break;
 
             case "Check":
