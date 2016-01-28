@@ -95,7 +95,7 @@ public class GamePlay extends GameState {
             return;
         }
 
-        client.sendMessage(new ServerResponse("Unknown command"));
+        client.sendMessage(new ServerResponse("Bad command"));
     }
 
     private boolean isPlayerTurn(IPlayer player) {

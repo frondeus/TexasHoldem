@@ -57,13 +57,6 @@ public abstract class Licitation implements IState {
         if(player == null) throw new IllegalArgumentException();
         if(message == null) throw new IllegalArgumentException();
 
-        if(!isPlayerTurn(player)){
-            player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
-                "Bad command: not your turn"));
-            return;
-        }
-
-
         //TODO: broadcast the moves
         switch(message.getCommand()){
             case "Bet":
