@@ -23,42 +23,23 @@ public class Deal{
 		
 	}
 
-    public void setDealer(IPlayer dealer) {
-        this.dealer = dealer;
+    public void start() {
+
     }
 
-    public void nextDealer() {
-        if(dealer == null) Logger.error("There is no player!. Error");
-        if(dealer.getNextPlayer() == null) Logger.error("There is no next player. Error!");
-        setDealer(dealer.getNextPlayer());
-    }
-
-    public IPlayer getDealer() {
-        return dealer;
-    }
 
 	public IState getState(){ return currentState; }
 
 	public void setState(IState newState){
         currentState = newState;
 
-        GamePlay.getInstance().broadcast(
-                new ServerEvent(ServerEvent.Type.ChangeState, new String[]{
+        GamePlay.getInstance().broadcast(new ServerEvent(ServerEvent.Type.ChangeState, new String[]{
                         newState.getClass().getSimpleName()
                         })
         );
 
 
-        currentState.onStart();
-    }
-
-
-    public void setFlop(Card[] flop) {
-        this.flop = flop;
-    }
-
-    public void setUp() {
-
+        currentState.onStart(this);
     }
 
     public void addBet(Bet betToAdd) {

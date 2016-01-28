@@ -24,4 +24,7 @@ public interface IPlayer {
 
     Card[] getHand();
     void setHand(Card[] cards);
+
+    void setPlayerState(PlayerState state);
+    PlayerState getPlayerState();
 }

@@ -4,8 +4,6 @@ import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.*;
 import lubiezurek.texasholdem.server.deal.Deal;
-import lubiezurek.texasholdem.server.model.Deck;
-import lubiezurek.texasholdem.server.model.card.Card;
 import lubiezurek.texasholdem.server.states.Licitation;
 
 import java.util.Collections;
@@ -29,6 +27,7 @@ public class GamePlay extends GameState {
 
     private Deal deal = null;
     private IState licitationState = null;
+    private IPlayer dealer = null;
 
     private GamePlay() {
     }
@@ -52,19 +51,21 @@ public class GamePlay extends GameState {
         if(players.size() > 0 ) {
             createQueue();
 
-            Logger.status("Deal: " + deal);
+            dealer = players.get(0);
             if(deal == null) deal = new Deal(); //Sprawdzanie nulla do testow
-            deal.setDealer(players.get(0));
-            deal.setUp();
+            deal.start();
             deal.setState(Licitation.getInstance());
         }
     }
 
     @Override
     public void changeState() {
-
+        //TODO: Sprawdzanie czy koniec partii czy nie.
     }
 
+    public void nextDealer() {
+        dealer = dealer.getNextPlayer();
+    }
 
     public void onClientConnected(IPlayer client) {
         client.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
@@ -73,79 +74,29 @@ public class GamePlay extends GameState {
     }
 
     public void onClientMessage(IPlayer client, ClientMessage message) {
-        /*
-        IPlayer currentPlayer = deal.getCurrentPlayer();
-        if(currentPlayer == client) {
-            String[] availableCommands = deal.getState().getAvailableCommands();
-            for(String s: availableCommands) {
-                if(s.equals(message.getCommand()))
-                {
-                    deal.getState().onPlayerMessage(client, message);
-                    return;
-                }
-            }
-            client.sendMessage(new ServerResponse("Unknown command"));
-        }
-        else {
+        if(!isPlayerTurn(client)) {
             client.sendMessage(new ServerResponse("It's not your turn"));
+            return;
         }
-        */
+
+        String[] availableCommands = deal.getState().getAvailableCommands();
+        for(String s: availableCommands) if(s.equals(message.getCommand())) {
+            deal.getState().onPlayerMessage(client, message);
+            return;
+        }
+
+        client.sendMessage(new ServerResponse("Unknown command"));
     }
 
-    /*
-    public void sendTurnEvent() {
-        IPlayer currentPlayer = deal.getCurrentPlayer();
-
-        broadcast(new ServerEvent(ServerEvent.Type.Turn,
-                new String[]{ currentPlayer.getUUID().toString() }));
-
-
-        currentPlayer.sendMessage(new ServerEvent(
-                ServerEvent.Type.Commands,
-                deal.getState().getAvailableCommands()
-        ));
-
+    private boolean isPlayerTurn(IPlayer player) {
+        return deal.getState().isPlayerTurn(player);
     }
 
-    public void sendHand(IPlayer player, Card first, Card second) {
-        player.sendMessage( new ServerEvent(
-                ServerEvent.Type.Hand,
-                new String[] {
-                        first.getSuit().toString(),
-                        first.getCardValue().toString(),
-                        second.getSuit().toString(),
-                        second.getCardValue().toString()
-                }
-        ));
-    }
-
-    public void sendSharedCard(Card card) {
-        broadcast(new ServerEvent(
-                ServerEvent.Type.SharedCard,
-                new String[]{
-                        card.getSuit().toString(),
-                        card.getCardValue().toString()
-                }
-        ));
-    }
-
-    public void sendOtherHand(IPlayer player, IPlayer other, Card first, Card second) {
-        player.sendMessage(new ServerEvent(
-                ServerEvent.Type.OtherHand,
-                new String[] {
-                        other.getUUID().toString(),
-                        first.getSuit().toString(),
-                        first.getCardValue().toString(),
-                        second.getSuit().toString(),
-                        second.getCardValue().toString()
-                }
-        ));
-    }
-*/
     public void onClientDisconnected(IPlayer client) {
         Logger.status(client + ": Disconnected");
         if(players.indexOf(client) >= 0) {
             //TODO: Zastapic botem
+            players.remove(client);
 
             broadcastExcept(client, new ServerEvent(
                     ServerEvent.Type.ClientDisconnect,
@@ -158,7 +109,6 @@ public class GamePlay extends GameState {
                 if(all.getNextPlayer() == client)
                     all.setNextPlayer(client.getNextPlayer());
             }
-            players.remove(client);
             if(players.size() <= 1) {
                 Lobby.getInstance().setPlayers(players);
                 Server.getInstance().setState(Lobby.getInstance());
@@ -176,5 +126,9 @@ public class GamePlay extends GameState {
 
     public void setDeal(Deal deal) {
         this.deal = deal;
+    }
+
+    public IPlayer getDealer() {
+        return dealer;
     }
 }

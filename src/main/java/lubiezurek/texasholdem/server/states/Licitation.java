@@ -37,7 +37,6 @@ public class Licitation implements IState {
     private int biggestBet;
 
     private Licitation() {
-        deal = GamePlay.getInstance().getDeal();
     }
 
     @Override
@@ -50,6 +49,11 @@ public class Licitation implements IState {
     @Override
     public String[] getAvailableCommands() {
         return new String[] {"Bet", "Check", "Fold"};
+    }
+
+    @Override
+    public boolean isPlayerTurn(IPlayer player) {
+        return false;
     }
 
     @Override
