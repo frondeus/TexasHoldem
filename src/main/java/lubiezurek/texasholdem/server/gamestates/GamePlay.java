@@ -61,7 +61,7 @@ public class GamePlay extends GameState {
     }
 
     public void onEnter() {
-        //TODO:
+        //TODO: Licitation type based on game options
         licitationState = new LicitationNoLimit();
         if(players.size() > 0 ) {
             createQueue();

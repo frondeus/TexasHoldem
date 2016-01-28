@@ -19,8 +19,8 @@ import java.util.ArrayList;
  * Created by frondeus on 23.01.16.
  */
 public abstract class Licitation implements IState {
-    private Deal deal = null;
-    private int biggestBet;
+    protected Deal deal = null;
+    protected int biggestBet;
 
     public Licitation() {
     }
@@ -45,8 +45,8 @@ public abstract class Licitation implements IState {
 
     @Override
     public boolean isPlayerTurn(IPlayer player) {
-        //TODO
-        return true;
+        if(player.getPlayerState() == PlayerState.TURN) return true;
+        else return false;
     }
 
     @Override
