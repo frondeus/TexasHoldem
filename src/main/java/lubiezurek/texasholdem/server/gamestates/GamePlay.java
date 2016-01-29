@@ -25,6 +25,7 @@ public class GamePlay extends GameState {
         instance = null;
     }
 
+    private Deal testDeal = null;
     private Deal deal = null;
     private IState licitationState = null;
     private IPlayer dealer = null;
@@ -59,7 +60,8 @@ public class GamePlay extends GameState {
             setupMoney();
 
             dealer = players.get(0);
-            if(deal == null) deal = new Deal(); //Sprawdzanie nulla do testow
+            if(testDeal != null) deal = testDeal;
+            else deal = new Deal();
             deal.start(dealer);
         }
     }
@@ -120,7 +122,7 @@ public class GamePlay extends GameState {
     }
 
     public void setDeal(Deal deal) {
-        this.deal = deal;
+        this.testDeal = deal;
     }
 
     public IPlayer getDealer() {

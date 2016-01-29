@@ -110,17 +110,22 @@ define(
                     },
 
                     onHand: function(event) {
+                        console.log("On Hand");
+                        console.log(event);
                         Table.addHandCard(event.arguments[0], event.arguments[1]);
                         Table.addHandCard(event.arguments[2], event.arguments[3]);
                     },
 
                     onSharedCard: function(event) {
+                        console.log("On SharedCard");
+                        console.log(event);
                         Table.addSharedCard(event.arguments[0], event.arguments[1]);
                     },
 
                     onOtherHand: function(event) {
                         var playerUUID = event.arguments.shift();
-
+                        console.log("On other hand");
+                        console.log(event);
                         Table.addOtherHandCard(playerUUID , event.arguments[0], event.arguments[1]);
                         Table.addOtherHandCard(playerUUID, event.arguments[2], event.arguments[3]);
                     },
