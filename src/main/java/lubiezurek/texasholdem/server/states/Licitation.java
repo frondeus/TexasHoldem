@@ -71,7 +71,6 @@ public abstract class Licitation implements IState {
             return;
         }
 
-        //TODO: broadcast the moves
         switch(message.getCommand()){
             case "Bet":
                 int betValue;
@@ -90,10 +89,14 @@ public abstract class Licitation implements IState {
                     break;
                 }
 
+                //changes bigFish reference if required
                 makeBet(player, betValue);
+
                 deal.switchToNextPlayerFrom(player);
                 deal.notifyPlayerTurn();
-                //TODO:      check if licitation should end
+
+                //check if licitation should end
+                if(player.getNextPlayer() == bigFish) deal.setState(new Shuffle());
                 break;
 
             case "Check":
