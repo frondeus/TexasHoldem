@@ -49,14 +49,6 @@ public class LobbyTest extends TestHelper {
     }
 
     @Test
-    public void onClientConnectedShouldSendAvailableCommands() {
-        PlayerMock playerMock = addPlayer();
-        ServerMessage[] messages = playerMock.getLastMessages();
-        assertTrue(2 <= messages.length);
-        assertEvent(ServerEvent.Type.Commands, new String[]{"chat"}, messages[1]);
-    }
-
-    @Test
     public void onClientConnectedShouldBroadcastClientConnectedEvent() {
         PlayerMock lastPlayer = addRestPlayers();
         PlayerMock playerMock = addPlayer();

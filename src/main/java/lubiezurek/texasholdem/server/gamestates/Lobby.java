@@ -4,6 +4,7 @@ import com.sun.net.httpserver.Authenticator;
 import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.*;
+import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,10 @@ public class Lobby extends GameState {
     }
 
     public void onEnter() {
-
+        Logger.status("Enter lobby");
+        broadcast(new ServerEvent(ServerEvent.Type.ChangeState, new String[]{
+                "Lobby"
+        }));
     }
 
 
@@ -52,7 +56,6 @@ public class Lobby extends GameState {
             players.add(client);
 
             client.sendMessage(new ServerEvent(ServerEvent.Type.Connected, uuids));
-            client.sendMessage(new ServerEvent(ServerEvent.Type.Commands, new String[]{"chat"}));
 
             broadcastExcept(client, new ServerEvent(ServerEvent.Type.ClientConnect,
                     new String[]{client.getUUID().toString()}));

@@ -19,4 +19,9 @@ public class Card{
 	public CardValue getCardValue(){
 		return value;
 	}
+
+	@Override
+	public String toString(){
+        return value.toString() + " " + suit.toString() ;
+	}
 }

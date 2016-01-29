@@ -1,5 +1,7 @@
 package lubiezurek.texasholdem.server.model.card;
 
+import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
+
 public enum CardValue{
 	TWO(2),
 	THREE(3),
@@ -24,4 +26,16 @@ public enum CardValue{
 	public int getValue(){
 		return value;
 	}
+
+	@Override
+	public String toString(){
+		if(value <= 10) return Integer.toString(value);
+		switch (value){
+			case 11: 	return "J";
+			case 12: 	return "Q";
+			case 13:	return "K";
+			case 14:	return "A";
+		}
+        return null;
+    }
 }

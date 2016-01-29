@@ -16,7 +16,12 @@ public class LicitationNoLimit extends Licitation{
 		return true;
 	}
 
-    /*TODO in subclasses: return information about licitation type*/
+	@Override
+	public int getRequiredBet(IPlayer player) {
+		return biggestBet - deal.sumBetAmount(player);
+	}
+
+	/*TODO in subclasses: return information about licitation type*/
     public String getLicitationType(){
     	return "NoLimit";
     }

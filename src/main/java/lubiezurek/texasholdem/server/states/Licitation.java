@@ -15,23 +15,23 @@ import lubiezurek.texasholdem.server.PlayerState;
 
 import java.util.ArrayList;
 
-/**
- * Created by frondeus on 23.01.16.
- */
 public abstract class Licitation implements IState {
     protected Deal deal = null;
     protected int biggestBet;
-    protected IPlayer bigFish;
+    protected IPlayer bigFish = null;
 
     public Licitation() {
     }
 
     @Override
     public void onStart(Deal deal) {
-        //Todo: if starting player broke, turn to next until one not 
-        //          broke found, or if no players have money go to next state
         biggestBet = 0;
+        bigFish = null;
         this.deal = deal;
+        if(deal.playersStillInPlay() < 2) {
+            IState nextState = new Shuffle();
+            deal.setState(nextState);
+        }
     }
 
     @Override
@@ -39,9 +39,9 @@ public abstract class Licitation implements IState {
         if(forPlayer.getPlayerState() == PlayerState.TURN)
             return new String[] {"Bet", "Check", "Fold",
                                  "GetRequiredBet", "GetPot", 
-                                 "GetLicitationType"};
+                                 "GetLicitationType", "GetTurn"};
         else return new String[] {"GetRequiredBet", "GetPot", 
-                                 "GetLicitationType"};
+                                 "GetLicitationType", "GetTurn"};
     }
 
     @Override
@@ -50,14 +50,30 @@ public abstract class Licitation implements IState {
         else return false;
     }
 
+    public boolean isValidCommand(String command, IPlayer player){
+        String[] availableCommands = getAvailableCommands(player);
+        for(String s: availableCommands) {
+            if (s.equals(command)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void onPlayerMessage(IPlayer player, ClientMessage message) {
-        Logger.status("Command: " + message.getCommand());
-
         if(player == null) throw new IllegalArgumentException();
         if(message == null) throw new IllegalArgumentException();
 
-        //TODO: broadcast the moves
+        Logger.status("Command: " + message.getCommand());
+
+        if(!isValidCommand(message.getCommand(), player)){
+            player.sendMessage(new ServerResponse("Bad command"));
+            return;
+        }
+
+
+        //TODO: live blinds
         switch(message.getCommand()){
             case "Bet":
                 int betValue;
@@ -66,26 +82,35 @@ public abstract class Licitation implements IState {
                 }
                 catch(NumberFormatException ex){
                     player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
-                        "Bet command: argument invalid"));
+                        "Bet: argument invalid"));
                     break;
                 }
                 
                 if(!betIsFair(player, betValue)){
                     player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
-                        "Bet command: bad amount"));
+                        "Bet: bad amount"));
                     break;
                 }
 
-                deal.addBet(player, betValue);
-                //TODO: all-in states in Player: broke
-                //TODO: calculate biggest bet, if player bet > biggestBet -> bigFish = player
-                //TODO: switch state to next player, notify next player that it's his turn
+                //changes bigFish reference if required
+                makeBet(player, betValue);
+
+                deal.switchToNextPlayerFrom(player);
+                deal.notifyPlayerTurn();
+
+                //check if licitation should end
+                if(player.getNextPlayer() == bigFish) deal.setState(new Shuffle());
                 break;
 
             case "Check":
-                //if( != ) //TODO if need to call give response: bad command
-                //TODO: else: next player
-                //TODO:      check if licitation should end
+                if(deal.sumBetAmount(player) != biggestBet){
+                    player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
+                            "Cannot check: unsuficient bets"));
+                    return;
+                }
+                deal.switchToNextPlayerFrom(player);
+                deal.notifyPlayerTurn();
+                if(player == GamePlay.getInstance().getDealer()) deal.setState(new Shuffle());
                 break;
 
             case "Fold":
@@ -94,6 +119,11 @@ public abstract class Licitation implements IState {
                         new ServerEvent(ServerEvent.Type.Fold,
                         new String[] {player.getUUID().toString()}
                 ));
+                deal.switchToNextPlayerFrom(player);
+                deal.notifyPlayerTurn();
+
+                //check if licitation should end
+                if(player.getNextPlayer() == bigFish) deal.setState(new Shuffle());
                 break;
 
             case "GetPot":
@@ -113,15 +143,33 @@ public abstract class Licitation implements IState {
             case "GetRequiredBet":
                 player.sendMessage(
                         new ServerEvent(ServerEvent.Type.RequiredBet,
-                        new String[] {Integer.toString(biggestBet)}
+                        new String[] {Integer.toString(getRequiredBet(player))}
+                ));
+                break;
+
+            case "GetTurn":
+                player.sendMessage(
+                        new ServerEvent(ServerEvent.Type.Turn,
+                        new String[] {player.getUUID().toString()}
                 ));
                 break;
 
             default:
                 player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
-                        "Invalid command"));
+                        "Command avaible, but not implemented yet"));
                 break;
         }
+    }
+
+    public void makeBet(IPlayer player, int betValue){
+        deal.addBet(player, betValue);
+        if(player.getMoney() == 0) player.setPlayerState(PlayerState.BROKE);
+
+        if(biggestBet < deal.sumBetAmount(player) + betValue){
+            bigFish = player;
+            biggestBet = deal.sumBetAmount(player) + betValue;
+        }
+
     }
 
     /*TODO in subclasses: check if bet is fair according to licitation type
@@ -130,6 +178,7 @@ public abstract class Licitation implements IState {
                 check if betValue+playerBets => biggestBet
     */
     public abstract boolean betIsFair(IPlayer player, int betValue);
+    public abstract int getRequiredBet(IPlayer player);
 
     /*TODO in subclasses: return information about licitation type*/
     public abstract String getLicitationType();
