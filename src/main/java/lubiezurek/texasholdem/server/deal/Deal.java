@@ -105,10 +105,8 @@ public class Deal{
                         })
         );
 
-
         currentState.onStart(this);
     }
-
 
     public IState getState(){ return currentState; }
 

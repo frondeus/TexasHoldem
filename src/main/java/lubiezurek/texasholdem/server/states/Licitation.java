@@ -37,9 +37,9 @@ public abstract class Licitation implements IState {
         if(forPlayer.getPlayerState() == PlayerState.TURN)
             return new String[] {"Bet", "Check", "Fold",
                                  "GetRequiredBet", "GetPot", 
-                                 "GetLicitationType"};
+                                 "GetLicitationType", "GetTurn"};
         else return new String[] {"GetRequiredBet", "GetPot", 
-                                 "GetLicitationType"};
+                                 "GetLicitationType", "GetTurn"};
     }
 
     @Override
@@ -116,7 +116,7 @@ public abstract class Licitation implements IState {
 
             default:
                 player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
-                        "Invalid command"));
+                        "Unhandled command"));
                 break;
         }
     }
