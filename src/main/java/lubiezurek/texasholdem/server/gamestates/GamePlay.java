@@ -80,13 +80,7 @@ public class GamePlay extends GameState {
     }
 
     public void onClientMessage(IPlayer client, ClientMessage message) {
-        String[] availableCommands = deal.getState().getAvailableCommands(client);
-        for(String s: availableCommands) if(s.equals(message.getCommand())) {
-            deal.getState().onPlayerMessage(client, message);
-            return;
-        }
-
-        client.sendMessage(new ServerResponse("Bad command"));
+        deal.getState().onPlayerMessage(client, message);
     }
 
     private boolean isPlayerTurn(IPlayer player) {

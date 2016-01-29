@@ -48,12 +48,35 @@ public abstract class Licitation implements IState {
         else return false;
     }
 
+    public boolean isValidCommand(String command, IPlayer player){
+        String[] availableCommands = getAvailableCommands(player);
+        for(String s: availableCommands) {
+            if (s.equals(command)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void onPlayerMessage(IPlayer player, ClientMessage message) {
-        Logger.status("Command: " + message.getCommand());
-
         if(player == null) throw new IllegalArgumentException();
         if(message == null) throw new IllegalArgumentException();
+
+        Logger.status("Command: " + message.getCommand());
+
+        if(!isValidCommand(message.getCommand(), player)){
+            player.sendMessage(new ServerResponse("Bad command"));
+            return;
+        }
+
+        String[] availableCommands = getAvailableCommands(player);
+        for(String s: availableCommands) {
+            if (s.equals(message.getCommand())) {
+                deal.getState().onPlayerMessage(player, message);
+                return;
+            }
+        }
 
         //TODO: broadcast the moves
         switch(message.getCommand()){
@@ -116,7 +139,7 @@ public abstract class Licitation implements IState {
 
             default:
                 player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
-                        "Unhandled command"));
+                        "Command avaible, but not implemented yet"));
                 break;
         }
     }
