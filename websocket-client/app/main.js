@@ -157,7 +157,7 @@ define(
                         logger.log("Changed state into: " + event.arguments[0]);
                         state = event.arguments[0];
                         switch(event.arguments[0]) {
-                            case "Shuffle":
+                            case "Lobby":
                                 Table.clear();
                                 break;
                         }
