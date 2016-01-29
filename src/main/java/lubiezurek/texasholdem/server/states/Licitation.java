@@ -135,7 +135,7 @@ public abstract class Licitation implements IState {
                         new String[] {player.getUUID().toString()}
                 ));
                 break;
-            
+
             default:
                 player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
                         "Command avaible, but not implemented yet"));

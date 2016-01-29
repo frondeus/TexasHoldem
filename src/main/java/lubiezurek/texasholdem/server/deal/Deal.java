@@ -1,6 +1,7 @@
 package lubiezurek.texasholdem.server.deal;
 
 
+import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.server.*;
 import lubiezurek.texasholdem.server.gamestates.GamePlay;
 import lubiezurek.texasholdem.server.model.Deck;
@@ -20,6 +21,9 @@ public class Deal{
     public Deal(){}
 
     public void start(IPlayer dealer) {
+        for (IPlayer p : GamePlay.getInstance().getPlayers()) {
+            p.setPlayerState(PlayerState.WAITING);
+        }
 
         //TODO: set first state to handShuffle, generate cards, then set state to Licitation
         setState(GamePlay.getInstance().getLicitationState());
@@ -38,29 +42,27 @@ public class Deal{
 
         if(deck == null) deck = new Deck(); // Nie twórz na unit testach
         deck.shuffle();
-
-
-        for (IPlayer p : GamePlay.getInstance().getPlayers()) {
-            p.setPlayerState(PlayerState.WAITING);
-        }
     }
 
     public IPlayer switchToNextPlayerFrom(IPlayer currentPlayer){
         if(currentPlayer == null) throw new IllegalArgumentException();
+
         currentPlayer.setPlayerState(PlayerState.WAITING);
         currentPlayer.getNextPlayer().setPlayerState(PlayerState.TURN);
+
         return currentPlayer.getNextPlayer();
     }
 
     public void notifyPlayerTurn(){
         for (IPlayer p : GamePlay.getInstance().getPlayers()) {
             if(p.getPlayerState() == PlayerState.TURN){
+                Logger.status("Notifying player that it's his turn");
                 GamePlay.getInstance().broadcast(
                         new ServerEvent(ServerEvent.Type.Turn,
                             new String[] {p.getUUID().toString()}));
+                break;
             }
 
-            break;
         }
     }
 
