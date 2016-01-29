@@ -26,9 +26,9 @@ public class Deal{
 
         //TODO: set first state to handShuffle, generate cards, then set state to Licitation
         setState(GamePlay.getInstance().getLicitationState());
+
         //TODO: blinds should be added through Licitation, not through addBet()
-        //addBet(smallBlindPlayer, Server.getInstance().Options.getSmallBlind());
-        //addBet(bigBlindPlayer, Server.getInstance().Options.getBigBlind());
+
 
         if(deck == null) deck = new Deck(); // Nie twórz na unit testach
         deck.shuffle();
@@ -37,6 +37,16 @@ public class Deal{
         for (IPlayer p : GamePlay.getInstance().getPlayers()) {
             p.setPlayerState(PlayerState.WAITING);
         }
+    }
+
+    public void switchToNextPlayer(IPlayer currentPlayer){
+        if(currentPlayer == null) throw new IllegalArgumentException();
+        currentPlayer.setPlayerState(PlayerState.WAITING);
+        currentPlayer.getNextPlayer().setPlayerState(PlayerState.TURN);
+    }
+
+    public void notifyPlayerTurn(){
+
     }
 
     public void addBet(IPlayer player, int amount) {
