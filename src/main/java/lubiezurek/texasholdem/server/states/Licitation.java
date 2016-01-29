@@ -69,7 +69,7 @@ public abstract class Licitation implements IState {
             player.sendMessage(new ServerResponse("Bad command"));
             return;
         }
-        
+
         //TODO: broadcast the moves
         switch(message.getCommand()){
             case "Bet":
@@ -132,9 +132,10 @@ public abstract class Licitation implements IState {
             case "GetTurn":
                 player.sendMessage(
                         new ServerEvent(ServerEvent.Type.Turn,
-                                new String[] {player.getUUID().toString()})
-                );
-
+                        new String[] {player.getUUID().toString()}
+                ));
+                break;
+            
             default:
                 player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
                         "Command avaible, but not implemented yet"));
