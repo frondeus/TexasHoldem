@@ -25,7 +25,6 @@ public class Deal{
         setState(GamePlay.getInstance().getLicitationState());
 
         Licitation licitation = (Licitation) currentState;
-        //TODO: blinds should be added through Licitation, not through addBet()
 
         IPlayer smallBlind = switchToNextPlayerFrom(dealer);
         licitation.makeBet(smallBlind, Server.getInstance().Options.getSmallBlind());
