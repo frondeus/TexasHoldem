@@ -112,10 +112,6 @@ public class Deal{
 
     public IState getState(){ return currentState; }
 
-    public IPlayer getBigBlindPlayer() { return bigBlindPlayer; }
-
-    public IPlayer getSmallBlindPlayer() { return smallBlindPlayer; }
-
     public ArrayList<Bet> getBets() { return bets; }
 
     public void setDeck(Deck deck) { this.deck = deck; }
