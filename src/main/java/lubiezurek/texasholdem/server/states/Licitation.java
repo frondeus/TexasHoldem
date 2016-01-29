@@ -92,12 +92,17 @@ public abstract class Licitation implements IState {
                 makeBet(player, betValue);
                 deal.switchToNextPlayerFrom(player);
                 deal.notifyPlayerTurn();
-
+                //TODO:      check if licitation should end
                 break;
 
             case "Check":
-                //if( != ) //TODO if needs to call give response: bad command
-                //TODO: else: next player
+                if(deal.sumBetAmount(player) != biggestBet){
+                    player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
+                            "Cannot check: unsuficient bets"));
+                    return;
+                }
+                deal.switchToNextPlayerFrom(player);
+                deal.notifyPlayerTurn();
                 //TODO:      check if licitation should end
                 break;
 
@@ -107,6 +112,8 @@ public abstract class Licitation implements IState {
                         new ServerEvent(ServerEvent.Type.Fold,
                         new String[] {player.getUUID().toString()}
                 ));
+                deal.switchToNextPlayerFrom(player);
+                deal.notifyPlayerTurn();
                 break;
 
             case "GetPot":
