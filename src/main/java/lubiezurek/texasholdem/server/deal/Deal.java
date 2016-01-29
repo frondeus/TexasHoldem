@@ -46,7 +46,13 @@ public class Deal{
     }
 
     public void notifyPlayerTurn(){
-
+        for (IPlayer p : GamePlay.getInstance().getPlayers()) {
+            if(p.getPlayerState() == PlayerState.TURN){
+                GamePlay.getInstance().broadcast(
+                        new ServerEvent(ServerEvent.Type.Turn,
+                            new String[] {p.getUUID().toString()}));
+            }
+        }
     }
 
     public void addBet(IPlayer player, int amount) {
