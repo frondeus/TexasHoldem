@@ -69,15 +69,7 @@ public abstract class Licitation implements IState {
             player.sendMessage(new ServerResponse("Bad command"));
             return;
         }
-
-        String[] availableCommands = getAvailableCommands(player);
-        for(String s: availableCommands) {
-            if (s.equals(message.getCommand())) {
-                deal.getState().onPlayerMessage(player, message);
-                return;
-            }
-        }
-
+        
         //TODO: broadcast the moves
         switch(message.getCommand()){
             case "Bet":
