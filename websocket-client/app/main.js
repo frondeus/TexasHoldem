@@ -99,7 +99,7 @@ define(
                         if(Player.myUUID() == playerUUID){
                             switch(state) {
                             case "LicitationNoLimit":
-                                addCommands(["Bet", "Check", "Fold"]);
+                                addCommands(["Bet","Call", "Check", "Fold"]);
                                 break
                             default:
                                 console.err("Undefined state!");
