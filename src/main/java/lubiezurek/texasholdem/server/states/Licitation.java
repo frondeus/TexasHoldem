@@ -15,9 +15,6 @@ import lubiezurek.texasholdem.server.PlayerState;
 
 import java.util.ArrayList;
 
-/**
- * Created by frondeus on 23.01.16.
- */
 public abstract class Licitation implements IState {
     protected Deal deal = null;
     protected int biggestBet;
@@ -30,6 +27,10 @@ public abstract class Licitation implements IState {
     public void onStart(Deal deal) {
         biggestBet = 0;
         this.deal = deal;
+        if(deal.playersStillInPlay() < 2) {
+            IState nextState = new Shuffle();
+            deal.setState(nextState);
+        }
     }
 
     @Override
@@ -114,6 +115,7 @@ public abstract class Licitation implements IState {
                 ));
                 deal.switchToNextPlayerFrom(player);
                 deal.notifyPlayerTurn();
+                //TODO:      check if licitation should end
                 break;
 
             case "GetPot":

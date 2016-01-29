@@ -91,6 +91,17 @@ public class Deal{
         return sum;
     }
 
+    public int playersStillInPlay(){
+        int playerAmount = 0;
+        for (IPlayer p : GamePlay.getInstance().getPlayers()) {
+            if(p.getPlayerState() == PlayerState.WAITING
+                    || p.getPlayerState() == PlayerState.TURN){
+                playerAmount += 1;
+            }
+        }
+        return playerAmount;
+    }
+
     public int getPotAmount(){
         int sum = 0;
         for (Bet bet: bets) {
