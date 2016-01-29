@@ -37,7 +37,7 @@ public abstract class Licitation implements IState {
     @Override
     public String[] getAvailableCommands(IPlayer forPlayer) {
         if(forPlayer.getPlayerState() == PlayerState.TURN)
-            return new String[] {"Bet", "Check", "Fold",
+            return new String[] {"Bet", "Check", "Fold", "Call",
                                  "GetRequiredBet", "GetPot", 
                                  "GetLicitationType", "GetTurn"};
         else return new String[] {"GetRequiredBet", "GetPot", 
