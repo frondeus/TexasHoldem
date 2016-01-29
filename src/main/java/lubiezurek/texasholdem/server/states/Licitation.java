@@ -64,7 +64,7 @@ public abstract class Licitation implements IState {
                 }
                 catch(NumberFormatException ex){
                     player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
-                        "Bet command: argument invalid"));
+                        "Bet: argument invalid"));
                     break;
                 }
                 
@@ -74,15 +74,9 @@ public abstract class Licitation implements IState {
                     break;
                 }
 
-                deal.addBet(player, betValue);
-                if(player.getMoney() == 0) player.setPlayerState(PlayerState.BROKE);
-
-                if(biggestBet < deal.sumBetAmount(player) + betValue){
-                    bigFish = player;
-                    biggestBet = deal.sumBetAmount(player) + betValue;
-                }
-
+                makeBet(player, betValue);
                 //TODO: switch state to next player, notify next player that it's his turn
+
                 break;
 
             case "Check":
@@ -125,6 +119,17 @@ public abstract class Licitation implements IState {
                         "Invalid command"));
                 break;
         }
+    }
+
+    public void makeBet(IPlayer player, int betValue){
+        deal.addBet(player, betValue);
+        if(player.getMoney() == 0) player.setPlayerState(PlayerState.BROKE);
+
+        if(biggestBet < deal.sumBetAmount(player) + betValue){
+            bigFish = player;
+            biggestBet = deal.sumBetAmount(player) + betValue;
+        }
+
     }
 
     /*TODO in subclasses: check if bet is fair according to licitation type
