@@ -26,6 +26,7 @@ public abstract class Licitation implements IState {
     @Override
     public void onStart(Deal deal) {
         biggestBet = 0;
+        bigFish = null;
         this.deal = deal;
         if(deal.playersStillInPlay() < 2) {
             IState nextState = new Shuffle();
@@ -71,6 +72,8 @@ public abstract class Licitation implements IState {
             return;
         }
 
+
+        //TODO: live blinds
         switch(message.getCommand()){
             case "Bet":
                 int betValue;
@@ -107,7 +110,7 @@ public abstract class Licitation implements IState {
                 }
                 deal.switchToNextPlayerFrom(player);
                 deal.notifyPlayerTurn();
-                //TODO:      check if licitation should end
+                if(player == GamePlay.getInstance().getDealer()) deal.setState(new Shuffle());
                 break;
 
             case "Fold":
@@ -118,7 +121,9 @@ public abstract class Licitation implements IState {
                 ));
                 deal.switchToNextPlayerFrom(player);
                 deal.notifyPlayerTurn();
-                //TODO:      check if licitation should end
+
+                //check if licitation should end
+                if(player.getNextPlayer() == bigFish) deal.setState(new Shuffle());
                 break;
 
             case "GetPot":
