@@ -8,6 +8,10 @@ public class ClientMessage {
     private String command = "";
     private String[] arguments = new String[]{};
 
+    public ClientMessage(String command, String[] arguments) {
+        this.command = command;
+        this.arguments = arguments;
+    }
 
     public String getCommand() {
         return command;
@@ -17,13 +21,7 @@ public class ClientMessage {
         return arguments;
     }
 
-    public ClientMessage setCommand(String command) {
-        this.command = command;
-        return this;
-    }
-
-    public ClientMessage setArguments(String[] arguments) {
+    public void setArguments(String[] arguments) {
         this.arguments = arguments;
-        return this;
     }
 }

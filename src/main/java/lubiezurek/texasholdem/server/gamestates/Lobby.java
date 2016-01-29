@@ -1,8 +1,10 @@
 package lubiezurek.texasholdem.server.gamestates;
 
+import com.sun.net.httpserver.Authenticator;
 import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.*;
+import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,21 +14,20 @@ import java.util.Arrays;
  * Lobby. Players waits until game starts. Players can set game settings.
  */
 public class Lobby extends GameState {
-    private volatile static Lobby ourInstance;
+    private volatile static Lobby instance;
     public static Lobby getInstance() {
-        if(ourInstance == null) {
+        if(instance == null) {
             synchronized (Lobby.class) {
-                if(ourInstance == null) {
-                    ourInstance = new Lobby();
+                if(instance == null) {
+                    instance = new Lobby();
                 }
             }
         }
-        return ourInstance;
+        return instance;
     }
-
     public static void resetInstance() {
         synchronized (Lobby.class) {
-            ourInstance = null;
+            instance = null;
         }
     }
 
@@ -35,7 +36,10 @@ public class Lobby extends GameState {
     }
 
     public void onEnter() {
-
+        Logger.status("Enter lobby");
+        broadcast(new ServerEvent(ServerEvent.Type.ChangeState, new String[]{
+                "Lobby"
+        }));
     }
 
 
@@ -43,54 +47,34 @@ public class Lobby extends GameState {
         if(client == null) throw new IllegalArgumentException();
         if(players.size() < Server.getInstance().Options.getMaxPlayerCount()) {
             Logger.status(client + ": Add player to list");
+
             ArrayList<String> uuids = new ArrayList<>();
             uuids.add(client.getUUID().toString());
             for(IPlayer all: players)
                 uuids.add(all.getUUID().toString());
 
-
             players.add(client);
 
-            client.setMoney(Server.getInstance().Options.getStartMoney());
+            client.sendMessage(new ServerEvent(ServerEvent.Type.Connected, uuids));
 
-            ServerResponse response = new ServerResponse()
-                    .setStatus(ServerResponse.Status.Ok)
-                    .setMessage("Welcome");
-
-            client.sendMessage(response);
-
-
-            ServerEvent connectEvent = new ServerEvent()
-                    .setType(ServerEvent.Type.Connected)
-                    .setArguments(uuids.toArray(new String[]{}));
-                client.sendMessage(connectEvent);
-
-            ServerEvent commandsEvent = new ServerEvent()
-                    .setType(ServerEvent.Type.Commands)
-                    .setArguments(new String[] {"chat"});
-            client.sendMessage(commandsEvent);
-
-
-            ServerEvent connectedEvent = new ServerEvent()
-                    .setType(ServerEvent.Type.ClientConnect)
-                    .setArguments(new String[] {client.getUUID().toString()});
-                broadcastExcept(client,connectedEvent);
-
-            //TODO: ready!?
-            if(players.size() >= Server.getInstance().Options.getMaxPlayerCount()) {
-                GamePlay.getInstance().setPlayers(players);
-                Server.getInstance().setState(GamePlay.getInstance());
-            }
+            broadcastExcept(client, new ServerEvent(ServerEvent.Type.ClientConnect,
+                    new String[]{client.getUUID().toString()}));
         }
         else {
             Logger.status(client + ": Full");
             Logger.status(client + ": We need to disconnect client");
 
-            ServerResponse response = new ServerResponse()
-                    .setStatus(ServerResponse.Status.Failure)
-                    .setMessage("Full server");
-                client.sendMessage(response);
+            client.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
+                    "Full server"));
             client.disconnect();
+        }
+    }
+
+    @Override
+    public void changeState() {
+        if(players.size() >= Server.getInstance().Options.getMaxPlayerCount()) {
+            GamePlay.getInstance().setPlayers(players);
+            Server.getInstance().setState(GamePlay.getInstance());
         }
     }
 
@@ -98,51 +82,35 @@ public class Lobby extends GameState {
         if(client == null) throw new IllegalArgumentException();
         if(message == null) throw  new IllegalArgumentException();
 
-        ServerResponse response;
-
         if(players.indexOf(client) < 0) {
-            response = new ServerResponse()
-                    .setStatus(ServerResponse.Status.Failure)
-                    .setMessage("Not connected");
-                client.sendMessage(response);
+            client.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
+                    "Not connected"));
             return;
         }
 
-        String args = String.join(" ", message.getArguments());
-        Logger.status(client + ": " + message.getCommand() + " " + args);
-
         switch (message.getCommand()) {
             case "chat":
-                response = new ServerResponse()
-                        .setStatus(ServerResponse.Status.Ok)
-                        .setMessage("Send");
-                    client.sendMessage(response);
                 ArrayList<String> chatArguments = new ArrayList<>();
                 chatArguments.add(client.getUUID().toString());
                 chatArguments.addAll(Arrays.asList(message.getArguments()));
-                ServerEvent event = new ServerEvent()
-                        .setType(ServerEvent.Type.Chat)
-                        .setArguments(chatArguments.toArray(new String[]{}));
-                broadcast(event);
+                broadcast(new ServerEvent(ServerEvent.Type.Chat, chatArguments));
                 break;
             default:
-                response = new ServerResponse()
-                        .setStatus(ServerResponse.Status.Failure)
-                        .setMessage("Invalid command");
-                    client.sendMessage(response);
+                client.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
+                        "Invalid command"));
                 break;
         }
     }
 
     public void onClientDisconnected(IPlayer client) {
+        if(client == null) throw new IllegalArgumentException();
         Logger.status(client + ": Disconnected");
         if(players.indexOf(client) >= 0) {
             players.remove(client);
 
-            ServerEvent event = new ServerEvent()
-                    .setType(ServerEvent.Type.ClientDisconnect)
-                    .setArguments(new String[] {client.getUUID().toString()});
-                broadcastExcept(client,event);
+            broadcastExcept(client, new ServerEvent(ServerEvent.Type.ClientDisconnect,
+                    new String[]{ client.getUUID().toString() }));
         }
     }
+
 }

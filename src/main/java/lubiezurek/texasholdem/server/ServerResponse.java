@@ -12,6 +12,17 @@ public class ServerResponse extends ServerMessage {
     private Status status;
     private String message;
 
+    public ServerResponse(Status status, String message) {
+        if(status == null) throw new IllegalArgumentException();
+        if(message == null) throw new IllegalArgumentException();
+        this.status = status;
+        this.message = message;
+    }
+
+    public ServerResponse(String message) {
+        this(Status.Failure, message);
+    }
+
     public Status getStatus() {
         return status;
     }
@@ -20,15 +31,4 @@ public class ServerResponse extends ServerMessage {
         return message;
     }
 
-    public ServerResponse setStatus(Status status) {
-        if(status == null) throw new IllegalArgumentException();
-        this.status = status;
-        return this;
-    }
-
-    public ServerResponse setMessage(String message) {
-        if(message == null) throw new IllegalArgumentException();
-        this.message = message;
-        return this;
-    }
 }

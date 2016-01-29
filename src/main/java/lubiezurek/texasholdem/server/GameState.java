@@ -28,9 +28,6 @@ public abstract class GameState {
         }
     }
 
-    public int getPlayersCount() {
-        return players.size();
-    }
     public void setPlayers(ArrayList<IPlayer> players) {
         this.players = players;
     }
@@ -38,4 +35,6 @@ public abstract class GameState {
     public ArrayList<IPlayer> getPlayers() {
         return players;
     }
+
+    public abstract void changeState();
 }
