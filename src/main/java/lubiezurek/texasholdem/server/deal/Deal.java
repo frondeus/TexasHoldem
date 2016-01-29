@@ -5,6 +5,7 @@ import lubiezurek.texasholdem.server.*;
 import lubiezurek.texasholdem.server.gamestates.GamePlay;
 import lubiezurek.texasholdem.server.model.Deck;
 import lubiezurek.texasholdem.server.model.card.Card;
+import lubiezurek.texasholdem.server.states.Licitation;
 
 import java.util.ArrayList;
 
@@ -14,20 +15,26 @@ public class Deal{
     private Card[] flop = new Card[3];
     private Card turn = null;
     private Card river = null;
-    private IPlayer smallBlindPlayer = null;
-    private IPlayer bigBlindPlayer = null;
     private Deck deck = null;
 
     public Deal(){}
 
     public void start(IPlayer dealer) {
-        smallBlindPlayer = dealer.getNextPlayer();
-        bigBlindPlayer = smallBlindPlayer.getNextPlayer();
 
         //TODO: set first state to handShuffle, generate cards, then set state to Licitation
         setState(GamePlay.getInstance().getLicitationState());
 
+        Licitation licitation = (Licitation) currentState;
         //TODO: blinds should be added through Licitation, not through addBet()
+
+        IPlayer smallBlind = switchToNextPlayerFrom(dealer);
+        licitation.makeBet(smallBlind, Server.getInstance().Options.getSmallBlind());
+
+        IPlayer bigBlind = switchToNextPlayerFrom(smallBlind);
+        licitation.makeBet(bigBlind, Server.getInstance().Options.getBigBlind());
+
+        switchToNextPlayerFrom(bigBlind);
+        notifyPlayerTurn();
 
 
         if(deck == null) deck = new Deck(); // Nie twórz na unit testach
@@ -39,10 +46,11 @@ public class Deal{
         }
     }
 
-    public void switchToNextPlayer(IPlayer currentPlayer){
+    public IPlayer switchToNextPlayerFrom(IPlayer currentPlayer){
         if(currentPlayer == null) throw new IllegalArgumentException();
         currentPlayer.setPlayerState(PlayerState.WAITING);
         currentPlayer.getNextPlayer().setPlayerState(PlayerState.TURN);
+        return currentPlayer.getNextPlayer();
     }
 
     public void notifyPlayerTurn(){
@@ -52,6 +60,8 @@ public class Deal{
                         new ServerEvent(ServerEvent.Type.Turn,
                             new String[] {p.getUUID().toString()}));
             }
+
+            break;
         }
     }
 
