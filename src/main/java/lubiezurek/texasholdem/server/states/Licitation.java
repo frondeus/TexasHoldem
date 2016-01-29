@@ -90,7 +90,8 @@ public abstract class Licitation implements IState {
                 }
 
                 makeBet(player, betValue);
-                //TODO: switch state to next player, notify next player that it's his turn
+                deal.switchToNextPlayerFrom(player);
+                deal.notifyPlayerTurn();
 
                 break;
 
