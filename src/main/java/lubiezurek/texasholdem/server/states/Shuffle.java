@@ -36,6 +36,7 @@ public class Shuffle implements IState{
             }
 
             deal.setPlayersHaveCards(true);
+            return;
         }else if(deal.getFlop() == null){
             Card c1 = deck.drawLast();
             Card c2 = deck.drawLast();
@@ -50,6 +51,8 @@ public class Shuffle implements IState{
                     ServerEvent.Type.SharedCard,
                     new String[] {"flop", c1.toString(), c2.toString(), c3.toString()}
             ));
+
+            //TODO: set next licitation
         }else if(deal.getTurn() == null){
             Card turn = deck.drawLast();
 
@@ -58,6 +61,8 @@ public class Shuffle implements IState{
                     ServerEvent.Type.SharedCard,
                     new String[] {"turn", turn.toString()}
             ));
+            //TODO: set next licitation
+
         }else if(deal.getRiver() == null){
             Card river = deck.drawLast();
 
@@ -66,6 +71,9 @@ public class Shuffle implements IState{
                     ServerEvent.Type.SharedCard,
                     new String[] {"river", river.toString()}
             ));
+
+            //TODO: set next licitation
+
         }else{
             //TODO: uncomment this when showdown state class is done
             //deal.setState(new Showdown);
