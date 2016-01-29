@@ -113,6 +113,15 @@ public abstract class Licitation implements IState {
                 if(player == GamePlay.getInstance().getDealer()) deal.setState(new Shuffle());
                 break;
 
+            case "Call":
+                makeBet(player, getRequiredBet(player));
+
+                deal.switchToNextPlayerFrom(player);
+                deal.notifyPlayerTurn();
+
+                //check if licitation should end
+                if(player.getNextPlayer() == bigFish) deal.setState(new Shuffle());
+
             case "Fold":
                 player.setPlayerState(PlayerState.FOLD);
                 GamePlay.getInstance().broadcast(
