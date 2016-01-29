@@ -101,6 +101,7 @@ public class GamePlayTest extends TestHelper {
         assertTrue(playerMock.isDisconnected());
     }
 
+    @Ignore
     @Test
     public void onClientMessageOnUnknownMessageShouldSendResponse(){
         deal.setState(mockState);
@@ -117,6 +118,7 @@ public class GamePlayTest extends TestHelper {
 
     }
 
+    @Ignore
     @Test
     public void onClientMessageWhenNotPlayersTurnShouldResponse() {
         deal.setState(mockState);
