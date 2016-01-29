@@ -121,6 +121,7 @@ public abstract class Licitation implements IState {
 
                 //check if licitation should end
                 if(player.getNextPlayer() == bigFish) deal.setState(new Shuffle());
+                break;
 
             case "Fold":
                 player.setPlayerState(PlayerState.FOLD);
