@@ -29,10 +29,7 @@ define(["./random"], function(random) {
     var createCard = function(card, value, color) {
         clearCard(card);
         color = color.toLowerCase();
-        var index = cardValuesNames.indexOf(value);
-        var val = cardValues[index];
-
-        card.addClass(color).text(val);
+        card.addClass(color).text(value);
 
 
     };

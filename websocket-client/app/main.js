@@ -110,24 +110,31 @@ define(
                     },
 
                     onHand: function(event) {
-                        console.log("On Hand");
-                        console.log(event);
-                        Table.addHandCard(event.arguments[0], event.arguments[1]);
-                        Table.addHandCard(event.arguments[2], event.arguments[3]);
+                        var first = event.arguments[0].split(" ");
+                        var second = event.arguments[1].split(" ");
+
+                        Table.addHandCard(first[1], first[0]);
+                        Table.addHandCard(second[1], second[0]);
                     },
 
                     onSharedCard: function(event) {
                         console.log("On SharedCard");
                         console.log(event);
-                        Table.addSharedCard(event.arguments[0], event.arguments[1]);
+
+                        var type = event.arguments.shift();
+                        for(var c in event.arguments) {
+                            var card = event.arguments[c].split(" ");
+                            Table.addSharedCard(card[1], card[0]);
+                        }
+                        //Table.addSharedCard(event.arguments[0], event.arguments[1]);
                     },
 
                     onOtherHand: function(event) {
                         var playerUUID = event.arguments.shift();
                         console.log("On other hand");
                         console.log(event);
-                        Table.addOtherHandCard(playerUUID , event.arguments[0], event.arguments[1]);
-                        Table.addOtherHandCard(playerUUID, event.arguments[2], event.arguments[3]);
+                        //Table.addOtherHandCard(playerUUID , event.arguments[0], event.arguments[1]);
+                        //Table.addOtherHandCard(playerUUID, event.arguments[2], event.arguments[3]);
                     },
 
                     onBet: function(event) {
@@ -150,7 +157,7 @@ define(
                         logger.log("Changed state into: " + event.arguments[0]);
                         state = event.arguments[0];
                         switch(event.arguments[0]) {
-                            case "LicitationNoLimit":
+                            case "Shuffle":
                                 Table.clear();
                                 break;
                         }
