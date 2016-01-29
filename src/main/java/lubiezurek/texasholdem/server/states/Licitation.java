@@ -137,6 +137,12 @@ public abstract class Licitation implements IState {
                 ));
                 break;
 
+            case "GetTurn":
+                player.sendMessage(
+                        new ServerEvent(ServerEvent.Type.Turn,
+                                new String[] {player.getUUID().toString()})
+                );
+
             default:
                 player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,
                         "Command avaible, but not implemented yet"));
