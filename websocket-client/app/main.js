@@ -12,6 +12,9 @@ define(
     ],
         function($ , doc, logger, Player, Socket, random, Table, opponentTemplate, commandTemplate, betTemplate ) {
 
+            var state = "";
+            var socket;
+
             var addPlayer = function(playerUUID) {
                 var currentPlayer = Player.getPlayer(playerUUID);
                 logger.log(currentPlayer.name + " joined to the table", currentPlayer.color);
@@ -23,16 +26,42 @@ define(
                 $(".table > .opponents").append(opponentHtml);
             };
 
+            var addCommands = function(commands) {
+                logger.log("Available commands: " + commands.join(" "));
+                $(".commands").html("");
+                for(var i in commands) {
+                    var command = commands[i];
+
+                    var commandHtml = $($.parseHTML(commandTemplate));
+                    commandHtml.text(command).data("command", command).click(function(event){
+                        var value= $("#text-input").val();
+                        var message = {
+                            command: $(this).data("command"),
+                            arguments: value.split(" ")
+                        };
+
+                        socket.send(JSON.stringify(message));
+
+                        $("#text-input").val("");
+                        event.preventDefault();
+                    });
+
+                    $(".commands").append(commandHtml);
+                }
+            };
+
             $("#login-form button").click(function(){
                 var address = $("#address-input").val();
 
-                var socket = Socket(address, {
+                socket = Socket(address, {
                     onConnected: function(event) {
                         Player.setUUID(event.arguments.shift());
                         for(var p in event.arguments) {
                             var playerUUID = event.arguments[p];
                             addPlayer(playerUUID);
                         }
+
+                        addCommands(["chat"]);
                     },
 
                     onClientConnect: function(event) {
@@ -60,37 +89,23 @@ define(
                     onTurn: function(event) {
                         var playerUUID = event.arguments.shift();
 
-                        if(Player.myUUID() == playerUUID) logger.log("Yours turn");
+                        if(Player.myUUID() == playerUUID){
+                            switch(state) {
+                            case "LicitationNoLimit":
+                                addCommands(["Bet", "Check", "Fold"]);
+                                break
+                            default:
+                                console.err("Undefined state!");
+                                break;
+                            }
+                            logger.log("Yours turn");
+                        } 
                         else {
                             var currentPlayer = Player.getPlayer(playerUUID);
                             logger.log(currentPlayer.name + "s turn", currentPlayer.color);
                             $(".commands button").each(function(){
                                 $(this).prop("disabled", true);
                             });
-                        }
-                    },
-
-                    onCommands: function(event) {
-                        logger.log("Available commands: " + event.arguments.join(" "));
-                        $(".commands").html("");
-                        for(var i in event.arguments) {
-                            var command = event.arguments[i];
-
-                            var commandHtml = $($.parseHTML(commandTemplate));
-                            commandHtml.text(command).data("command", command).click(function(event){
-                                var value = $("#text-input").val();
-                                var message = {
-                                    command: $(this).data("command"),
-                                    arguments: value.split(" ")
-                                };
-
-                                socket.send(JSON.stringify(message));
-
-                                $("#text-input").val("");
-                                event.preventDefault();
-                            });
-
-                            $(".commands").append(commandHtml);
                         }
                     },
 
@@ -128,12 +143,11 @@ define(
 
                     onChangeState: function(event) {
                         logger.log("Changed state into: " + event.arguments[0]);
+                        state = event.arguments[0];
                         switch(event.arguments[0]) {
-                            case "Licitation":
+                            case "LicitationNoLimit":
                                 Table.clear();
                                 break;
-                            default:
-                                console.log("Unknown state!");
                         }
                     }
                 });

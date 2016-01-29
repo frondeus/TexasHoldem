@@ -52,7 +52,6 @@ public class Lobby extends GameState {
             players.add(client);
 
             client.sendMessage(new ServerEvent(ServerEvent.Type.Connected, uuids));
-            client.sendMessage(new ServerEvent(ServerEvent.Type.Commands, new String[]{"chat"}));
 
             broadcastExcept(client, new ServerEvent(ServerEvent.Type.ClientConnect,
                     new String[]{client.getUUID().toString()}));
