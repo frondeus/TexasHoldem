@@ -13,10 +13,11 @@ import java.util.ArrayList;
 public class Deal{
 	private IState currentState = null;
 	private ArrayList<Bet> bets = new ArrayList<Bet>();
-    private Card[] flop = new Card[3];
+    private Card[] flop = null;
     private Card turn = null;
     private Card river = null;
     private Deck deck = null;
+    private boolean playersCardsShuffled = false;
 
     public Deal(){}
 
@@ -39,7 +40,6 @@ public class Deal{
         switchToNextPlayerFrom(bigBlind);
         notifyPlayerTurn();
 
-
         if(deck == null) deck = new Deck(); // Nie twórz na unit testach
         deck.shuffle();
     }
@@ -47,6 +47,7 @@ public class Deal{
     public IPlayer switchToNextPlayerFrom(IPlayer currentPlayer){
         if(currentPlayer == null) throw new IllegalArgumentException();
 
+        //TODO: check if fold, broke or lost
         currentPlayer.setPlayerState(PlayerState.WAITING);
         currentPlayer.getNextPlayer().setPlayerState(PlayerState.TURN);
 
@@ -126,4 +127,17 @@ public class Deal{
     public ArrayList<Bet> getBets() { return bets; }
 
     public void setDeck(Deck deck) { this.deck = deck; }
+    public Deck getDeck() { return this.deck; }
+
+    public Card[] getFlop()  { return flop; }
+    public Card   getTurn()  { return turn; }
+    public Card   getRiver() { return river; }
+
+    public void   setRiver (Card river)  { this.river = river; }
+    public void   setFlop  (Card[] flop) { this.flop = flop; }
+    public void   setTurn  (Card turn)   { this.turn = turn; }
+
+    public boolean playersHaveCards() { return playersCardsShuffled; }
+    public void setPlayersHaveCards(boolean flag) { playersCardsShuffled = flag; }
+
 }
