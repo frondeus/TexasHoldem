@@ -80,6 +80,13 @@ define(
                         });
                     },
 
+                    onFold: function(event) {
+                        var playerUUID = event.arguments.shift();
+                        var currentPlayer = Player.getPlayer(playerUUID);
+                        
+                        logger.log(currentPlayer.name + " folded", currentPlayer.color);
+                    },
+
                     onChat: function(event) {
                         var playerUUID = event.arguments.shift();
                         var currentPlayer = Player.getPlayer(playerUUID);
