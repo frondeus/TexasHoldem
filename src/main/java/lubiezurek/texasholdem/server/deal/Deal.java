@@ -7,6 +7,7 @@ import lubiezurek.texasholdem.server.gamestates.GamePlay;
 import lubiezurek.texasholdem.server.model.Deck;
 import lubiezurek.texasholdem.server.model.card.Card;
 import lubiezurek.texasholdem.server.states.Licitation;
+import lubiezurek.texasholdem.server.states.Shuffle;
 
 import java.util.ArrayList;
 
@@ -26,7 +27,7 @@ public class Deal{
             p.setPlayerState(PlayerState.WAITING);
         }
 
-        //TODO: set first state to handShuffle, generate cards, then set state to Licitation
+        setState(new Shuffle());
         setState(GamePlay.getInstance().getLicitationState());
 
         Licitation licitation = (Licitation) currentState;
@@ -47,9 +48,14 @@ public class Deal{
     public IPlayer switchToNextPlayerFrom(IPlayer currentPlayer){
         if(currentPlayer == null) throw new IllegalArgumentException();
 
-        //TODO: check if fold, broke or lost
         currentPlayer.setPlayerState(PlayerState.WAITING);
-        currentPlayer.getNextPlayer().setPlayerState(PlayerState.TURN);
+        IPlayer next;
+
+        do {
+            next = currentPlayer.getNextPlayer();
+        } while( next.getPlayerState() != PlayerState.WAITING);
+
+        next.setPlayerState(PlayerState.TURN);
 
         return currentPlayer.getNextPlayer();
     }
