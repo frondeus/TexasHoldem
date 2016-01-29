@@ -1,5 +1,6 @@
 package lubiezurek.texasholdem.server.states;
 
+import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.IPlayer;
 import lubiezurek.texasholdem.server.IState;
@@ -33,6 +34,7 @@ public class Shuffle implements IState{
                 p.sendMessage(new ServerEvent(ServerEvent.Type.Hand,
                         new String[] {c1.toString(), c2.toString()}
                         ));
+                Logger.status("Player " + p + " draws cards: " + c1.toString() + " " + c2.toString() );
             }
 
             deal.setPlayersHaveCards(true);
@@ -53,6 +55,7 @@ public class Shuffle implements IState{
             ));
 
             deal.setState(GamePlay.getInstance().getLicitationState());
+            Logger.status("Flop: " + c1.toString() + " " + c2.toString() + " " + c3.toString() );
 
         }else if(deal.getTurn() == null){
             Card turn = deck.drawLast();
@@ -63,6 +66,7 @@ public class Shuffle implements IState{
                     new String[] {"turn", turn.toString()}
             ));
             deal.setState(GamePlay.getInstance().getLicitationState());
+            Logger.status("Turn: " + turn.toString());
 
         }else if(deal.getRiver() == null){
             Card river = deck.drawLast();
@@ -74,6 +78,7 @@ public class Shuffle implements IState{
             ));
 
             deal.setState(GamePlay.getInstance().getLicitationState());
+            Logger.status("River: " + river.toString());
 
         }else{
             //TODO: uncomment this when showdown state class is done

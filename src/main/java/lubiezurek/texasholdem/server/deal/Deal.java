@@ -27,6 +27,9 @@ public class Deal{
             p.setPlayerState(PlayerState.WAITING);
         }
 
+        deck = new Deck(); // Nie twórz na unit testach
+        deck.shuffle();
+
         setState(new Shuffle());
         setState(GamePlay.getInstance().getLicitationState());
 
@@ -41,8 +44,6 @@ public class Deal{
         switchToNextPlayerFrom(bigBlind);
         notifyPlayerTurn();
 
-        if(deck == null) deck = new Deck(); // Nie twórz na unit testach
-        deck.shuffle();
     }
 
     public IPlayer switchToNextPlayerFrom(IPlayer currentPlayer){
