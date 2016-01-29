@@ -1,6 +1,7 @@
 package lubiezurek.texasholdem.server;
 
 import org.junit.Test;
+import org.junit.internal.runners.statements.Fail;
 
 import static org.junit.Assert.*;
 
@@ -9,35 +10,33 @@ import static org.junit.Assert.*;
  */
 public class ServerResponseTest {
 
+    private ServerResponse createResponse() {
+        return new ServerResponse("Foo");
+    }
+
     @Test
     public void testStatus() throws Exception {
-        ServerResponse response = new ServerResponse();
 
-        response.setStatus(ServerResponse.Status.Failure);
+        ServerResponse response = new ServerResponse(ServerResponse.Status.Failure, "");
         assertEquals(ServerResponse.Status.Failure, response.getStatus());
 
-        response.setStatus(ServerResponse.Status.Ok);
+        response = new ServerResponse(ServerResponse.Status.Ok, "");
         assertEquals(ServerResponse.Status.Ok, response.getStatus());
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void testNullStatus() {
-        ServerResponse response = new ServerResponse();
-        response.setStatus(null);
+    public void testConstructorNullStatus() {
+        new ServerResponse(null, "");
     }
 
     @Test
     public void testMessage() throws Exception {
-        ServerResponse response = new ServerResponse();
-
-        response.setMessage("Testowy string");
+        ServerResponse response = new ServerResponse("Testowy string");
         assertEquals("Testowy string", response.getMessage());
-
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void testNullMessage() {
-        ServerResponse response = new ServerResponse();
-        response.setMessage(null);
+    public void testConstructorNullMessage() {
+        ServerResponse response = new ServerResponse(ServerResponse.Status.Failure, null);
     }
 }

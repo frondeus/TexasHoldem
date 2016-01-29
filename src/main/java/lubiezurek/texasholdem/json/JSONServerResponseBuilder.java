@@ -13,10 +13,11 @@ public class JSONServerResponseBuilder implements IServerMessageBuilder {
     @Override
     public ServerMessage deserializeMessage(String input) {
         JSONObject json = new JSONObject(input);
-        ServerResponse response = new ServerResponse();
+        ServerResponse response = new ServerResponse(
+                ServerResponse.Status.valueOf(json.getString("status")),
+                json.getString("message")
+        );
 
-        response.setStatus(ServerResponse.Status.valueOf(json.getString("status")));
-        response.setMessage(json.getString("message"));
 
         return response;
     }

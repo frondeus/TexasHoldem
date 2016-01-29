@@ -2,6 +2,7 @@ package lubiezurek.texasholdem.server;
 
 import java.util.HashMap;
 
+import lubiezurek.texasholdem.Logger;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -60,6 +61,7 @@ public class Server extends WebSocketServer {
 
         clients.put(conn, client);
         state.onClientConnected(client);
+        state.changeState();
     }
 
     @Override
@@ -73,6 +75,7 @@ public class Server extends WebSocketServer {
     public void onMessage(WebSocket conn, String message) {
         Client client = clients.get(conn);
         state.onClientMessage(client, clientMessageBuilder.deserializeMessage(message));
+        state.changeState();
     }
 
     @Override
@@ -85,6 +88,7 @@ public class Server extends WebSocketServer {
     }
 
     public void setState(GameState state) {
+        Logger.status("Set GameState: " + state.getClass().getSimpleName());
         this.state = state;
         this.state.onEnter();
     }

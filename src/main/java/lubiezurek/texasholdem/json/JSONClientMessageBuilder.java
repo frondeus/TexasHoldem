@@ -15,9 +15,10 @@ public class JSONClientMessageBuilder implements IClientMessageBuilder {
     @Override
     public ClientMessage deserializeMessage(String input) {
         JSONObject json = new JSONObject(input);
-        ClientMessage message = new ClientMessage();
-
-        message.setCommand(json.getString("command"));
+        ClientMessage message = new ClientMessage(
+                json.getString("command"),
+                new String[]{}
+        );
 
         ArrayList<String> list = new ArrayList<>();
         JSONArray arguments = json.getJSONArray("arguments");

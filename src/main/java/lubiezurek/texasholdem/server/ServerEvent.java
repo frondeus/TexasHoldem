@@ -1,9 +1,12 @@
 package lubiezurek.texasholdem.server;
 
+import java.util.ArrayList;
+
 /**
  * Created by frondeus on 07.12.2015.
  */
 public class ServerEvent extends ServerMessage {
+
     public enum Type {
         Connected,
         ClientConnect,
@@ -11,11 +14,26 @@ public class ServerEvent extends ServerMessage {
         Commands,
         Chat,
         ChangeState,
+        PotAmount,
+        RequiredBet,
+        LicitationType,
+        Fold,
         Hand, SharedCard, OtherHand, Bet, Turn
     }
 
     private Type type;
     private String[] arguments;
+
+    public ServerEvent(Type type, String[] arguments) {
+        if(type == null) throw  new IllegalArgumentException();
+        if(arguments == null) throw new IllegalArgumentException();
+        this.type = type;
+        this.arguments = arguments;
+    }
+
+    public ServerEvent(Type type, ArrayList<String> arguments) {
+        this(type, arguments.toArray(new String[]{}));
+    }
 
     public Type getEventType() {
         return type;
@@ -25,17 +43,9 @@ public class ServerEvent extends ServerMessage {
         return arguments;
     }
 
-    public ServerEvent setType(Type type) {
-        if(type == null) throw new IllegalArgumentException();
-        this.type = type;
-        return this;
-    }
-
-    public ServerEvent setArguments(String[] arguments) {
+    public void setArguments(String[] arguments) {
         if(arguments == null) throw new IllegalArgumentException();
-
         this.arguments = arguments;
-        return this;
     }
 }
 

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mvn clean compile assembly:single test exec:java -Dexec.mainClass="lubiezurek.texasholdem.Program"
+mvn clean compile assembly:single test exec:java -Dexec.mainClass="lubiezurek.texasholdem.Program" -Dexec.args="7777 2"
