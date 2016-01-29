@@ -133,6 +133,10 @@ define(
                         var playerUUID = event.arguments.shift();
                         console.log("On other hand");
                         console.log(event);
+                        var first = event.arguments[0].split(" ");
+                        var second = event.arguments[1].split(" ");
+                        Table.addOtherHandCard(playerUUID, first[1], first[0]);
+                        Table.addOtherHandCard(playerUUID, second[1], second[0]);
                         //Table.addOtherHandCard(playerUUID , event.arguments[0], event.arguments[1]);
                         //Table.addOtherHandCard(playerUUID, event.arguments[2], event.arguments[3]);
                     },

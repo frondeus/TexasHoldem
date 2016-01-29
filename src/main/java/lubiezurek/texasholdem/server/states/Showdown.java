@@ -1,18 +1,19 @@
 package lubiezurek.texasholdem.server.states;
 
+import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.client.ClientMessage;
 import lubiezurek.texasholdem.server.IPlayer;
 import lubiezurek.texasholdem.server.IState;
+import lubiezurek.texasholdem.server.ServerEvent;
 import lubiezurek.texasholdem.server.ServerResponse;
 import lubiezurek.texasholdem.server.deal.Deal;
+import lubiezurek.texasholdem.server.gamestates.GamePlay;
 import lubiezurek.texasholdem.server.model.card.Card;
 import lubiezurek.texasholdem.server.model.card.CardValue;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * Created by frondeus on 28.01.16.
@@ -228,8 +229,50 @@ public class Showdown implements IState {
         return sum;
     }
 
+    private void sendOtherHand(IPlayer player, IPlayer other) {
+        player.sendMessage(new ServerEvent(
+                ServerEvent.Type.OtherHand,
+                new String[] {
+                        other.getUUID().toString(),
+                        other.getHand()[0].toString(),
+                        other.getHand()[1].toString()
+                }));
+    }
     @Override
     public void onStart(Deal deal) {
+        Card[] table = new Card[] {
+                deal.getFlop()[0],
+                deal.getFlop()[1],
+                deal.getFlop()[2],
+                deal.getTurn(),
+                deal.getRiver()
+        };
+        int maxValue = 0;
+        ArrayList<IPlayer> winners = new ArrayList<>();
+
+        for(IPlayer player: GamePlay.getInstance().getPlayers()) {
+            int value = evaluatePlayer(player,table );
+            if(value > maxValue) {
+                winners.clear();
+                winners.add(player);
+                maxValue = value;
+            }
+            else if(value == maxValue)
+                winners.add(player);
+        }
+
+        Logger.status("Winners: ");
+        for(IPlayer player: winners)
+            Logger.status(player.getUUID().toString());
+
+        for(IPlayer player: GamePlay.getInstance().getPlayers()) {
+            for(IPlayer other: GamePlay.getInstance().getPlayers()) {
+                if(player != other) {
+                    sendOtherHand(player, other);
+                }
+            }
+        }
+
 
     }
 

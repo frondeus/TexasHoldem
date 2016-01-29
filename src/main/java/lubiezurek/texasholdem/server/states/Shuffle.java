@@ -82,6 +82,7 @@ public class Shuffle implements IState{
 
         }else{
             //TODO: uncomment this when showdown state class is done
+            deal.setState(new Showdown());
             //deal.setState(new Showdown);
         }
     }

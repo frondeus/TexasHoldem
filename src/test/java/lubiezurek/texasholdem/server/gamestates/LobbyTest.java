@@ -53,10 +53,10 @@ public class LobbyTest extends TestHelper {
         PlayerMock lastPlayer = addRestPlayers();
         PlayerMock playerMock = addPlayer();
         ServerMessage[] messages = lastPlayer.getLastMessages();
-        assertTrue(3 <= messages.length);
+        assertTrue(2 <= messages.length);
         assertEvent(ServerEvent.Type.ClientConnect, new String[]{
                 playerMock.getUUID().toString()
-        },messages[2]);
+        },messages[1]);
     }
 
     @Test

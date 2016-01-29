@@ -67,10 +67,6 @@ public class DealTest extends TestHelper {
         verify(deal, times(1)).addBet(bigBlindPlayer, Options().getBigBlind());
     }*/
 
-    @Test
-    public void startShouldShuffleDeck() {
-        verify(deck, times(1)).shuffle();
-    }
 
     @Test
     public void startShouldStartLicitation() {
