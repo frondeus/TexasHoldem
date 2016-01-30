@@ -177,7 +177,7 @@ public abstract class Licitation implements IState {
 
         if(biggestBet < deal.sumBetAmount(player) + betValue){
             bigFish = player;
-            biggestBet = deal.sumBetAmount(player) + betValue;
+            biggestBet = deal.sumBetAmount(player);
         }
 
     }

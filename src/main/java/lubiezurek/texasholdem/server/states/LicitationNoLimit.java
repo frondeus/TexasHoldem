@@ -1,5 +1,6 @@
 package lubiezurek.texasholdem.server.states;
 
+import lubiezurek.texasholdem.Logger;
 import lubiezurek.texasholdem.server.IPlayer;
 
 public class LicitationNoLimit extends Licitation{
@@ -18,6 +19,7 @@ public class LicitationNoLimit extends Licitation{
 
 	@Override
 	public int getRequiredBet(IPlayer player) {
+		Logger.status("Biggest bet: " + Integer.toString(biggestBet) + ", player needs to bet: " + Integer.toString(deal.sumBetAmount(player)));
 		return biggestBet - deal.sumBetAmount(player);
 	}
 
