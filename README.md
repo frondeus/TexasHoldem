@@ -26,20 +26,24 @@ Serwer:
 ```
 mvn clean compile assembly:single test exec:java -Dexec.mainClass="lubiezurek.texasholdem.Program" -Dexec.args="7777 4"
 ```
-Lub shellscript):
+Argumenty w kolejności:
+* Port
+* Liczba Graczy
+* Początkowe Pieniądze
+* Mała Ciemna
+* Duża Ciemna
+
+Lub shellscript (domyślne argumenty):
 ```
 ./start_server
 ```
 
-Argumenty:
-Port Liczba-Graczy PoczątkowePieniądze Mała-Ciemna Duża-Ciemna
 
 
 Klient:
-Klient dostępny jest pod adresem.
-```
-http://frondeus.pl/TexasHoldem/
-```
+Klient dostępny jest pod adresem 
+[frondeus.pl/TexasHoldem](http://frondeus.pl/TexasHoldem/)
+
 Jeśli przy logowaniu nie wpiszemy żadnego adresu URL, klient domyślnie połączy się z serwerem localhost:7777
 
 
