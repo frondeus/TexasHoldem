@@ -22,7 +22,7 @@ mvn clean compile test assembly:single
 ```
 ### Kompilacja testy i uruchomienie w jednym:
 
-Serwer:
+####Serwer:
 ```
 mvn clean compile assembly:single test exec:java -Dexec.mainClass="lubiezurek.texasholdem.Program" -Dexec.args="7777 4"
 ```
@@ -40,7 +40,7 @@ Lub shellscript (domyślne argumenty):
 
 
 
-Klient:
+####Klient:
 Klient dostępny jest pod adresem 
 [frondeus.pl/TexasHoldem](http://frondeus.pl/TexasHoldem/)
 
