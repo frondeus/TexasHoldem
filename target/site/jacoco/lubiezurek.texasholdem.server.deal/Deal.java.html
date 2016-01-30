@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Deal.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TexasHoldem</a> &gt; <a href="index.source.html" class="el_package">lubiezurek.texasholdem.server.deal</a> &gt; <span class="el_source">Deal.java</span></div><h1>Deal.java</h1><pre class="source lang-java linenums">package lubiezurek.texasholdem.server.deal;
+
+
+import lubiezurek.texasholdem.Logger;
+import lubiezurek.texasholdem.server.*;
+import lubiezurek.texasholdem.server.gamestates.GamePlay;
+import lubiezurek.texasholdem.server.model.Deck;
+import lubiezurek.texasholdem.server.model.card.Card;
+import lubiezurek.texasholdem.server.states.Licitation;
+import lubiezurek.texasholdem.server.states.Shuffle;
+
+import java.util.ArrayList;
+
+public class Deal{
+<span class="fc" id="L15">	private IState currentState = null;</span>
+<span class="fc" id="L16">	private ArrayList&lt;Bet&gt; bets = new ArrayList&lt;Bet&gt;();</span>
+<span class="fc" id="L17">    private Card[] flop = null;</span>
+<span class="fc" id="L18">    private Card turn = null;</span>
+<span class="fc" id="L19">    private Card river = null;</span>
+<span class="fc" id="L20">    private Deck deck = null;</span>
+<span class="fc" id="L21">    private boolean playersCardsShuffled = false;</span>
+
+<span class="fc" id="L23">    public Deal(){}</span>
+
+    public void start(IPlayer dealer) {
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        for (IPlayer p : GamePlay.getInstance().getPlayers()) {</span>
+<span class="fc" id="L27">            p.setPlayerState(PlayerState.WAITING);</span>
+<span class="fc" id="L28">        }</span>
+
+<span class="fc" id="L30">        deck = new Deck(); // Nie twórz na unit testach</span>
+<span class="fc" id="L31">        deck.shuffle();</span>
+
+<span class="fc" id="L33">        setState(new Shuffle());</span>
+<span class="fc" id="L34">        setState(GamePlay.getInstance().getLicitationState());</span>
+
+<span class="fc" id="L36">        Licitation licitation = (Licitation) currentState;</span>
+
+<span class="fc" id="L38">        IPlayer smallBlind = switchToNextPlayerFrom(dealer);</span>
+<span class="fc" id="L39">        licitation.makeBet(smallBlind, Server.getInstance().Options.getSmallBlind());</span>
+
+<span class="fc" id="L41">        IPlayer bigBlind = switchToNextPlayerFrom(smallBlind);</span>
+<span class="fc" id="L42">        licitation.makeBet(bigBlind, Server.getInstance().Options.getBigBlind());</span>
+
+<span class="fc" id="L44">        switchToNextPlayerFrom(bigBlind);</span>
+<span class="fc" id="L45">        notifyPlayerTurn();</span>
+
+<span class="fc" id="L47">    }</span>
+
+    public IPlayer switchToNextPlayerFrom(IPlayer currentPlayer){
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if(currentPlayer == null) throw new IllegalArgumentException();</span>
+
+<span class="fc" id="L52">        currentPlayer.setPlayerState(PlayerState.WAITING);</span>
+        IPlayer next;
+
+        do {
+<span class="fc" id="L56">            next = currentPlayer.getNextPlayer();</span>
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">        } while( next.getPlayerState() != PlayerState.WAITING);</span>
+
+<span class="fc" id="L59">        next.setPlayerState(PlayerState.TURN);</span>
+
+<span class="fc" id="L61">        return currentPlayer.getNextPlayer();</span>
+    }
+
+    public void notifyPlayerTurn(){
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        for (IPlayer p : GamePlay.getInstance().getPlayers()) {</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">            if(p.getPlayerState() == PlayerState.TURN){</span>
+<span class="fc" id="L67">                Logger.status(&quot;Notifying player that it's his turn&quot;);</span>
+<span class="fc" id="L68">                GamePlay.getInstance().broadcast(</span>
+                        new ServerEvent(ServerEvent.Type.Turn,
+<span class="fc" id="L70">                            new String[] {p.getUUID().toString()}));</span>
+<span class="fc" id="L71">                break;</span>
+            }
+
+<span class="fc" id="L74">        }</span>
+<span class="fc" id="L75">    }</span>
+
+    public void addBet(IPlayer player, int amount) {
+<span class="fc" id="L78">        int moneyLeft = player.getMoney();</span>
+
+<span class="fc" id="L80">        player.takeAwayMoney(amount);</span>
+
+<span class="fc" id="L82">        Bet bet = new Bet(player, Math.min(amount, moneyLeft));</span>
+<span class="fc" id="L83">        bets.add(bet);</span>
+
+<span class="fc" id="L85">        GamePlay.getInstance().broadcast(new ServerEvent(</span>
+                ServerEvent.Type.Bet,
+                new String[] {
+<span class="fc" id="L88">                        player.getUUID().toString(),</span>
+<span class="fc" id="L89">                        Integer.toString(player.getMoney()),</span>
+<span class="fc" id="L90">                        Integer.toString(sumBetAmount(player))</span>
+                }
+        ));
+<span class="fc" id="L93">    }</span>
+
+    public int sumBetAmount(IPlayer player) {
+<span class="fc" id="L96">        int sum = 0;</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        for(Bet bet: bets)</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">            if(bet.getPlayer() == player) sum += bet.getAmount();</span>
+<span class="fc" id="L99">        return sum;</span>
+    }
+
+    public int playersStillInPlay(){
+<span class="fc" id="L103">        int playerAmount = 0;</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        for (IPlayer p : GamePlay.getInstance().getPlayers()) {</span>
+<span class="pc bpc" id="L105" title="1 of 2 branches missed.">            if(p.getPlayerState() == PlayerState.WAITING</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">                    || p.getPlayerState() == PlayerState.TURN){</span>
+<span class="fc" id="L107">                playerAmount += 1;</span>
+            }
+<span class="fc" id="L109">        }</span>
+<span class="fc" id="L110">        return playerAmount;</span>
+    }
+
+    public int getPotAmount(){
+<span class="nc" id="L114">        int sum = 0;</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        for (Bet bet: bets) {</span>
+<span class="nc" id="L116">            sum += bet.getAmount();</span>
+<span class="nc" id="L117">        }</span>
+<span class="nc" id="L118">        return sum;</span>
+    }
+
+	public void setState(IState newState){
+<span class="fc" id="L122">        currentState = newState;</span>
+
+<span class="fc" id="L124">        GamePlay.getInstance().broadcast(new ServerEvent(ServerEvent.Type.ChangeState, new String[]{</span>
+<span class="fc" id="L125">                        newState.getClass().getSimpleName()</span>
+                        })
+        );
+
+<span class="fc" id="L129">        currentState.onStart(this);</span>
+<span class="fc" id="L130">    }</span>
+
+<span class="fc" id="L132">    public IState getState(){ return currentState; }</span>
+
+<span class="fc" id="L134">    public ArrayList&lt;Bet&gt; getBets() { return bets; }</span>
+
+<span class="fc" id="L136">    public void setDeck(Deck deck) { this.deck = deck; }</span>
+<span class="fc" id="L137">    public Deck getDeck() { return this.deck; }</span>
+
+<span class="fc" id="L139">    public Card[] getFlop()  { return flop; }</span>
+<span class="nc" id="L140">    public Card   getTurn()  { return turn; }</span>
+<span class="nc" id="L141">    public Card   getRiver() { return river; }</span>
+
+<span class="nc" id="L143">    public void   setRiver (Card river)  { this.river = river; }</span>
+<span class="fc" id="L144">    public void   setFlop  (Card[] flop) { this.flop = flop; }</span>
+<span class="nc" id="L145">    public void   setTurn  (Card turn)   { this.turn = turn; }</span>
+
+<span class="fc" id="L147">    public boolean playersHaveCards() { return playersCardsShuffled; }</span>
+<span class="fc" id="L148">    public void setPlayersHaveCards(boolean flag) { playersCardsShuffled = flag; }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>GamePlay.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TexasHoldem</a> &gt; <a href="index.source.html" class="el_package">lubiezurek.texasholdem.server.gamestates</a> &gt; <span class="el_source">GamePlay.java</span></div><h1>GamePlay.java</h1><pre class="source lang-java linenums">package lubiezurek.texasholdem.server.gamestates;
+
+import lubiezurek.texasholdem.Logger;
+import lubiezurek.texasholdem.client.ClientMessage;
+import lubiezurek.texasholdem.server.*;
+import lubiezurek.texasholdem.server.deal.Deal;
+import lubiezurek.texasholdem.server.states.LicitationNoLimit;
+
+import java.util.Collections;
+
+/**
+ * Created by frondeus on 14.12.2015.
+ */
+public class GamePlay extends GameState {
+    private volatile static GamePlay instance;
+    public static GamePlay getInstance() {
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        if(instance == null) {</span>
+<span class="fc" id="L18">            synchronized (GamePlay.class) {</span>
+<span class="pc bpc" id="L19" title="1 of 2 branches missed.">                if(instance == null) instance = new GamePlay();</span>
+<span class="pc" id="L20">            }</span>
+        }
+<span class="fc" id="L22">        return instance;</span>
+    }
+    public static void resetInstance() {
+<span class="fc" id="L25">        instance = null;</span>
+<span class="fc" id="L26">    }</span>
+
+<span class="fc" id="L28">    private Deal testDeal = null;</span>
+<span class="fc" id="L29">    private Deal deal = null;</span>
+<span class="fc" id="L30">    private IState licitationState = null;</span>
+<span class="fc" id="L31">    private IPlayer dealer = null;</span>
+
+<span class="fc" id="L33">    private GamePlay() {</span>
+<span class="fc" id="L34">    }</span>
+
+    private void createQueue() {
+<span class="fc" id="L37">        Collections.shuffle(players);</span>
+
+<span class="fc" id="L39">        IPlayer player = null, lastPlayer = null;</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (IPlayer aPlayer : players) {</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">            if (player != null) lastPlayer = player;</span>
+<span class="fc" id="L42">            player = aPlayer;</span>
+<span class="fc" id="L43">            player.setNextPlayer(players.get(0));</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">            if (lastPlayer != null)</span>
+<span class="fc" id="L45">                lastPlayer.setNextPlayer(player);</span>
+<span class="fc" id="L46">        }</span>
+<span class="fc" id="L47">    }</span>
+
+    public void setupMoney() { // publiczne tylko dla testów
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        for(IPlayer player: players) {</span>
+<span class="fc" id="L51">            player.setMoney(Server.getInstance().Options.getStartMoney());</span>
+<span class="fc" id="L52">        }</span>
+<span class="fc" id="L53">    }</span>
+
+    public void onEnter() {
+        //TODO: Licitation type based on game options
+<span class="fc" id="L57">        licitationState = new LicitationNoLimit();</span>
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        if(players.size() &gt; 0 ) {</span>
+<span class="fc" id="L59">            createQueue();</span>
+<span class="fc" id="L60">            setupMoney();</span>
+
+<span class="fc" id="L62">            dealer = players.get(0);</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">            if(testDeal != null) deal = testDeal;</span>
+<span class="nc" id="L64">            else deal = new Deal();</span>
+<span class="fc" id="L65">            deal.start(dealer);</span>
+        }
+<span class="fc" id="L67">    }</span>
+
+    @Override
+    public void changeState() {
+        //TODO: Sprawdzanie czy koniec partii czy nie.
+<span class="nc" id="L72">    }</span>
+
+    public void nextDealer() {
+<span class="fc" id="L75">        dealer = dealer.getNextPlayer();</span>
+<span class="fc" id="L76">    }</span>
+
+    public void onClientConnected(IPlayer client) {
+<span class="fc" id="L79">        client.sendMessage(new ServerResponse(ServerResponse.Status.Failure,</span>
+                &quot;Game is in progress&quot;));
+<span class="fc" id="L81">        client.disconnect();</span>
+<span class="fc" id="L82">    }</span>
+
+    public void onClientMessage(IPlayer client, ClientMessage message) {
+<span class="fc" id="L85">        deal.getState().onPlayerMessage(client, message);</span>
+<span class="fc" id="L86">    }</span>
+
+    private boolean isPlayerTurn(IPlayer player) {
+<span class="nc" id="L89">        return deal.getState().isPlayerTurn(player);</span>
+    }
+
+    public void onClientDisconnected(IPlayer client) {
+<span class="fc" id="L93">        Logger.status(client + &quot;: Disconnected&quot;);</span>
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">        if(players.indexOf(client) &gt;= 0) {</span>
+            //TODO: Zastapic botem
+<span class="fc" id="L96">            players.remove(client);</span>
+
+<span class="fc" id="L98">            broadcastExcept(client, new ServerEvent(</span>
+                    ServerEvent.Type.ClientDisconnect,
+                    new String[] {
+<span class="fc" id="L101">                            client.getUUID().toString()</span>
+                    }
+            ));
+
+<span class="fc bfc" id="L105" title="All 2 branches covered.">            for(IPlayer all : players) {</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">                if(all.getNextPlayer() == client)</span>
+<span class="fc" id="L107">                    all.setNextPlayer(client.getNextPlayer());</span>
+<span class="fc" id="L108">            }</span>
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">            if(players.size() &lt;= 1) {</span>
+<span class="nc" id="L110">                Lobby.getInstance().setPlayers(players);</span>
+<span class="nc" id="L111">                Server.getInstance().setState(Lobby.getInstance());</span>
+            }
+        }
+<span class="fc" id="L114">    }</span>
+
+    public IState getLicitationState() {
+<span class="fc" id="L117">        return licitationState;</span>
+    }
+
+    public Deal getDeal() {
+<span class="nc" id="L121">        return deal;</span>
+    }
+
+    public void setDeal(Deal deal) {
+<span class="fc" id="L125">        this.testDeal = deal;</span>
+<span class="fc" id="L126">    }</span>
+
+    public IPlayer getDealer() {
+<span class="fc" id="L129">        return dealer;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Shuffle.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TexasHoldem</a> &gt; <a href="index.source.html" class="el_package">lubiezurek.texasholdem.server.states</a> &gt; <span class="el_source">Shuffle.java</span></div><h1>Shuffle.java</h1><pre class="source lang-java linenums">package lubiezurek.texasholdem.server.states;
+
+import lubiezurek.texasholdem.Logger;
+import lubiezurek.texasholdem.client.ClientMessage;
+import lubiezurek.texasholdem.server.IPlayer;
+import lubiezurek.texasholdem.server.IState;
+import lubiezurek.texasholdem.server.ServerEvent;
+import lubiezurek.texasholdem.server.deal.Deal;
+import lubiezurek.texasholdem.server.gamestates.GamePlay;
+import lubiezurek.texasholdem.server.model.Deck;
+import lubiezurek.texasholdem.server.model.card.Card;
+
+/**
+ * Created by mrmino on 29.01.16.
+ */
+<span class="fc" id="L16">public class Shuffle implements IState{</span>
+    @Override
+    public void onPlayerMessage(IPlayer player, ClientMessage message) {
+<span class="nc" id="L19">    }</span>
+
+    @Override
+    public void onStart(Deal deal) {
+<span class="fc" id="L23">        Deck deck = deal.getDeck();</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if(!deal.playersHaveCards()){</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">            for (IPlayer p : GamePlay.getInstance().getPlayers()) {</span>
+<span class="fc" id="L26">                Card c1 = deck.drawLast();</span>
+<span class="fc" id="L27">                Card c2 = deck.drawLast();</span>
+<span class="fc" id="L28">                Card[] hand = new Card[2];</span>
+<span class="fc" id="L29">                hand[0] = c1;</span>
+<span class="fc" id="L30">                hand[1] = c2;</span>
+
+<span class="fc" id="L32">                p.setHand(hand);</span>
+
+<span class="fc" id="L34">                p.sendMessage(new ServerEvent(ServerEvent.Type.Hand,</span>
+<span class="fc" id="L35">                        new String[] {c1.toString(), c2.toString()}</span>
+                        ));
+<span class="fc" id="L37">                Logger.status(&quot;Player &quot; + p + &quot; draws cards: &quot; + c1.toString() + &quot; &quot; + c2.toString() );</span>
+<span class="fc" id="L38">            }</span>
+
+<span class="fc" id="L40">            deal.setPlayersHaveCards(true);</span>
+<span class="fc" id="L41">            return;</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        }else if(deal.getFlop() == null){</span>
+<span class="fc" id="L43">            Card c1 = deck.drawLast();</span>
+<span class="fc" id="L44">            Card c2 = deck.drawLast();</span>
+<span class="fc" id="L45">            Card c3 = deck.drawLast();</span>
+<span class="fc" id="L46">            Card[] flop = new Card[3];</span>
+<span class="fc" id="L47">            flop[0] = c1;</span>
+<span class="fc" id="L48">            flop[1] = c2;</span>
+<span class="fc" id="L49">            flop[2] = c3;</span>
+
+<span class="fc" id="L51">            deal.setFlop(flop);</span>
+<span class="fc" id="L52">            GamePlay.getInstance().broadcast(new ServerEvent(</span>
+                    ServerEvent.Type.SharedCard,
+<span class="fc" id="L54">                    new String[] {&quot;flop&quot;, c1.toString(), c2.toString(), c3.toString()}</span>
+            ));
+
+<span class="fc" id="L57">            deal.setState(GamePlay.getInstance().getLicitationState());</span>
+<span class="fc" id="L58">            Logger.status(&quot;Flop: &quot; + c1.toString() + &quot; &quot; + c2.toString() + &quot; &quot; + c3.toString() );</span>
+
+<span class="pc bnc" id="L60" title="All 2 branches missed.">        }else if(deal.getTurn() == null){</span>
+<span class="nc" id="L61">            Card turn = deck.drawLast();</span>
+
+<span class="nc" id="L63">            deal.setTurn(turn);</span>
+<span class="nc" id="L64">            GamePlay.getInstance().broadcast(new ServerEvent(</span>
+                    ServerEvent.Type.SharedCard,
+<span class="nc" id="L66">                    new String[] {&quot;turn&quot;, turn.toString()}</span>
+            ));
+<span class="nc" id="L68">            deal.setState(GamePlay.getInstance().getLicitationState());</span>
+<span class="nc" id="L69">            Logger.status(&quot;Turn: &quot; + turn.toString());</span>
+
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        }else if(deal.getRiver() == null){</span>
+<span class="nc" id="L72">            Card river = deck.drawLast();</span>
+
+<span class="nc" id="L74">            deal.setRiver(river);</span>
+<span class="nc" id="L75">            GamePlay.getInstance().broadcast(new ServerEvent(</span>
+                    ServerEvent.Type.SharedCard,
+<span class="nc" id="L77">                    new String[] {&quot;river&quot;, river.toString()}</span>
+            ));
+
+<span class="nc" id="L80">            deal.setState(GamePlay.getInstance().getLicitationState());</span>
+<span class="nc" id="L81">            Logger.status(&quot;River: &quot; + river.toString());</span>
+
+<span class="nc" id="L83">        }else{</span>
+            //TODO: uncomment this when showdown state class is done
+<span class="nc" id="L85">            deal.setState(new Showdown());</span>
+            //deal.setState(new Showdown);
+        }
+<span class="fc" id="L88">    }</span>
+
+    @Override
+    public String[] getAvailableCommands(IPlayer forPlayer) {
+<span class="nc" id="L92">        return new String[] {};</span>
+    }
+
+    @Override
+    public boolean isPlayerTurn(IPlayer player) {
+<span class="nc" id="L97">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

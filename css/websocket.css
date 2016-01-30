@@ -1,0 +1,212 @@
+@charset "UTF-8";
+*, *:before, *:after {
+  box-sizing: inherit; }
+
+html {
+  box-sizing: border-box; }
+
+* {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; }
+
+html, body {
+  width: 100%;
+  height: 100%; }
+
+.red {
+  color: #ffaaaa; }
+
+.green {
+  color: #aaffaa; }
+
+.blue {
+  color: #aaaaff; }
+
+.yellow {
+  color: #ffffaa; }
+
+.error {
+  color: red; }
+
+body {
+  background-color: #355e3b;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; }
+  body .table {
+    flex: 15;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; }
+    body .table .opponents, body .table .shared, body .table .player {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center; }
+    body .table .opponents .opponent {
+      flex: 1;
+      width: 100%;
+      margin: 0.5em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center; }
+      body .table .opponents .opponent .hand {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center; }
+        body .table .opponents .opponent .hand .card-slot, body .table .opponents .opponent .hand .deck {
+          margin: 0.5em; }
+    body .table .player .bets {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: x-large; }
+      body .table .player .bets .bet {
+        flex: 1;
+        width: 100%;
+        text-align: center; }
+    body .table .player .hand {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center; }
+      body .table .player .hand .card-slot, body .table .player .hand .deck {
+        margin: 0.5em; }
+    body .table .card-slot, body .table .deck, body .table .card, body .table .face, body .table .card .front, body .table .card .back {
+      border-radius: 2vh;
+      -webkit-border-radius: 2vh;
+      width: 12.5vh;
+      height: 17.5vh;
+      min-width: 12.5vh;
+      min-height: 17.5vh; }
+    body .table .card-slot, body .table .deck {
+      border: 2px dashed white;
+      margin: 1em;
+      perspective: 1000;
+      -webkit-perspective: 1000;
+      overflow: visible; }
+      body .table .card-slot.hover .card, body .table .hover.deck .card {
+        transform: rotateY(180deg) translateZ(-2em); }
+    body .table .card {
+      transition: transform 0.6s;
+      -webkit-transition: transform 0.6s;
+      transform-style: preserve-3d;
+      position: relative;
+      overflow: visible; }
+      body .table .card .face, body .table .card .front, body .table .card .back {
+        backface-visibility: hidden;
+        position: absolute;
+        top: -2px;
+        box-shadow: 2px 2px 5px black; }
+      body .table .card .front {
+        z-index: 2;
+        transform: rotateY(180deg);
+        left: 2px;
+        background-color: white;
+        color: black;
+        font-size: xx-large;
+        font-weight: bold;
+        text-align: center;
+        vertical-align: middle;
+        display: flex;
+        flex-direction: column; }
+        body .table .card .front:before, body .table .card .front:after {
+          font-size: xx-large;
+          display: block;
+          margin: 0.1em;
+          text-align: left;
+          flex: 1; }
+        body .table .card .front:after {
+          transform: rotateZ(180deg); }
+      body .table .card .spades, body .table .card .clubs {
+        color: black; }
+      body .table .card .diamonds, body .table .card .hearts {
+        color: red; }
+      body .table .card .hearts:before, body .table .card .hearts:after {
+        content: "♥"; }
+      body .table .card .diamonds:before, body .table .card .diamonds:after {
+        content: "♦"; }
+      body .table .card .clubs:before, body .table .card .clubs:after {
+        content: "♣"; }
+      body .table .card .spades:before, body .table .card .spades:after {
+        content: "♠"; }
+      body .table .card .back {
+        transform: rotateY(0deg);
+        left: -2px;
+        background-color: #def;
+        background-image: radial-gradient(closest-side, transparent 98%, rgba(0, 0, 0, 0.3) 99%), radial-gradient(closest-side, transparent 98%, rgba(0, 0, 0, 0.3) 99%);
+        background-size: 10vh 10vh;
+        background-position: 0 0, 5vh 5vh; }
+    body .table .deck {
+      border: 0;
+      background-color: #def;
+      background-image: radial-gradient(closest-side, transparent 98%, rgba(0, 0, 0, 0.3) 99%), radial-gradient(closest-side, transparent 98%, rgba(0, 0, 0, 0.3) 99%);
+      background-size: 10vh 10vh;
+      background-position: 0 0, 5vh 5vh;
+      box-shadow: 5px 5px 20px black; }
+  body #login-form.visible {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; }
+  body #login-form {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    display: none; }
+    body #login-form input, body #login-form button {
+      border: 2px solid white;
+      background-color: #477f4f;
+      color: white;
+      padding: 2em;
+      width: 75%;
+      margin: 1em; }
+      body #login-form input:hover, body #login-form button:hover {
+        background-color: #518f5a; }
+  body #log {
+    flex: 2;
+    width: 100%;
+    border-top: 2px dashed white;
+    padding: 1em;
+    overflow: auto; }
+  body #form {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: row; }
+    body #form input, body #form button {
+      border: 2px solid white;
+      background-color: #477f4f;
+      color: white; }
+      body #form input:hover, body #form button:hover {
+        background-color: #518f5a; }
+      body #form input:disabled, body #form button:disabled {
+        background-color: #aaaaaa; }
+    body #form input#text-input {
+      flex: 2;
+      padding: 0.5em; }
+    body #form .commands {
+      flex: 1;
+      display: flex;
+      flex-direction: row; }
+      body #form .commands button {
+        flex: 1;
+        text-transform: uppercase; }
+
+/*# sourceMappingURL=websocket.css.map */

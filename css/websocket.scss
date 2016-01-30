@@ -1,0 +1,107 @@
+@import "base";
+
+$bg-color: #355e3b;
+$fg-color: white;
+$dashed: 2px dashed $fg-color;
+$card-measure: 1vh;
+$card-scale: 5;
+$card-width: $card-scale * 2.5 * $card-measure;
+$card-height: $card-scale * 3.5 * $card-measure;
+
+$colors: ('red', 'green', 'blue', 'yellow');
+$colors-hex: ('#ffaaaa', '#aaffaa', '#aaaaff', '#ffffaa');
+
+@for $i from 1 through length($colors) {
+    $color: nth($colors, $i);
+    $color-hex: nth($colors-hex, $i);
+
+    .#{$color} {
+        color: unquote($color-hex);
+    }
+}
+
+.error {
+    color: red;
+}
+
+
+body {
+    background-color: $bg-color;
+    color: $fg-color;
+
+    @include flex(column);
+
+    @import "table";
+
+    #login-form.visible {
+        @include flex(column);
+    }
+
+    #login-form {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 10;
+        display: none;
+
+        input, button {
+            border: 2px solid $fg-color;
+            background-color: lighten($bg-color, 10%);
+            color: $fg-color;
+            padding: 2em;
+            width: 75%;
+            margin: 1em;
+
+            &:hover {
+                background-color: lighten($bg-color,15%);
+            }
+        }
+    }
+
+    #log {
+        @include flex-item(2);
+        border-top: $dashed;
+        padding: 1em;
+        overflow: auto;
+    }
+
+    #form {
+        @include flex-item(1);
+        display: flex;
+        flex-direction: row;
+
+        input, button {
+            border: 2px solid $fg-color;
+            background-color: lighten($bg-color, 10%);
+            color: $fg-color;
+
+            &:hover {
+                background-color: lighten($bg-color,15%);
+            }
+            &:disabled {
+                background-color: #aaaaaa;
+            }
+        }
+
+        input#text-input {
+            flex: 2;
+            padding: 0.5em;
+
+        }
+
+        .commands {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+
+            button {
+                flex: 1;
+                text-transform: uppercase;
+
+            }
+        }
+
+
+    }
+}

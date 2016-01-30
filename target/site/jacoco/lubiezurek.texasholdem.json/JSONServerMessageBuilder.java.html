@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JSONServerMessageBuilder.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TexasHoldem</a> &gt; <a href="index.source.html" class="el_package">lubiezurek.texasholdem.json</a> &gt; <span class="el_source">JSONServerMessageBuilder.java</span></div><h1>JSONServerMessageBuilder.java</h1><pre class="source lang-java linenums">package lubiezurek.texasholdem.json;
+
+import lubiezurek.texasholdem.server.IServerMessageBuilder;
+import lubiezurek.texasholdem.server.ServerEvent;
+import lubiezurek.texasholdem.server.ServerMessage;
+import lubiezurek.texasholdem.server.ServerResponse;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+
+/**
+ * Created by frondeus on 06.12.2015.
+ */
+public class JSONServerMessageBuilder implements IServerMessageBuilder {
+<span class="fc" id="L15">    private final HashMap&lt;Class, IServerMessageBuilder&gt; classBuilders = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L16">    private final HashMap&lt;String, IServerMessageBuilder&gt; stringBuilders = new HashMap&lt;&gt;();</span>
+    public final static String messageTypeKey = &quot;messageType&quot;;
+
+<span class="fc" id="L19">    public JSONServerMessageBuilder() {</span>
+<span class="fc" id="L20">        addBuilder(ServerResponse.class, new JSONServerResponseBuilder());</span>
+<span class="fc" id="L21">        addBuilder(ServerEvent.class, new JSONServerEventBuilder());</span>
+<span class="fc" id="L22">    }</span>
+
+    private void addBuilder(Class type, IServerMessageBuilder builder) {
+<span class="fc" id="L25">        classBuilders.put(type, builder);</span>
+<span class="fc" id="L26">        stringBuilders.put(type.getSimpleName(), builder);</span>
+<span class="fc" id="L27">    }</span>
+
+    @Override
+    public ServerMessage deserializeMessage(String input) {
+<span class="nc" id="L31">        JSONObject json = new JSONObject(input);</span>
+<span class="nc" id="L32">        String type = json.getString(messageTypeKey);</span>
+
+<span class="nc bnc" id="L34" title="All 2 branches missed.">        if(stringBuilders.containsKey(type)) {</span>
+<span class="nc" id="L35">            return stringBuilders.get(type).deserializeMessage(input);</span>
+        }
+        else {
+<span class="nc" id="L38">            throw new RuntimeException(&quot;There is no class: &quot; + type);</span>
+        }
+    }
+
+    @Override
+    public String serializeMessage(ServerMessage message) {
+<span class="nc" id="L44">        Class type = message.getClass();</span>
+
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        if(classBuilders.containsKey(type)) {</span>
+<span class="nc" id="L47">            return classBuilders.get(type).serializeMessage(message);</span>
+        }
+        else {
+<span class="nc" id="L50">            throw new RuntimeException(&quot;There is no class: &quot; + type);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

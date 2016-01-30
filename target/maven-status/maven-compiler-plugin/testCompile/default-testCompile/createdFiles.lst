@@ -1,0 +1,15 @@
+lubiezurek/texasholdem/server/ServerTest.class
+lubiezurek/texasholdem/server/states/LicitationTest.class
+lubiezurek/texasholdem/server/deal/DealTest.class
+lubiezurek/texasholdem/server/PlayerMock.class
+lubiezurek/texasholdem/LoggerTest.class
+lubiezurek/texasholdem/server/model/card/CardValueTest.class
+lubiezurek/texasholdem/server/gamestates/GamePlayTest.class
+lubiezurek/texasholdem/server/ServerResponseTest.class
+lubiezurek/texasholdem/server/states/ShowdownTest.class
+lubiezurek/texasholdem/server/model/card/CardTest.class
+lubiezurek/texasholdem/server/TestHelper.class
+lubiezurek/texasholdem/server/ServerEventTest.class
+lubiezurek/texasholdem/StateMock.class
+lubiezurek/texasholdem/server/ClientTest.class
+lubiezurek/texasholdem/server/gamestates/LobbyTest.class

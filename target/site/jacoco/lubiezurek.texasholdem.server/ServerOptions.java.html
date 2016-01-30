@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ServerOptions.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TexasHoldem</a> &gt; <a href="index.source.html" class="el_package">lubiezurek.texasholdem.server</a> &gt; <span class="el_source">ServerOptions.java</span></div><h1>ServerOptions.java</h1><pre class="source lang-java linenums">package lubiezurek.texasholdem.server;
+
+import lubiezurek.texasholdem.Logger;
+import lubiezurek.texasholdem.server.states.Licitation;
+
+/**
+ * Created by frondeus on 26.01.16.
+ */
+public class ServerOptions {
+<span class="pc" id="L10">    private int maxPlayerCount = 4;</span>
+<span class="pc" id="L11">    private int startMoney = 199;</span>
+<span class="pc" id="L12">    private int smallBlind = 5;</span>
+<span class="pc" id="L13">    private int bigBlind = 10;</span>
+
+<span class="pc" id="L15">    private LicitationType licitationType = LicitationType.NoLimit;</span>
+<span class="pc" id="L16">    private int maxRaiseFixedLimit = 5;</span>
+<span class="pc" id="L17">    private int fixedLimitBet = 10;</span>
+
+<span class="fc" id="L19">    public ServerOptions() {}</span>
+<span class="nc" id="L20">    public ServerOptions(String[] args) {</span>
+<span class="nc bnc" id="L21" title="All 2 branches missed.">        if(args.length &gt; 0) maxPlayerCount = Integer.parseInt(args[0]);</span>
+<span class="nc bnc" id="L22" title="All 2 branches missed.">        if(args.length &gt; 1) startMoney = Integer.parseInt(args[1]);</span>
+<span class="nc bnc" id="L23" title="All 2 branches missed.">        if(args.length &gt; 2) smallBlind = Integer.parseInt(args[2]);</span>
+<span class="nc bnc" id="L24" title="All 2 branches missed.">        if(args.length &gt; 3) bigBlind = Integer.parseInt(args[3]);</span>
+
+<span class="nc bnc" id="L26" title="All 2 branches missed.">        if(args.length &gt; 4) licitationType = LicitationType.valueOf(args[4]);</span>
+<span class="nc bnc" id="L27" title="All 2 branches missed.">        if(args.length &gt; 5) maxRaiseFixedLimit = Integer.parseInt(args[5]);</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">        if(args.length &gt; 6) fixedLimitBet = Integer.parseInt(args[6]);</span>
+
+<span class="nc" id="L30">        Logger.status(&quot;Max player count: &quot;+ maxPlayerCount);</span>
+<span class="nc" id="L31">        Logger.status(&quot;Start money: &quot;+ startMoney);</span>
+<span class="nc" id="L32">        Logger.status(&quot;Small blind: &quot;+smallBlind);</span>
+<span class="nc" id="L33">        Logger.status(&quot;Big blind: &quot;+bigBlind);</span>
+<span class="nc" id="L34">        Logger.status(&quot;Licitation type: &quot;+licitationType.name());</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">        if(licitationType == LicitationType.FixedLimit) {</span>
+<span class="nc" id="L36">            Logger.status(&quot;Max raise limit: &quot;+maxRaiseFixedLimit);</span>
+<span class="nc" id="L37">            Logger.status(&quot;Bet amount: &quot;+fixedLimitBet);</span>
+        }
+<span class="nc" id="L39">    }</span>
+
+
+    public int getMaxPlayerCount() {
+<span class="fc" id="L43">        return maxPlayerCount;</span>
+    }
+
+    public int getStartMoney() {
+<span class="fc" id="L47">        return startMoney;</span>
+    }
+
+    public int getSmallBlind() {
+<span class="fc" id="L51">        return smallBlind;</span>
+    }
+
+    public int getBigBlind() {
+<span class="fc" id="L55">        return bigBlind;</span>
+    }
+
+    public LicitationType getLicitationType() {
+<span class="nc" id="L59">        return licitationType;</span>
+    }
+
+    public int getMaxRaiseFixedLimit() {
+<span class="nc" id="L63">        return maxRaiseFixedLimit;</span>
+    }
+
+    public int getFixedLimitBet() {
+<span class="nc" id="L67">        return fixedLimitBet;</span>
+    }
+
+<span class="pc" id="L70">    public enum LicitationType {</span>
+<span class="fc" id="L71">        NoLimit,</span>
+<span class="fc" id="L72">        PotLimit,</span>
+<span class="fc" id="L73">        FixedLimit</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

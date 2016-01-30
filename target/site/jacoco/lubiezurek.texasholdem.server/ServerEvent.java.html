@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ServerEvent.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TexasHoldem</a> &gt; <a href="index.source.html" class="el_package">lubiezurek.texasholdem.server</a> &gt; <span class="el_source">ServerEvent.java</span></div><h1>ServerEvent.java</h1><pre class="source lang-java linenums">package lubiezurek.texasholdem.server;
+
+import java.util.ArrayList;
+
+/**
+ * Created by frondeus on 07.12.2015.
+ */
+public class ServerEvent extends ServerMessage {
+
+<span class="pc" id="L10">    public enum Type {</span>
+<span class="fc" id="L11">        Connected,</span>
+<span class="fc" id="L12">        ClientConnect,</span>
+<span class="fc" id="L13">        ClientDisconnect,</span>
+<span class="fc" id="L14">        Commands,</span>
+<span class="fc" id="L15">        Chat,</span>
+<span class="fc" id="L16">        ChangeState,</span>
+<span class="fc" id="L17">        PotAmount,</span>
+<span class="fc" id="L18">        RequiredBet,</span>
+<span class="fc" id="L19">        LicitationType,</span>
+<span class="fc" id="L20">        Fold,</span>
+<span class="fc" id="L21">        Hand, SharedCard, OtherHand, Bet, Turn</span>
+    }
+
+    private Type type;
+    private String[] arguments;
+
+<span class="fc" id="L27">    public ServerEvent(Type type, String[] arguments) {</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if(type == null) throw  new IllegalArgumentException();</span>
+<span class="pc bpc" id="L29" title="1 of 2 branches missed.">        if(arguments == null) throw new IllegalArgumentException();</span>
+<span class="fc" id="L30">        this.type = type;</span>
+<span class="fc" id="L31">        this.arguments = arguments;</span>
+<span class="fc" id="L32">    }</span>
+
+    public ServerEvent(Type type, ArrayList&lt;String&gt; arguments) {
+<span class="fc" id="L35">        this(type, arguments.toArray(new String[]{}));</span>
+<span class="fc" id="L36">    }</span>
+
+    public Type getEventType() {
+<span class="fc" id="L39">        return type;</span>
+    }
+
+    public String[] getArguments() {
+<span class="fc" id="L43">        return arguments;</span>
+    }
+
+    public void setArguments(String[] arguments) {
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if(arguments == null) throw new IllegalArgumentException();</span>
+<span class="fc" id="L48">        this.arguments = arguments;</span>
+<span class="fc" id="L49">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

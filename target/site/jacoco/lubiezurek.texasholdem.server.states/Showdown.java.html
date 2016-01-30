@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Showdown.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TexasHoldem</a> &gt; <a href="index.source.html" class="el_package">lubiezurek.texasholdem.server.states</a> &gt; <span class="el_source">Showdown.java</span></div><h1>Showdown.java</h1><pre class="source lang-java linenums">package lubiezurek.texasholdem.server.states;
+
+import lubiezurek.texasholdem.Logger;
+import lubiezurek.texasholdem.client.ClientMessage;
+import lubiezurek.texasholdem.server.IPlayer;
+import lubiezurek.texasholdem.server.IState;
+import lubiezurek.texasholdem.server.ServerEvent;
+import lubiezurek.texasholdem.server.ServerResponse;
+import lubiezurek.texasholdem.server.deal.Deal;
+import lubiezurek.texasholdem.server.gamestates.GamePlay;
+import lubiezurek.texasholdem.server.model.card.Card;
+import lubiezurek.texasholdem.server.model.card.CardValue;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.lang.reflect.Array;
+import java.util.*;
+
+/**
+ * Created by frondeus on 28.01.16.
+ */
+<span class="fc" id="L21">public class Showdown implements IState {</span>
+    @Override
+    public void onPlayerMessage(IPlayer player, ClientMessage message) {
+<span class="nc" id="L24">        player.sendMessage(new ServerResponse(ServerResponse.Status.Failure,</span>
+                &quot;Showdown time. No action is needed.&quot;));
+<span class="nc" id="L26">    }</span>
+
+<span class="fc" id="L28">    public int addToSum[] = { 0,   59, 123,    189,    231,    291,    350,    418,    474 };</span>
+<span class="fc" id="L29">    private int maxSums[] = { 59,  64, 66,     42,     60,     59,     68,     56,     60};</span>
+
+    private boolean isInArray(int[] array, int element) {
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        for (int i = 0; i &lt; array.length; i++)</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">            if(array[i] == element) return true;</span>
+<span class="fc" id="L34">        return false;</span>
+    }
+
+    private int sumHighest(int[] cards, int n) {
+<span class="nc" id="L38">        int sum = 0;</span>
+<span class="nc bnc" id="L39" title="All 4 branches missed.">        for(int i = 0; i &lt; n &amp;&amp; i &lt; cards.length; i++) {</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">            if(cards[i] &gt; 0) sum += valueOf(i) * cards[i];</span>
+<span class="nc" id="L41">            else n++;</span>
+        }
+<span class="nc" id="L43">        return sum;</span>
+    }
+
+    private int sumHighestExcept(int exception, int[] cards, int n) {
+<span class="fc" id="L47">        return sumHighestExcept(new int[]{exception}, cards, n);</span>
+    }
+
+    private int sumHighestExcept(int[] exception, int[] cards, int n) {
+<span class="fc" id="L51">        int sum = 0;</span>
+<span class="pc bpc" id="L52" title="1 of 4 branches missed.">        for(int i = 0; i &lt; n &amp;&amp; i &lt; cards.length; i++) {</span>
+<span class="fc bfc" id="L53" title="All 4 branches covered.">            if(cards[i] &gt; 0 &amp;&amp; !isInArray(exception, i)) sum += valueOf(i) * cards[i];</span>
+<span class="fc" id="L54">            else n++;</span>
+        }
+<span class="fc" id="L56">        return sum;</span>
+    }
+
+    private int valueOf(int i) {
+<span class="fc" id="L60">        return 14 - i;</span>
+    }
+
+    public int evaluatePlayer(IPlayer player, Card[] table) {
+        //              A K Q J 10 9 8 7 6 5 4 3 2
+<span class="fc" id="L65">        int cards[] = { 0,0,0,0,0 ,0,0,0,0,0,0,0,0};</span>
+
+<span class="fc" id="L67">        ArrayList&lt;Card&gt; suits[] = new ArrayList[4];//{ 0,0,0,0 };</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        for(int i = 0; i &lt; 4; i++) suits[i] = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        for(Card card: player.getHand()) {</span>
+<span class="fc" id="L71">            cards[cards.length - 1 - (card.getCardValue().getValue() - 2)]++;</span>
+<span class="fc" id="L72">            suits[card.getSuit().getValue()].add(card);</span>
+        }
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        for(Card card: table){</span>
+<span class="fc" id="L75">            cards[cards.length - 1 - (card.getCardValue().getValue() - 2)]++;</span>
+<span class="fc" id="L76">            suits[card.getSuit().getValue()].add(card);</span>
+        }
+
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        for(ArrayList&lt;Card&gt; suit: suits) {</span>
+<span class="fc" id="L80">            Collections.sort(suit, (c1, c2) -&gt; {</span>
+<span class="fc" id="L81">                int v1 = c1.getCardValue().getValue();</span>
+<span class="fc" id="L82">                int v2 = c2.getCardValue().getValue();</span>
+<span class="fc" id="L83">                return Integer.compare(v2,v1);</span>
+            });
+        }
+
+<span class="fc" id="L87">        int value = isPoker(suits,cards); //1</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">        if(value == 0) value = isFourOfAKind(cards); //2</span>
+<span class="nc" id="L89">        else value += maxSums[7];</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">        if(value == 0) value = isFullHouse(cards); //3</span>
+<span class="nc" id="L91">        else value += maxSums[6];</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if(value == 0) value = isFlush(suits, cards); //4</span>
+<span class="nc" id="L93">        else value += maxSums[5];</span>
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">        if(value == 0) value = isStraight(cards); //5</span>
+<span class="nc" id="L95">        else value += maxSums[4];</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">        if(value == 0) value = isThreeOfAKind(cards); //6</span>
+<span class="nc" id="L97">        else value += maxSums[3];</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">        if(value == 0) value = isTwoPair(cards); //7</span>
+<span class="nc" id="L99">        else value += maxSums[2];</span>
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">        if(value == 0) value = isOnePair(cards); //8</span>
+<span class="nc" id="L101">        else value += maxSums[1];</span>
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">        if(value == 0) value = sumHighest(cards, 5); //9</span>
+<span class="fc" id="L103">        else value += maxSums[0];</span>
+<span class="fc" id="L104">         return value;</span>
+    }
+
+
+    private int isOnePair(int[] cards) {
+<span class="fc" id="L109">        int sum = 0;</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">        for(int i = 0; i &lt; cards.length; i++) {</span>
+<span class="pc bpc" id="L111" title="1 of 2 branches missed.">            if(cards[i] == 2) {</span>
+<span class="fc" id="L112">                sum += valueOf(i)*2;</span>
+<span class="fc" id="L113">                sum += sumHighestExcept(i, cards, 3);</span>
+<span class="fc" id="L114">                break;</span>
+            }
+        }
+
+<span class="fc" id="L118">        return sum;</span>
+    }
+
+    private int isTwoPair(int[] cards) {
+<span class="fc" id="L122">        int sum = 0;</span>
+<span class="fc" id="L123">        int j = -1;</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        for(int i = 0; i &lt; cards.length; i++) {</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">            if(cards[i] == 2) {</span>
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">                if(j == -1) j = i;</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">                else if(j != i) {</span>
+<span class="nc" id="L128">                    sum += valueOf(i)*2;</span>
+<span class="nc" id="L129">                    sum += valueOf(j)*2;</span>
+<span class="nc" id="L130">                    sum += sumHighestExcept(new int[]{i,j}, cards, 1);</span>
+<span class="nc" id="L131">                    break;</span>
+                }
+            }
+        }
+<span class="fc" id="L135">        return sum;</span>
+    }
+
+    private int isThreeOfAKind(int[] cards) {
+<span class="fc" id="L139">        int sum = 0;</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">        for(int i = 0; i &lt; cards.length; i++) {</span>
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">            if(cards[i] == 3) {</span>
+<span class="nc" id="L142">                sum += valueOf(i) * 3;</span>
+<span class="nc" id="L143">                break;</span>
+            }
+        }
+<span class="fc" id="L146">        return sum;</span>
+    }
+
+    private int isStraight(int[] cards) {
+<span class="fc" id="L150">        int n = 0;</span>
+<span class="fc" id="L151">        int sum = 0;</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">        for(int i = 0; i &lt; cards.length; i++) {</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">            if(cards[i] == 1) {</span>
+<span class="fc" id="L154">                n++;</span>
+<span class="fc" id="L155">                sum += valueOf(i);</span>
+            }
+<span class="pc bpc" id="L157" title="1 of 2 branches missed.">            else if(n &lt; 5){</span>
+<span class="fc" id="L158">                n = 0;</span>
+<span class="fc" id="L159">                sum = 0;</span>
+            }
+            else break;
+        }
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">        if(n &lt; 5) sum = 0;</span>
+
+<span class="fc" id="L165">        return sum;</span>
+    }
+
+    private int isFlush(ArrayList&lt;Card&gt;[] suits, int[] cards) {
+<span class="fc" id="L169">        int sum = 0;</span>
+<span class="fc bfc" id="L170" title="All 2 branches covered.">        for(int i = 0; i &lt; suits.length; i++) {</span>
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">            if(suits[i].size() &gt;= 5) {</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">                for(int j = 0; j &lt; 5; j++) {</span>
+<span class="nc" id="L173">                    Card card = suits[i].get(j);</span>
+<span class="nc" id="L174">                    sum += card.getCardValue().getValue();</span>
+                }
+<span class="nc" id="L176">                break;</span>
+            }
+        }
+<span class="fc" id="L179">        return 0;</span>
+    }
+
+    private int isFullHouse(int[] cards) {
+<span class="fc" id="L183">        int bestPair = -1;</span>
+<span class="fc" id="L184">        int bestThree = -1;</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">        for(int i = 0; i &lt; cards.length; i++)</span>
+<span class="pc bpc" id="L186" title="1 of 2 branches missed.">            if(cards[i] == 3) {</span>
+<span class="nc" id="L187">                bestThree = i;</span>
+<span class="nc" id="L188">                break;</span>
+            }
+
+<span class="pc bpc" id="L191" title="1 of 2 branches missed.">        for(int i = 0; i &lt; cards.length; i++)</span>
+<span class="pc bpc" id="L192" title="1 of 2 branches missed.">            if(cards[i] == 2) {</span>
+<span class="fc" id="L193">                bestPair = i;</span>
+<span class="fc" id="L194">                break;</span>
+            }
+
+<span class="pc bpc" id="L197" title="2 of 4 branches missed.">        if(bestPair &gt; -1 &amp;&amp; bestThree &gt; -1)</span>
+<span class="nc" id="L198">            return 3 * valueOf(bestThree);</span>
+<span class="fc" id="L199">        return 0;</span>
+    }
+
+    private int isFourOfAKind(int[] cards) {
+<span class="fc" id="L203">        int sum = 0;</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">        for(int i = 0; i &lt; cards.length; i++) {</span>
+<span class="pc bpc" id="L205" title="1 of 2 branches missed.">            if(cards[i] == 4) {</span>
+<span class="nc" id="L206">                sum = 4 * valueOf(i);</span>
+<span class="nc" id="L207">                break;</span>
+            }
+        }
+<span class="fc" id="L210">        return sum;</span>
+    }
+
+    private int isPoker(ArrayList&lt;Card&gt;[] suits, int[] cards) {
+<span class="fc" id="L214">        int sum = 0;</span>
+<span class="fc" id="L215">        Card previous = null;</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">        for(int i = 0; i &lt; suits.length; i++) {</span>
+<span class="pc bpc" id="L217" title="1 of 2 branches missed.">            if(suits[i].size() &gt;= 5) {</span>
+<span class="nc" id="L218">                Card card = null;</span>
+<span class="nc bnc" id="L219" title="All 2 branches missed.">                for(int j = 0; j &lt; 5; j++) {</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">                    if(card != null) previous = card;</span>
+
+<span class="nc" id="L222">                    card = suits[i].get(j);</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">                    if((previous.getCardValue().getValue() - card.getCardValue().getValue() != 1))</span>
+<span class="nc" id="L224">                        return 0;</span>
+<span class="nc" id="L225">                    sum += card.getCardValue().getValue();</span>
+                }
+            }
+        }
+<span class="fc" id="L229">        return sum;</span>
+    }
+
+    private void sendOtherHand(IPlayer player, IPlayer other) {
+<span class="nc" id="L233">        player.sendMessage(new ServerEvent(</span>
+                ServerEvent.Type.OtherHand,
+                new String[] {
+<span class="nc" id="L236">                        other.getUUID().toString(),</span>
+<span class="nc" id="L237">                        other.getHand()[0].toString(),</span>
+<span class="nc" id="L238">                        other.getHand()[1].toString()</span>
+                }));
+<span class="nc" id="L240">    }</span>
+    @Override
+    public void onStart(Deal deal) {
+<span class="nc" id="L243">        Card[] table = new Card[] {</span>
+<span class="nc" id="L244">                deal.getFlop()[0],</span>
+<span class="nc" id="L245">                deal.getFlop()[1],</span>
+<span class="nc" id="L246">                deal.getFlop()[2],</span>
+<span class="nc" id="L247">                deal.getTurn(),</span>
+<span class="nc" id="L248">                deal.getRiver()</span>
+        };
+<span class="nc" id="L250">        int maxValue = 0;</span>
+<span class="nc" id="L251">        ArrayList&lt;IPlayer&gt; winners = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L253" title="All 2 branches missed.">        for(IPlayer player: GamePlay.getInstance().getPlayers()) {</span>
+<span class="nc" id="L254">            int value = evaluatePlayer(player,table );</span>
+<span class="nc bnc" id="L255" title="All 2 branches missed.">            if(value &gt; maxValue) {</span>
+<span class="nc" id="L256">                winners.clear();</span>
+<span class="nc" id="L257">                winners.add(player);</span>
+<span class="nc" id="L258">                maxValue = value;</span>
+            }
+<span class="nc bnc" id="L260" title="All 2 branches missed.">            else if(value == maxValue)</span>
+<span class="nc" id="L261">                winners.add(player);</span>
+<span class="nc" id="L262">        }</span>
+
+<span class="nc" id="L264">        Logger.status(&quot;Winners: &quot;);</span>
+<span class="nc bnc" id="L265" title="All 2 branches missed.">        for(IPlayer player: winners)</span>
+<span class="nc" id="L266">            Logger.status(player.getUUID().toString());</span>
+
+<span class="nc bnc" id="L268" title="All 2 branches missed.">        for(IPlayer player: GamePlay.getInstance().getPlayers()) {</span>
+<span class="nc bnc" id="L269" title="All 2 branches missed.">            for(IPlayer other: GamePlay.getInstance().getPlayers()) {</span>
+<span class="nc bnc" id="L270" title="All 2 branches missed.">                if(player != other) {</span>
+<span class="nc" id="L271">                    sendOtherHand(player, other);</span>
+                }
+<span class="nc" id="L273">            }</span>
+<span class="nc" id="L274">        }</span>
+
+
+<span class="nc" id="L277">    }</span>
+
+    @Override
+    public String[] getAvailableCommands(IPlayer forPlayer) {
+<span class="nc" id="L281">        return new String[] {};</span>
+    }
+
+    @Override
+    public boolean isPlayerTurn(IPlayer player) {
+<span class="nc" id="L286">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

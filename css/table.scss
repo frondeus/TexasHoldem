@@ -1,0 +1,53 @@
+.table {
+    @include flex-item(15);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .opponents, .shared, .player {
+        //border: $dashed;
+        @include flex-item(1);
+        @include flex(row);
+    }
+
+    .opponents {
+        .opponent {
+            @include flex-item(1);
+            margin: 0.5em;
+            
+            @include flex(column);
+            .hand {
+                @include flex(row);
+                .card-slot {
+                    margin: 0.5em;
+                }
+            }
+
+        }
+
+
+    }
+
+    .player {
+        .bets {
+            @include flex-item(1);
+            @include flex(column);
+            font-size: x-large;
+            .bet {
+                @include flex-item(1);
+                text-align: center;
+            }
+        }
+        .hand {
+            @include flex-item(1);
+            @include flex(row);
+
+            .card-slot {
+                margin: 0.5em;
+            }
+        }
+    }
+
+    @import "card";
+
+}

@@ -1,0 +1,15 @@
+/home/frondeus/OneDrive/Code/2016/Studia.TP/TexasHoldem/src/test/java/lubiezurek/texasholdem/server/model/card/CardValueTest.java
+/home/frondeus/OneDrive/Code/2016/Studia.TP/TexasHoldem/src/test/java/lubiezurek/texasholdem/server/states/LicitationTest.java
+/home/frondeus/OneDrive/Code/2016/Studia.TP/TexasHoldem/src/test/java/lubiezurek/texasholdem/server/gamestates/LobbyTest.java
+/home/frondeus/OneDrive/Code/2016/Studia.TP/TexasHoldem/src/test/java/lubiezurek/texasholdem/StateMock.java
+/home/frondeus/OneDrive/Code/2016/Studia.TP/TexasHoldem/src/test/java/lubiezurek/texasholdem/server/TestHelper.java
+/home/frondeus/OneDrive/Code/2016/Studia.TP/TexasHoldem/src/test/java/lubiezurek/texasholdem/LoggerTest.java
+/home/frondeus/OneDrive/Code/2016/Studia.TP/TexasHoldem/src/test/java/lubiezurek/texasholdem/server/ServerResponseTest.java
+/home/frondeus/OneDrive/Code/2016/Studia.TP/TexasHoldem/src/test/java/lubiezurek/texasholdem/server/deal/DealTest.java
+/home/frondeus/OneDrive/Code/2016/Studia.TP/TexasHoldem/src/test/java/lubiezurek/texasholdem/server/ClientTest.java
+/home/frondeus/OneDrive/Code/2016/Studia.TP/TexasHoldem/src/test/java/lubiezurek/texasholdem/server/states/ShowdownTest.java
+/home/frondeus/OneDrive/Code/2016/Studia.TP/TexasHoldem/src/test/java/lubiezurek/texasholdem/server/PlayerMock.java
+/home/frondeus/OneDrive/Code/2016/Studia.TP/TexasHoldem/src/test/java/lubiezurek/texasholdem/server/ServerTest.java
+/home/frondeus/OneDrive/Code/2016/Studia.TP/TexasHoldem/src/test/java/lubiezurek/texasholdem/server/model/card/CardTest.java
+/home/frondeus/OneDrive/Code/2016/Studia.TP/TexasHoldem/src/test/java/lubiezurek/texasholdem/server/gamestates/GamePlayTest.java
+/home/frondeus/OneDrive/Code/2016/Studia.TP/TexasHoldem/src/test/java/lubiezurek/texasholdem/server/ServerEventTest.java

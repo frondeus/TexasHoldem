@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Deck.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TexasHoldem</a> &gt; <a href="index.source.html" class="el_package">lubiezurek.texasholdem.server.model</a> &gt; <span class="el_source">Deck.java</span></div><h1>Deck.java</h1><pre class="source lang-java linenums">package lubiezurek.texasholdem.server.model;
+
+import lubiezurek.texasholdem.server.model.card.*;
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class Deck{
+	private ArrayList&lt;Card&gt; cards;
+	
+	public final static int DEFAULT_DECK_WIDTH = 52;
+	public final static int CARDS_PER_SUIT = 13;
+<span class="fc" id="L12">	public Deck() {</span>
+<span class="fc" id="L13">		reset();</span>
+<span class="fc" id="L14">	}</span>
+
+	public void reset(){
+<span class="fc" id="L17">		cards = new ArrayList&lt;Card&gt;();</span>
+<span class="fc" id="L18">		Suit[] cardSuits = {Suit.HEARTS,</span>
+							Suit.SPADES,
+							Suit.CLUBS,
+							Suit.DIAMONDS};
+
+<span class="fc" id="L23">		CardValue[] cardValues = {</span>
+							CardValue.TWO,
+							CardValue.THREE,
+							CardValue.FOUR,
+							CardValue.FIVE,
+							CardValue.SIX,
+							CardValue.SEVEN,
+							CardValue.EIGHT,
+							CardValue.NINE,
+							CardValue.TEN,
+							CardValue.JACK,
+							CardValue.QUEEN,
+							CardValue.KING,
+							CardValue.ACE};
+
+<span class="fc bfc" id="L38" title="All 2 branches covered.">		for (int i = 0; i &lt; DEFAULT_DECK_WIDTH; i++) {</span>
+<span class="fc" id="L39">			cards.add(new Card( cardSuits[i/CARDS_PER_SUIT], </span>
+				 	  			cardValues[i%CARDS_PER_SUIT] ));
+		}
+<span class="fc" id="L42">	}</span>
+	
+	public void shuffle() {
+<span class="fc" id="L45">		Collections.shuffle(cards);</span>
+<span class="fc" id="L46">	}</span>
+
+	public void removeCard(int index) {
+<span class="pc bpc" id="L49" title="2 of 4 branches missed.">		if(size() - 1 &lt; index || index &lt; 0)  throw new IndexOutOfBoundsException(&quot;index&quot;);</span>
+
+<span class="fc" id="L51">		cards.remove(index);</span>
+<span class="fc" id="L52">	}</span>
+	
+	public Card drawCard(int index){
+<span class="fc" id="L55">		Card cardToDraw = cards.get(index);</span>
+<span class="fc" id="L56">		removeCard(index);</span>
+<span class="fc" id="L57">		return cardToDraw;</span>
+	}
+	
+	public Card drawLast(){
+<span class="fc" id="L61">		return drawCard(size() - 1);</span>
+	}
+	
+	public int size(){
+<span class="fc" id="L65">		return cards.size();</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

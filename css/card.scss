@@ -1,0 +1,57 @@
+
+
+.card-slot, .card, .face {
+    @include border-radius(2vh);
+    width: $card-width;
+    height: $card-height;
+    min-width: $card-width;
+    min-height: $card-height;
+
+}
+
+.card-slot {
+    border: $dashed;
+    margin: 1em;
+    @include perspective(1000);
+    overflow: visible;
+
+    &.hover .card {
+        transform: rotateY(180deg) translateZ(-2em);
+    }
+}
+
+.card {
+    transition: transform 0.6s;
+    -webkit-transition: transform 0.6s;
+
+
+    transform-style: preserve-3d;
+    position: relative;
+    overflow: visible;
+
+    .face {
+        backface-visibility: hidden;
+        position: absolute;
+        top: -2px;
+        box-shadow: 2px 2px 5px black;
+    }
+
+    @import "card-front";
+    .back {
+        @extend .face;
+        transform: rotateY(0deg);
+        left: -2px;
+
+        @include deck-back();
+    }
+
+}
+
+.deck {
+    @extend .card-slot;
+    border: 0;
+    @include deck-back();
+    box-shadow: 5px 5px 20px black;
+
+
+}

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Lobby.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TexasHoldem</a> &gt; <a href="index.source.html" class="el_package">lubiezurek.texasholdem.server.gamestates</a> &gt; <span class="el_source">Lobby.java</span></div><h1>Lobby.java</h1><pre class="source lang-java linenums">package lubiezurek.texasholdem.server.gamestates;
+
+import com.sun.net.httpserver.Authenticator;
+import lubiezurek.texasholdem.Logger;
+import lubiezurek.texasholdem.client.ClientMessage;
+import lubiezurek.texasholdem.server.*;
+import sun.rmi.runtime.Log;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+/**
+ * Created by frondeus on 06.12.2015.
+ * Lobby. Players waits until game starts. Players can set game settings.
+ */
+public class Lobby extends GameState {
+    private volatile static Lobby instance;
+    public static Lobby getInstance() {
+<span class="fc bfc" id="L19" title="All 2 branches covered.">        if(instance == null) {</span>
+<span class="fc" id="L20">            synchronized (Lobby.class) {</span>
+<span class="pc bpc" id="L21" title="1 of 2 branches missed.">                if(instance == null) {</span>
+<span class="fc" id="L22">                    instance = new Lobby();</span>
+                }
+<span class="pc" id="L24">            }</span>
+        }
+<span class="fc" id="L26">        return instance;</span>
+    }
+    public static void resetInstance() {
+<span class="fc" id="L29">        synchronized (Lobby.class) {</span>
+<span class="fc" id="L30">            instance = null;</span>
+<span class="pc" id="L31">        }</span>
+<span class="fc" id="L32">    }</span>
+
+
+<span class="fc" id="L35">    private Lobby() {</span>
+<span class="fc" id="L36">    }</span>
+
+    public void onEnter() {
+<span class="fc" id="L39">        Logger.status(&quot;Enter lobby&quot;);</span>
+<span class="fc" id="L40">        broadcast(new ServerEvent(ServerEvent.Type.ChangeState, new String[]{</span>
+                &quot;Lobby&quot;
+        }));
+<span class="fc" id="L43">    }</span>
+
+
+    public void onClientConnected(IPlayer client) {
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if(client == null) throw new IllegalArgumentException();</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if(players.size() &lt; Server.getInstance().Options.getMaxPlayerCount()) {</span>
+<span class="fc" id="L49">            Logger.status(client + &quot;: Add player to list&quot;);</span>
+
+<span class="fc" id="L51">            ArrayList&lt;String&gt; uuids = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L52">            uuids.add(client.getUUID().toString());</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">            for(IPlayer all: players)</span>
+<span class="fc" id="L54">                uuids.add(all.getUUID().toString());</span>
+
+<span class="fc" id="L56">            players.add(client);</span>
+
+<span class="fc" id="L58">            client.sendMessage(new ServerEvent(ServerEvent.Type.Connected, uuids));</span>
+
+<span class="fc" id="L60">            broadcastExcept(client, new ServerEvent(ServerEvent.Type.ClientConnect,</span>
+<span class="fc" id="L61">                    new String[]{client.getUUID().toString()}));</span>
+<span class="fc" id="L62">        }</span>
+        else {
+<span class="fc" id="L64">            Logger.status(client + &quot;: Full&quot;);</span>
+<span class="fc" id="L65">            Logger.status(client + &quot;: We need to disconnect client&quot;);</span>
+
+<span class="fc" id="L67">            client.sendMessage(new ServerResponse(ServerResponse.Status.Failure,</span>
+                    &quot;Full server&quot;));
+<span class="fc" id="L69">            client.disconnect();</span>
+        }
+<span class="fc" id="L71">    }</span>
+
+    @Override
+    public void changeState() {
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if(players.size() &gt;= Server.getInstance().Options.getMaxPlayerCount()) {</span>
+<span class="fc" id="L76">            GamePlay.getInstance().setPlayers(players);</span>
+<span class="fc" id="L77">            Server.getInstance().setState(GamePlay.getInstance());</span>
+        }
+<span class="fc" id="L79">    }</span>
+
+    public void onClientMessage(IPlayer client, ClientMessage message) {
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        if(client == null) throw new IllegalArgumentException();</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        if(message == null) throw  new IllegalArgumentException();</span>
+
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if(players.indexOf(client) &lt; 0) {</span>
+<span class="fc" id="L86">            client.sendMessage(new ServerResponse(ServerResponse.Status.Failure,</span>
+                    &quot;Not connected&quot;));
+<span class="fc" id="L88">            return;</span>
+        }
+
+<span class="pc bpc" id="L91" title="1 of 6 branches missed.">        switch (message.getCommand()) {</span>
+            case &quot;chat&quot;:
+<span class="fc" id="L93">                ArrayList&lt;String&gt; chatArguments = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L94">                chatArguments.add(client.getUUID().toString());</span>
+<span class="fc" id="L95">                chatArguments.addAll(Arrays.asList(message.getArguments()));</span>
+<span class="fc" id="L96">                broadcast(new ServerEvent(ServerEvent.Type.Chat, chatArguments));</span>
+<span class="fc" id="L97">                break;</span>
+            default:
+<span class="fc" id="L99">                client.sendMessage(new ServerResponse(ServerResponse.Status.Failure,</span>
+                        &quot;Invalid command&quot;));
+                break;
+        }
+<span class="fc" id="L103">    }</span>
+
+    public void onClientDisconnected(IPlayer client) {
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        if(client == null) throw new IllegalArgumentException();</span>
+<span class="fc" id="L107">        Logger.status(client + &quot;: Disconnected&quot;);</span>
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">        if(players.indexOf(client) &gt;= 0) {</span>
+<span class="fc" id="L109">            players.remove(client);</span>
+
+<span class="fc" id="L111">            broadcastExcept(client, new ServerEvent(ServerEvent.Type.ClientDisconnect,</span>
+<span class="fc" id="L112">                    new String[]{ client.getUUID().toString() }));</span>
+        }
+<span class="fc" id="L114">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

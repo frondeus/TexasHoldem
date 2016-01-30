@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JSONClientMessageBuilder.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TexasHoldem</a> &gt; <a href="index.source.html" class="el_package">lubiezurek.texasholdem.json</a> &gt; <span class="el_source">JSONClientMessageBuilder.java</span></div><h1>JSONClientMessageBuilder.java</h1><pre class="source lang-java linenums">package lubiezurek.texasholdem.json;
+
+import lubiezurek.texasholdem.client.ClientMessage;
+import lubiezurek.texasholdem.client.IClientMessageBuilder;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+/**
+ * Created by frondeus on 06.12.2015.
+ * Creates JSON Messages
+ */
+<span class="fc" id="L14">public class JSONClientMessageBuilder implements IClientMessageBuilder {</span>
+    @Override
+    public ClientMessage deserializeMessage(String input) {
+<span class="nc" id="L17">        JSONObject json = new JSONObject(input);</span>
+<span class="nc" id="L18">        ClientMessage message = new ClientMessage(</span>
+<span class="nc" id="L19">                json.getString(&quot;command&quot;),</span>
+                new String[]{}
+        );
+
+<span class="nc" id="L23">        ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L24">        JSONArray arguments = json.getJSONArray(&quot;arguments&quot;);</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        if(arguments != null) {</span>
+<span class="nc" id="L26">            int length = arguments.length();</span>
+<span class="nc bnc" id="L27" title="All 2 branches missed.">            for(int i = 0; i &lt; length; i++)</span>
+<span class="nc" id="L28">                list.add(arguments.getString(i));</span>
+
+<span class="nc" id="L30">            String[] stockArray = new String[list.size()];</span>
+<span class="nc" id="L31">            message.setArguments(list.toArray(stockArray));</span>
+        }
+
+<span class="nc" id="L34">        return message;</span>
+    }
+
+    @Override
+    public String serializeMessage(ClientMessage message) {
+<span class="nc" id="L39">        JSONObject json = new JSONObject();</span>
+<span class="nc" id="L40">        json.put(&quot;command&quot;, message.getCommand());</span>
+<span class="nc" id="L41">        json.put(&quot;arguments&quot;, message.getArguments());</span>
+<span class="nc" id="L42">        return json.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

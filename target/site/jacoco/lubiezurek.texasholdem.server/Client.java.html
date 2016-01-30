@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Client.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TexasHoldem</a> &gt; <a href="index.source.html" class="el_package">lubiezurek.texasholdem.server</a> &gt; <span class="el_source">Client.java</span></div><h1>Client.java</h1><pre class="source lang-java linenums">package lubiezurek.texasholdem.server;
+
+import java.io.EOFException;
+import java.io.IOException;
+
+import lubiezurek.texasholdem.server.model.card.Card;
+import org.java_websocket.WebSocket;
+import java.util.UUID;
+
+import lubiezurek.texasholdem.Logger;
+import lubiezurek.texasholdem.client.ClientMessage;
+
+public class Client extends Thread implements IPlayer {
+    private final Server server;
+    private final WebSocket socket;
+
+<span class="fc" id="L17">    private int money = 100;</span>
+    private UUID uuid;
+<span class="fc" id="L19">    private IPlayer nextPlayer = null;</span>
+<span class="fc" id="L20">    private Card[] hand = new Card[2];</span>
+<span class="fc" id="L21">    private PlayerState state = PlayerState.WAITING;</span>
+
+<span class="fc" id="L23">    public Client(Server server, WebSocket socket) {</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if(server == null) throw new IllegalArgumentException();</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        if(socket == null) throw new IllegalArgumentException();</span>
+<span class="fc" id="L26">        this.server = server;</span>
+<span class="fc" id="L27">        this.socket = socket;</span>
+<span class="fc" id="L28">        this.uuid = UUID.randomUUID();</span>
+<span class="fc" id="L29">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L33">        return socket.getRemoteSocketAddress().toString();</span>
+    }
+
+    @Override
+    public UUID getUUID() {
+<span class="fc" id="L38">        return uuid;</span>
+    }
+
+
+    @Override
+    public int getMoney() {
+<span class="fc" id="L44">        return money;</span>
+    }
+
+    @Override
+    public void setMoney(int money) {
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if(money &lt; 0) throw new IllegalArgumentException();</span>
+<span class="fc" id="L50">        this.money = money;</span>
+<span class="fc" id="L51">    }</span>
+
+    @Override public void takeAwayMoney(int money){
+<span class="nc bnc" id="L54" title="All 4 branches missed.">        if(this.money - money &lt; 0 || money &lt; 0) throw new IllegalArgumentException();</span>
+<span class="nc" id="L55">        this.money -= money;</span>
+<span class="nc" id="L56">    }</span>
+
+    public void sendMessage(ServerMessage message) {
+<span class="nc" id="L59">            socket.send(this.server.getServerMessageBuilder().serializeMessage(message));</span>
+            //Logger.exception(e);
+<span class="nc" id="L61">    }</span>
+
+    public void disconnect() {
+<span class="nc" id="L64">        socket.close();</span>
+<span class="nc" id="L65">    }</span>
+
+    @Override
+    public IPlayer getNextPlayer() {
+<span class="nc" id="L69">        return nextPlayer;</span>
+    }
+
+    @Override
+    public void setNextPlayer(IPlayer player) {
+<span class="nc" id="L74">        nextPlayer = player;</span>
+<span class="nc" id="L75">    }</span>
+
+    @Override
+    public Card[] getHand() {
+<span class="nc" id="L79">        return hand;</span>
+    }
+
+    @Override
+    public void setHand(Card[] cards) {
+<span class="nc" id="L84">        hand = cards;</span>
+<span class="nc" id="L85">    }</span>
+
+    @Override
+    public void setPlayerState(PlayerState state){
+<span class="nc" id="L89">        this.state = state;</span>
+<span class="nc" id="L90">    }</span>
+
+    @Override
+    public PlayerState getPlayerState(){
+<span class="nc" id="L94">        return this.state;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
